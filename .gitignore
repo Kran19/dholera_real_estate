@@ -7,9 +7,6 @@ php/uploads/properties/*
 !php/uploads/properties/.htaccess
 !php/uploads/properties/index.html
 
-# Large Compiled Release Artifacts
-php/app-release.apk
-
 # Miscellaneous
 *.class
 *.log
