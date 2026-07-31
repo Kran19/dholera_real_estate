@@ -431,10 +431,10 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
                                             crossAxisSpacing: screenWidth < 600 ? 10.0 : 16.0,
                                             mainAxisSpacing: screenWidth < 600 ? 10.0 : 16.0,
                                             childAspectRatio: effectiveCols == 4
-                                                ? 0.70
+                                                ? 0.75
                                                 : effectiveCols == 2
-                                                    ? (screenWidth < 600 ? 0.60 : 0.78)
-                                                    : (screenWidth < 600 ? 0.88 : 1.25),
+                                                    ? (screenWidth < 600 ? 0.73 : 0.85)
+                                                    : (screenWidth < 600 ? 1.10 : 1.35),
                                           ),
                                           itemCount: propertyProvider.properties.length + (propertyProvider.isFetchingMore ? 1 : 0),
                                           itemBuilder: (context, index) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
@@ -9,7 +10,7 @@ import '../../widgets/loading_widget.dart';
 
 /**
  * Customer Inquiry Management Screen (Super Admin Only)
- * DHOLERA REAL ESTATE — Name, City, Mobile, Requirement + Direct Call & PDF Export
+ * DHOLERA REAL ESTATE — Name, City, Mobile (+91 default, 10 digits validation), Requirement + Direct Call & PDF Export
  */
 class InquiryListScreen extends StatefulWidget {
   const InquiryListScreen({super.key});
@@ -36,7 +37,8 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
   }
 
   Future<void> _makePhoneCall(String phoneNumber) async {
-    final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber.replaceAll(' ', ''));
+    final cleanNumber = phoneNumber.replaceAll(RegExp(r'[^\d+]'), '');
+    final Uri launchUri = Uri(scheme: 'tel', path: cleanNumber);
     if (await canLaunchUrl(launchUri)) {
       await launchUrl(launchUri);
     } else {
@@ -105,37 +107,67 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                     ],
                   ),
                   const SizedBox(height: 15),
+
+                  // Customer Name
                   TextFormField(
                     controller: nameCtrl,
                     decoration: const InputDecoration(
                       labelText: 'Customer Name *',
+                      hintText: 'e.g. Rajesh Patel',
                       prefixIcon: Icon(Icons.person),
                       border: OutlineInputBorder(),
                     ),
-                    validator: (v) => (v == null || v.trim().isEmpty) ? 'Enter customer name' : null,
+                    validator: (v) {
+                      if (v == null || v.trim().isEmpty) return 'Customer name is required';
+                      if (v.trim().length < 2) return 'Name must be at least 2 characters';
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 12),
+
+                  // Customer City
                   TextFormField(
                     controller: cityCtrl,
                     decoration: const InputDecoration(
                       labelText: 'Customer City *',
+                      hintText: 'e.g. Ahmedabad, Surat, Mumbai',
                       prefixIcon: Icon(Icons.location_city),
                       border: OutlineInputBorder(),
                     ),
-                    validator: (v) => (v == null || v.trim().isEmpty) ? 'Enter customer city' : null,
+                    validator: (v) => (v == null || v.trim().isEmpty) ? 'Customer city is required' : null,
                   ),
                   const SizedBox(height: 12),
+
+                  // Mobile Number (+91 default prefix, exactly 10 digits validation)
                   TextFormField(
                     controller: mobileCtrl,
-                    keyboardType: TextInputType.phone,
+                    keyboardType: TextInputType.number,
+                    maxLength: 10,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
                     decoration: const InputDecoration(
                       labelText: 'Mobile Number *',
+                      hintText: '9876543210',
                       prefixIcon: Icon(Icons.phone),
+                      prefixText: '+91 ',
+                      prefixStyle: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary, fontSize: 16),
                       border: OutlineInputBorder(),
+                      counterText: '',
                     ),
-                    validator: (v) => (v == null || v.trim().isEmpty) ? 'Enter mobile number' : null,
+                    validator: (v) {
+                      if (v == null || v.trim().isEmpty) return 'Mobile number is required';
+                      final digits = v.trim().replaceAll(RegExp(r'\D'), '');
+                      if (digits.length != 10) return 'Enter exactly 10 digits mobile number';
+                      if (!RegExp(r'^[6-9]\d{9}$').hasMatch(digits)) {
+                        return 'Enter a valid Indian mobile number starting with 6-9';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 12),
+
+                  // Property Requirement
                   TextFormField(
                     controller: reqCtrl,
                     maxLines: 2,
@@ -145,19 +177,24 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                       prefixIcon: Icon(Icons.architecture),
                       border: OutlineInputBorder(),
                     ),
-                    validator: (v) => (v == null || v.trim().isEmpty) ? 'Enter customer property requirement' : null,
+                    validator: (v) => (v == null || v.trim().isEmpty) ? 'Customer property requirement is required' : null,
                   ),
                   const SizedBox(height: 12),
+
+                  // Additional Notes
                   TextFormField(
                     controller: notesCtrl,
                     maxLines: 2,
                     decoration: const InputDecoration(
                       labelText: 'Additional Notes / Remarks (Optional)',
+                      hintText: 'e.g. Direct buyer, cash payment ready',
                       prefixIcon: Icon(Icons.note),
                       border: OutlineInputBorder(),
                     ),
                   ),
                   const SizedBox(height: 20),
+
+                  // Save Button
                   SizedBox(
                     width: double.infinity,
                     height: 48,
@@ -170,18 +207,24 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                       label: const Text('Save Inquiry', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
+                          final String mobileNumberWithPrefix = '+91 ${mobileCtrl.text.trim()}';
                           Navigator.pop(ctx);
-                          final success = await context.read<InquiryProvider>().createInquiry(
+
+                          final provider = context.read<InquiryProvider>();
+                          final success = await provider.createInquiry(
                             name: nameCtrl.text.trim(),
                             city: cityCtrl.text.trim(),
-                            mobile: mobileCtrl.text.trim(),
+                            mobile: mobileNumberWithPrefix,
                             requirement: reqCtrl.text.trim(),
                             notes: notesCtrl.text.trim(),
                           );
+
                           if (mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text(success ? 'Inquiry saved successfully!' : 'Failed to save inquiry.'),
+                                content: Text(
+                                  success ? 'Inquiry saved successfully!' : (provider.errorMessage ?? 'Failed to save inquiry.'),
+                                ),
                                 backgroundColor: success ? Colors.green : Colors.red,
                               ),
                             );
@@ -228,7 +271,7 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
         builder: (context, provider, child) {
           return Column(
             children: [
-              // Search & Filter Header
+              // Search Header
               Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Row(
@@ -269,7 +312,7 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                 ),
               ),
 
-              // Inquiry List Content
+              // Inquiry List View
               Expanded(
                 child: provider.isLoading
                     ? const LoadingWidget(message: 'Loading Inquiries...')

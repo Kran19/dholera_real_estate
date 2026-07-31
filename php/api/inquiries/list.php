@@ -15,6 +15,22 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 try {
     $db = Database::getConnection();
 
+    // Auto-create inquiries table safely if missing
+    $db->exec("
+        CREATE TABLE IF NOT EXISTS inquiries (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            customer_name VARCHAR(100) NOT NULL,
+            customer_city VARCHAR(100) NOT NULL,
+            customer_mobile VARCHAR(20) NOT NULL,
+            requirement TEXT NULL,
+            notes TEXT NULL,
+            created_by INT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            INDEX idx_inquiries_created_at (created_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    ");
+
     $page = max(1, (int)($_GET['page'] ?? 1));
     $limit = min(100, max(1, (int)($_GET['limit'] ?? 20)));
     $offset = ($page - 1) * $limit;
@@ -62,7 +78,7 @@ try {
         "total_pages" => $totalPages
     ]);
 
-} catch (Exception $e) {
+} catch (Throwable $e) {
     error_log("Inquiry list error: " . $e->getMessage());
     sendJsonResponse(false, "Failed to retrieve inquiries: " . $e->getMessage(), null, 500);
 }

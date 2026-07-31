@@ -21,7 +21,7 @@ if (!empty($errors)) {
 
 $customerName   = sanitizeString($input['customer_name']);
 $customerCity   = sanitizeString($input['customer_city']);
-$customerMobile = sanitizeString($input['customer_mobile']);
+$rawMobile      = sanitizeString($input['customer_mobile']);
 $requirement    = sanitizeString($input['requirement'] ?? '');
 $notes          = sanitizeString($input['notes'] ?? '');
 
@@ -29,12 +29,36 @@ if (strlen($customerName) < 2) {
     sendJsonResponse(false, "Customer name must be at least 2 characters.", null, 422);
 }
 
-if (strlen($customerMobile) < 7 || strlen($customerMobile) > 20) {
-    sendJsonResponse(false, "Please enter a valid mobile number.", null, 422);
+// Clean and format mobile number with +91 prefix
+$digits = preg_replace('/[^\d]/', '', $rawMobile);
+if (strpos($digits, '91') === 0 && strlen($digits) === 12) {
+    $digits = substr($digits, 2);
 }
+
+if (strlen($digits) !== 10) {
+    sendJsonResponse(false, "Mobile number must be exactly 10 digits.", null, 422);
+}
+
+$customerMobile = '+91 ' . $digits;
 
 try {
     $db = Database::getConnection();
+
+    // Auto-create inquiries table safely if it does not exist yet (without FK constraints to prevent lock errors)
+    $db->exec("
+        CREATE TABLE IF NOT EXISTS inquiries (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            customer_name VARCHAR(100) NOT NULL,
+            customer_city VARCHAR(100) NOT NULL,
+            customer_mobile VARCHAR(20) NOT NULL,
+            requirement TEXT NULL,
+            notes TEXT NULL,
+            created_by INT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            INDEX idx_inquiries_created_at (created_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    ");
 
     $stmt = $db->prepare("
         INSERT INTO inquiries (customer_name, customer_city, customer_mobile, requirement, notes, created_by)
@@ -47,7 +71,7 @@ try {
         ':mobile'      => $customerMobile,
         ':requirement' => $requirement,
         ':notes'       => $notes,
-        ':created_by'  => $currentUser['id']
+        ':created_by'  => $currentUser['id'] ?? 1
     ]);
 
     $newId = (int)$db->lastInsertId();
@@ -64,7 +88,7 @@ try {
         ]
     ], 201);
 
-} catch (Exception $e) {
+} catch (Throwable $e) {
     error_log("Inquiry creation error: " . $e->getMessage());
     sendJsonResponse(false, "Failed to record inquiry: " . $e->getMessage(), null, 500);
 }
