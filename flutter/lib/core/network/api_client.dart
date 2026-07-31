@@ -126,7 +126,8 @@ class ApiClient {
       throw ApiException('Server error (HTTP ${response.statusCode}): $preview', statusCode: response.statusCode);
     }
 
-    final bool success = jsonResponseBody['success'] == true;
+    final dynamic rawSuccess = jsonResponseBody['success'];
+    final bool success = rawSuccess == true || rawSuccess == 1 || rawSuccess == 'true' || rawSuccess == '1';
     final String message = jsonResponseBody['message'] ?? 'An unknown error occurred';
     final dynamic data = jsonResponseBody['data'];
     final Map<String, dynamic>? errors = jsonResponseBody['errors'] != null ? Map<String, dynamic>.from(jsonResponseBody['errors']) : null;
@@ -137,6 +138,7 @@ class ApiClient {
       case 201:
         if (success) {
           return {
+            'success': true,
             'data': data,
             'message': message,
             'pagination': pagination,
