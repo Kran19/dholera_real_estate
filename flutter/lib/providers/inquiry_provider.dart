@@ -26,6 +26,12 @@ class InquiryProvider extends ChangeNotifier {
   int get totalInquiries => _totalInquiries;
   String get searchQuery => _searchQuery;
 
+  /// Clear any residual error state
+  void clearError() {
+    _errorMessage = null;
+    notifyListeners();
+  }
+
   /// Fetch Inquiry List
   Future<void> fetchInquiries({int page = 1, String? search}) async {
     _isLoading = true;
@@ -49,6 +55,7 @@ class InquiryProvider extends ChangeNotifier {
       final response = await _apiClient.get(endpoint);
 
       if (response['success'] == true && response['data'] != null) {
+        _errorMessage = null; // Clear error on success
         final rawList = response['data']['inquiries'] as List? ?? [];
         _inquiries = rawList
             .map((item) => InquiryModel.fromJson(Map<String, dynamic>.from(item)))
@@ -95,6 +102,7 @@ class InquiryProvider extends ChangeNotifier {
       );
 
       if (response['success'] == true) {
+        _errorMessage = null; // Clear error on success
         await fetchInquiries(page: 1);
         return true;
       } else {
@@ -119,6 +127,7 @@ class InquiryProvider extends ChangeNotifier {
       );
 
       if (response['success'] == true) {
+        _errorMessage = null;
         _inquiries.removeWhere((inq) => inq.id == id);
         _totalInquiries = (_totalInquiries - 1).clamp(0, 999999);
         notifyListeners();
