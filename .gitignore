@@ -7,9 +7,7 @@ php/uploads/properties/*
 !php/uploads/properties/.htaccess
 !php/uploads/properties/index.html
 
-# Large Compiled Release Artifacts (Hostinger App output & APKs)
-php/app/*
-!php/app/index.html
+# Large Compiled Release Artifacts
 php/app-release.apk
 
 # Miscellaneous
