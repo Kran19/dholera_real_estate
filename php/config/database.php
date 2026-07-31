@@ -92,25 +92,6 @@ class Database {
 
             try {
                 self::$instance = new PDO($dsn, DB_USER, DB_PASS, $options);
-
-                // Auto-Migrate inquiries table if missing for zero-downtime deployment
-                @self::$instance->exec("
-                    CREATE TABLE IF NOT EXISTS inquiries (
-                        id INT AUTO_INCREMENT PRIMARY KEY,
-                        customer_name VARCHAR(100) NOT NULL,
-                        customer_city VARCHAR(100) NOT NULL,
-                        customer_mobile VARCHAR(20) NOT NULL,
-                        requirement TEXT NULL,
-                        notes TEXT NULL,
-                        created_by INT NOT NULL,
-                        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                        INDEX (created_at),
-                        FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-                ");
-                @self::$instance->exec("ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS requirement TEXT NULL;");
-
             } catch (PDOException $e) {
                 // Log detailed error locally
                 error_log("Database Connection Error: " . $e->getMessage());
