@@ -42,8 +42,13 @@ try {
     $primaryImage = null;
 
     foreach ($rawImages as $img) {
-        $cleanPath = preg_replace('#^php/#', '', ltrim($img['image_url'], '/'));
-        $fullUrl = $baseUrl . '/' . $cleanPath;
+        if (preg_match('#^https?://#i', $img['image_url'])) {
+            $fullUrl = $img['image_url'];
+        } else {
+            $cleanPath = preg_replace('#^php/#', '', ltrim($img['image_url'], '/'));
+            $fullUrl = $baseUrl . '/' . $cleanPath;
+        }
+
         $imgData = [
             "id"         => (int)$img['id'],
             "image_url"  => $fullUrl,
@@ -66,5 +71,5 @@ try {
 
 } catch (Exception $e) {
     error_log("Property details error: " . $e->getMessage());
-    sendJsonResponse(false, "Failed to retrieve property details.", null, 500);
+    sendJsonResponse(false, "Failed to retrieve property details: " . $e->getMessage(), null, 500);
 }
