@@ -22,6 +22,7 @@ if (!empty($errors)) {
 $customerName   = sanitizeString($input['customer_name']);
 $customerCity   = sanitizeString($input['customer_city']);
 $customerMobile = sanitizeString($input['customer_mobile']);
+$requirement    = sanitizeString($input['requirement'] ?? '');
 $notes          = sanitizeString($input['notes'] ?? '');
 
 if (strlen($customerName) < 2) {
@@ -36,16 +37,17 @@ try {
     $db = Database::getConnection();
 
     $stmt = $db->prepare("
-        INSERT INTO inquiries (customer_name, customer_city, customer_mobile, notes, created_by)
-        VALUES (:name, :city, :mobile, :notes, :created_by)
+        INSERT INTO inquiries (customer_name, customer_city, customer_mobile, requirement, notes, created_by)
+        VALUES (:name, :city, :mobile, :requirement, :notes, :created_by)
     ");
 
     $stmt->execute([
-        ':name'       => $customerName,
-        ':city'       => $customerCity,
-        ':mobile'     => $customerMobile,
-        ':notes'      => $notes,
-        ':created_by' => $currentUser['id']
+        ':name'        => $customerName,
+        ':city'        => $customerCity,
+        ':mobile'      => $customerMobile,
+        ':requirement' => $requirement,
+        ':notes'       => $notes,
+        ':created_by'  => $currentUser['id']
     ]);
 
     $newId = (int)$db->lastInsertId();
@@ -56,6 +58,7 @@ try {
             "customer_name"   => $customerName,
             "customer_city"   => $customerCity,
             "customer_mobile" => $customerMobile,
+            "requirement"     => $requirement,
             "notes"           => $notes,
             "created_at"      => date('Y-m-d H:i:s')
         ]

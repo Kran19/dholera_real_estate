@@ -61,11 +61,11 @@ try {
             <thead>
                 <tr>
                     <th style="width: 5%;">#</th>
-                    <th style="width: 25%;">Customer Name</th>
-                    <th style="width: 20%;">City</th>
-                    <th style="width: 20%;">Mobile Number</th>
-                    <th style="width: 20%;">Notes / Details</th>
-                    <th style="width: 10%;">Date</th>
+                    <th style="width: 20%;">Customer Name</th>
+                    <th style="width: 15%;">City</th>
+                    <th style="width: 18%;">Mobile Number</th>
+                    <th style="width: 25%;">Requirement</th>
+                    <th style="width: 17%;">Notes / Date</th>
                 </tr>
             </thead>
             <tbody>
@@ -80,8 +80,8 @@ try {
                             <td><strong><?php echo htmlspecialchars($inq['customer_name']); ?></strong></td>
                             <td><?php echo htmlspecialchars($inq['customer_city']); ?></td>
                             <td><a href="tel:<?php echo htmlspecialchars($inq['customer_mobile']); ?>" class="phone">📞 <?php echo htmlspecialchars($inq['customer_mobile']); ?></a></td>
-                            <td><?php echo htmlspecialchars($inq['notes'] ?? '-'); ?></td>
-                            <td><?php echo date('d/m/Y', strtotime($inq['created_at'])); ?></td>
+                            <td><strong><?php echo htmlspecialchars($inq['requirement'] ?? '-'); ?></strong></td>
+                            <td><?php echo htmlspecialchars($inq['notes'] ?? '-'); ?><br><small style="color: #64748b;"><?php echo date('d/m/Y', strtotime($inq['created_at'])); ?></small></td>
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>

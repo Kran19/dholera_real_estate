@@ -377,12 +377,12 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
               const SizedBox(height: 16.0),
 
               CustomTextField(
-                label: 'Zone Designation *',
+                label: 'Zone *',
                 hint: 'e.g. Residential, Commercial, Industrial',
                 controller: _zoneController,
                 prefixIcon: Icons.map_outlined,
                 validator: (val) {
-                  if (val == null || val.trim().isEmpty) return 'Zone designation is required';
+                  if (val == null || val.trim().isEmpty) return 'Zone is required';
                   return null;
                 },
               ),
@@ -448,7 +448,7 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
               const SizedBox(height: 16.0),
 
               CustomTextField(
-                label: 'Road Access / Width *',
+                label: 'Road *',
                 hint: 'e.g. 24 Mtr, 55 Mtr DP Road',
                 controller: _roadController,
                 prefixIcon: Icons.add_road_outlined,
@@ -471,7 +471,7 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
                   const SizedBox(width: 12.0),
                   Expanded(
                     child: CustomTextField(
-                      label: 'Final Plot (FP)',
+                      label: 'Final Plot No',
                       hint: 'e.g. FP-45',
                       controller: _fpController,
                     ),

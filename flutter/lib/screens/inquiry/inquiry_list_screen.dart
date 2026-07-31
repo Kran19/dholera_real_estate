@@ -9,7 +9,7 @@ import '../../widgets/loading_widget.dart';
 
 /**
  * Customer Inquiry Management Screen (Super Admin Only)
- * DHOLERA REAL ESTATE
+ * DHOLERA REAL ESTATE — Name, City, Mobile, Requirement + Direct Call & PDF Export
  */
 class InquiryListScreen extends StatefulWidget {
   const InquiryListScreen({super.key});
@@ -65,6 +65,7 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
     final nameCtrl = TextEditingController();
     final cityCtrl = TextEditingController();
     final mobileCtrl = TextEditingController();
+    final reqCtrl = TextEditingController();
     final notesCtrl = TextEditingController();
     final formKey = GlobalKey<FormState>();
 
@@ -136,10 +137,22 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
+                    controller: reqCtrl,
+                    maxLines: 2,
+                    decoration: const InputDecoration(
+                      labelText: 'Property Requirement *',
+                      hintText: 'e.g. Looking for 500 Sq Yard Commercial plot near 55 Mtr DP Road',
+                      prefixIcon: Icon(Icons.architecture),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (v) => (v == null || v.trim().isEmpty) ? 'Enter customer property requirement' : null,
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
                     controller: notesCtrl,
                     maxLines: 2,
                     decoration: const InputDecoration(
-                      labelText: 'Notes / Remarks (Optional)',
+                      labelText: 'Additional Notes / Remarks (Optional)',
                       prefixIcon: Icon(Icons.note),
                       border: OutlineInputBorder(),
                     ),
@@ -162,6 +175,7 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                             name: nameCtrl.text.trim(),
                             city: cityCtrl.text.trim(),
                             mobile: mobileCtrl.text.trim(),
+                            requirement: reqCtrl.text.trim(),
                             notes: notesCtrl.text.trim(),
                           );
                           if (mounted) {
@@ -223,7 +237,7 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                       child: TextField(
                         controller: _searchController,
                         decoration: InputDecoration(
-                          hintText: 'Search by name, city, or mobile...',
+                          hintText: 'Search name, city, mobile, requirement...',
                           prefixIcon: const Icon(Icons.search),
                           suffixIcon: _searchController.text.isNotEmpty
                               ? IconButton(
@@ -351,7 +365,35 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                   ),
               ],
             ),
-            const SizedBox(height: 10),
+
+            // Requirement Display Badge
+            if (inquiry.requirement != null && inquiry.requirement!.isNotEmpty) ...[
+              const SizedBox(height: 10),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: AppColors.primaryAccent.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppColors.primaryAccent.withValues(alpha: 0.3)),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.architecture, size: 16, color: AppColors.primaryDark),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        'Requirement: ${inquiry.requirement!}',
+                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.primaryDark),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+
+            const SizedBox(height: 12),
             Row(
               children: [
                 const Icon(Icons.phone_android, size: 16, color: Colors.green),

@@ -75,6 +75,7 @@ class InquiryProvider extends ChangeNotifier {
     required String name,
     required String city,
     required String mobile,
+    String? requirement,
     String? notes,
   }) async {
     _isLoading = true;
@@ -88,6 +89,7 @@ class InquiryProvider extends ChangeNotifier {
           'customer_name': name,
           'customer_city': city,
           'customer_mobile': mobile,
+          'requirement': requirement ?? '',
           'notes': notes ?? '',
         },
       );

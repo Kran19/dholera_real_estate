@@ -100,6 +100,7 @@ class Database {
                         customer_name VARCHAR(100) NOT NULL,
                         customer_city VARCHAR(100) NOT NULL,
                         customer_mobile VARCHAR(20) NOT NULL,
+                        requirement TEXT NULL,
                         notes TEXT NULL,
                         created_by INT NOT NULL,
                         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -108,6 +109,7 @@ class Database {
                         FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
                 ");
+                @self::$instance->exec("ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS requirement TEXT NULL;");
 
             } catch (PDOException $e) {
                 // Log detailed error locally

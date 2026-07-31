@@ -324,16 +324,16 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                                     children: [
                                       _buildSpecRow('Survey Number', _property!.surveyNo, Icons.pin_drop_outlined),
                                       const Divider(height: 24.0, color: AppColors.border),
-                                      _buildSpecRow('Zone Designation', _property!.zone, Icons.map_outlined),
+                                      _buildSpecRow('Zone', _property!.zone, Icons.map_outlined),
                                       const Divider(height: 24.0, color: AppColors.border),
-                                      _buildSpecRow('Road Width / Access', _property!.road, Icons.add_road_outlined),
+                                      _buildSpecRow('Road', _property!.road, Icons.add_road_outlined),
                                       if (_property!.tp != null && _property!.tp!.isNotEmpty) ...[
                                         const Divider(height: 24.0, color: AppColors.border),
                                         _buildSpecRow('Town Planning (TP)', _property!.tp!, Icons.location_city_outlined),
                                       ],
                                       if (_property!.fp != null && _property!.fp!.isNotEmpty) ...[
                                         const Divider(height: 24.0, color: AppColors.border),
-                                        _buildSpecRow('Final Plot (FP)', _property!.fp!, Icons.nature_people_outlined),
+                                        _buildSpecRow('Final Plot No', _property!.fp!, Icons.nature_people_outlined),
                                       ],
                                     ],
                                   ),

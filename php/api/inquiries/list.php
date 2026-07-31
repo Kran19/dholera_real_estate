@@ -24,7 +24,7 @@ try {
     $params = [];
 
     if ($search !== '') {
-        $where[] = "(i.customer_name LIKE :search OR i.customer_city LIKE :search OR i.customer_mobile LIKE :search OR i.notes LIKE :search)";
+        $where[] = "(i.customer_name LIKE :search OR i.customer_city LIKE :search OR i.customer_mobile LIKE :search OR i.requirement LIKE :search OR i.notes LIKE :search)";
         $params[':search'] = '%' . $search . '%';
     }
 
