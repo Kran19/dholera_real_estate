@@ -66,5 +66,5 @@ try {
 
 } catch (Exception $e) {
     error_log("User creation error: " . $e->getMessage());
-    sendJsonResponse(false, "Failed to create user account.", null, 500);
+    sendJsonResponse(false, "Failed to create user account: " . $e->getMessage(), null, 500);
 }

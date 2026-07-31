@@ -43,5 +43,5 @@ try {
 
 } catch (Exception $e) {
     error_log("User deletion error: " . $e->getMessage());
-    sendJsonResponse(false, "Failed to delete user.", null, 500);
+    sendJsonResponse(false, "Failed to delete user: " . $e->getMessage(), null, 500);
 }

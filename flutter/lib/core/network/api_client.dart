@@ -56,7 +56,13 @@ class ApiClient {
     try {
       final uri = Uri.parse('${ApiConfig.baseUrl}$endpoint');
       final headers = await _getHeaders();
-      final bodyStr = body != null ? jsonEncode(body) : null;
+      final token = await SecureStorageService.getToken();
+
+      final Map<String, dynamic> reqBody = body != null ? Map<String, dynamic>.from(body) : {};
+      if (token != null && token.isNotEmpty && !reqBody.containsKey('token')) {
+        reqBody['token'] = token;
+      }
+      final bodyStr = jsonEncode(reqBody);
 
       final response = await _client.post(uri, headers: headers, body: bodyStr).timeout(ApiConfig.timeoutDuration);
       return _processResponse(response);
@@ -82,6 +88,11 @@ class ApiClient {
       final headers = await _getHeaders(isMultipart: true);
       request.headers.addAll(headers);
       request.fields.addAll(fields);
+
+      final token = await SecureStorageService.getToken();
+      if (token != null && token.isNotEmpty && !request.fields.containsKey('token')) {
+        request.fields['token'] = token;
+      }
 
       if (images != null && images.isNotEmpty) {
         for (var img in images) {
