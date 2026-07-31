@@ -29,13 +29,21 @@ try {
     $prop = $stmt->fetch();
 
     if (!$prop) {
-        sendJsonResponse(false, "Property not found.", null, 404);
+        sendJsonResponse(false, "Property not found or already deleted.", null, 404);
     }
 
-    // 1. Clean physical filesystem directory and files
-    deletePropertyFiles($propertyId);
+    // 1. Explicitly delete child image records from property_images table
+    $imgStmt = $db->prepare("DELETE FROM property_images WHERE property_id = :id");
+    $imgStmt->execute([':id' => $propertyId]);
 
-    // 2. Delete property database record (Cascading foreign key deletes property_images)
+    // 2. Clean physical filesystem directory and files safely
+    try {
+        deletePropertyFiles($propertyId);
+    } catch (Throwable $fe) {
+        error_log("File deletion warning for property $propertyId: " . $fe->getMessage());
+    }
+
+    // 3. Delete main property database record
     $delStmt = $db->prepare("DELETE FROM properties WHERE id = :id");
     $delStmt->execute([':id' => $propertyId]);
 
@@ -45,5 +53,5 @@ try {
 
 } catch (Exception $e) {
     error_log("Property deletion error: " . $e->getMessage());
-    sendJsonResponse(false, "Failed to delete property.", null, 500);
+    sendJsonResponse(false, "Failed to delete property: " . $e->getMessage(), null, 500);
 }

@@ -47123,8 +47123,8 @@ case 3:p=c
 o=t.N
 n=A.ak(["Accept","application/json"],o,o)
 if(!a)n.m(0,"Content-Type","application/json")
-if(p!=null&&p.length!==0)n.m(0,"Authorization","Bearer "+p)
-q=n
+if(p!=null&&p.length!==0){n.m(0,"Authorization","Bearer "+p)
+n.m(0,"X-Auth-Token",p)}q=n
 s=1
 break
 case 1:return A.B(q,r)}})

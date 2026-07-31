@@ -26,6 +26,7 @@ class ApiClient {
 
     if (token != null && token.isNotEmpty) {
       headers['Authorization'] = 'Bearer $token';
+      headers['X-Auth-Token'] = token;
     }
 
     return headers;
