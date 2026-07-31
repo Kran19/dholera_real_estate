@@ -36,30 +36,38 @@ if ($area <= 0) {
     sendJsonResponse(false, "Area must be a positive numeric value.", null, 422);
 }
 
-// Check attached files
+// Parse attached files (handles both 'images' and 'images[]' keys)
 $uploadedFiles = [];
-if (!empty($_FILES['images']) && is_array($_FILES['images']['name'])) {
-    $fileCount = count($_FILES['images']['name']);
-    if ($fileCount > MAX_PROPERTY_IMAGES) {
-        sendJsonResponse(false, "Maximum " . MAX_PROPERTY_IMAGES . " photos allowed per property.", null, 400);
-    }
+$rawFiles = $_FILES['images'] ?? $_FILES['images[]'] ?? null;
 
-    for ($i = 0; $i < $fileCount; $i++) {
-        if (!empty($_FILES['images']['name'][$i])) {
-            $file = [
-                'name'     => $_FILES['images']['name'][$i],
-                'type'     => $_FILES['images']['type'][$i],
-                'tmp_name' => $_FILES['images']['tmp_name'][$i],
-                'error'    => $_FILES['images']['error'][$i],
-                'size'     => $_FILES['images']['size'][$i]
-            ];
-
-            $valError = validateUploadedImage($file);
-            if ($valError !== null) {
-                sendJsonResponse(false, "Image #".($i+1)." validation error: " . $valError, null, 400);
-            }
-            $uploadedFiles[] = $file;
+if (!empty($rawFiles)) {
+    if (is_array($rawFiles['name'])) {
+        $fileCount = count($rawFiles['name']);
+        if ($fileCount > MAX_PROPERTY_IMAGES) {
+            sendJsonResponse(false, "Maximum " . MAX_PROPERTY_IMAGES . " photos allowed per property.", null, 400);
         }
+        for ($i = 0; $i < $fileCount; $i++) {
+            if (!empty($rawFiles['name'][$i])) {
+                $file = [
+                    'name'     => $rawFiles['name'][$i],
+                    'type'     => $rawFiles['type'][$i],
+                    'tmp_name' => $rawFiles['tmp_name'][$i],
+                    'error'    => $rawFiles['error'][$i],
+                    'size'     => $rawFiles['size'][$i]
+                ];
+                $valError = validateUploadedImage($file);
+                if ($valError !== null) {
+                    sendJsonResponse(false, "Image #".($i+1)." error: " . $valError, null, 400);
+                }
+                $uploadedFiles[] = $file;
+            }
+        }
+    } else if (!empty($rawFiles['name'])) {
+        $valError = validateUploadedImage($rawFiles);
+        if ($valError !== null) {
+            sendJsonResponse(false, "Image error: " . $valError, null, 400);
+        }
+        $uploadedFiles[] = $rawFiles;
     }
 }
 
@@ -130,5 +138,5 @@ try {
         $db->rollBack();
     }
     error_log("Property creation error: " . $e->getMessage());
-    sendJsonResponse(false, "Failed to create property.", null, 500);
+    sendJsonResponse(false, "Failed to create property: " . $e->getMessage(), null, 500);
 }

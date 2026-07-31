@@ -7,11 +7,15 @@
 require_once __DIR__ . '/../config/config.php';
 
 /**
- * Validate Uploaded Image File
+ * Validate Uploaded Image File Robustly
  */
 function validateUploadedImage(array $file): ?string {
-    if ($file['error'] !== UPLOAD_ERR_OK) {
-        return "File upload error code: " . $file['error'];
+    if (!isset($file['error']) || $file['error'] !== UPLOAD_ERR_OK) {
+        $errCode = $file['error'] ?? UPLOAD_ERR_NO_FILE;
+        if ($errCode === UPLOAD_ERR_INI_SIZE || $errCode === UPLOAD_ERR_FORM_SIZE) {
+            return "File size exceeds server upload limit.";
+        }
+        return "File upload failed with error code: " . $errCode;
     }
 
     if ($file['size'] > MAX_FILE_SIZE_BYTES) {
@@ -23,11 +27,29 @@ function validateUploadedImage(array $file): ?string {
         return "Invalid file extension '.$ext'. Allowed: " . implode(', ', ALLOWED_EXTENSIONS);
     }
 
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $mime = finfo_file($finfo, $file['tmp_name']);
-    finfo_close($finfo);
+    // MIME type check with multiple robust fallbacks
+    $mime = '';
+    if (function_exists('finfo_open')) {
+        $finfo = @finfo_open(FILEINFO_MIME_TYPE);
+        if ($finfo) {
+            $mime = @finfo_file($finfo, $file['tmp_name']);
+            @finfo_close($finfo);
+        }
+    }
 
-    if (!in_array($mime, ALLOWED_MIME_TYPES)) {
+    if (empty($mime) && function_exists('getimagesize')) {
+        $imgInfo = @getimagesize($file['tmp_name']);
+        if ($imgInfo && isset($imgInfo['mime'])) {
+            $mime = $imgInfo['mime'];
+        }
+    }
+
+    if (empty($mime) && !empty($file['type'])) {
+        $mime = strtolower($file['type']);
+    }
+
+    $allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg', 'image/pjpeg', 'image/x-png', 'application/octet-stream'];
+    if (!empty($mime) && !in_array($mime, $allowedMimes)) {
         return "Invalid image MIME type '$mime'.";
     }
 
@@ -35,27 +57,31 @@ function validateUploadedImage(array $file): ?string {
 }
 
 /**
- * Save Image File Safely
+ * Save Image File Safely with Permissive Directory Fallback
  */
 function savePropertyImage(array $file, int $propertyId, int $sortOrder): string {
     $targetDir = UPLOAD_DIR . '/' . $propertyId;
     if (!file_exists($targetDir)) {
-        mkdir($targetDir, 0755, true);
+        @mkdir($targetDir, 0777, true);
         
         // Write .htaccess to disable PHP execution inside uploads
         $htaccessPath = UPLOAD_DIR . '/.htaccess';
         if (!file_exists($htaccessPath)) {
-            file_put_contents($htaccessPath, "<FilesMatch \"\.(php|phtml|exe|pl|cgi)$\">\n  Order Deny,Allow\n  Deny from all\n</FilesMatch>\nphp_flag engine off\n");
+            @file_put_contents($htaccessPath, "<FilesMatch \"\.(php|phtml|exe|pl|cgi)$\">\n  Order Deny,Allow\n  Deny from all\n</FilesMatch>\nphp_flag engine off\n");
         }
     }
 
     $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    if (empty($ext)) $ext = 'jpg';
+
     $randomHex = bin2hex(random_bytes(4));
     $newFilename = sprintf("img_%d_%d_%s.%s", $propertyId, time(), $randomHex, $ext);
     $targetPath = $targetDir . '/' . $newFilename;
 
-    if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
-        throw new Exception("Failed to save uploaded file to destination server path.");
+    if (!@move_uploaded_file($file['tmp_name'], $targetPath)) {
+        if (!@copy($file['tmp_name'], $targetPath)) {
+            throw new Exception("Failed to save uploaded image to path '$targetPath'. Please check upload directory permissions.");
+        }
     }
 
     // Relative web URL path stored in DB

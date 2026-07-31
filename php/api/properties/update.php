@@ -78,44 +78,55 @@ try {
         }
     }
 
-    // Handle New Image Uploads
-    if (!empty($_FILES['images']) && is_array($_FILES['images']['name'])) {
+    // Handle New Image Uploads (handles both 'images' and 'images[]' keys)
+    $rawFiles = $_FILES['images'] ?? $_FILES['images[]'] ?? null;
+    if (!empty($rawFiles)) {
         // Count existing images
         $countStmt = $db->prepare("SELECT COUNT(*) as cnt FROM property_images WHERE property_id = :pid");
         $countStmt->execute([':pid' => $propertyId]);
         $existingCount = (int)$countStmt->fetch()['cnt'];
 
-        $newFileCount = count($_FILES['images']['name']);
-        if (($existingCount + $newFileCount) > MAX_PROPERTY_IMAGES) {
-            sendJsonResponse(false, "Cannot exceed " . MAX_PROPERTY_IMAGES . " total images per property.", null, 400);
+        $uploadedFiles = [];
+        if (is_array($rawFiles['name'])) {
+            $newFileCount = count($rawFiles['name']);
+            if (($existingCount + $newFileCount) > MAX_PROPERTY_IMAGES) {
+                sendJsonResponse(false, "Cannot exceed " . MAX_PROPERTY_IMAGES . " total images per property.", null, 400);
+            }
+            for ($i = 0; $i < $newFileCount; $i++) {
+                if (!empty($rawFiles['name'][$i])) {
+                    $file = [
+                        'name'     => $rawFiles['name'][$i],
+                        'type'     => $rawFiles['type'][$i],
+                        'tmp_name' => $rawFiles['tmp_name'][$i],
+                        'error'    => $rawFiles['error'][$i],
+                        'size'     => $rawFiles['size'][$i]
+                    ];
+                    $valError = validateUploadedImage($file);
+                    if ($valError !== null) {
+                        sendJsonResponse(false, "New image #".($i+1)." error: " . $valError, null, 400);
+                    }
+                    $uploadedFiles[] = $file;
+                }
+            }
+        } else if (!empty($rawFiles['name'])) {
+            $valError = validateUploadedImage($rawFiles);
+            if ($valError !== null) {
+                sendJsonResponse(false, "New image error: " . $valError, null, 400);
+            }
+            $uploadedFiles[] = $rawFiles;
         }
 
         $sortOrder = $existingCount + 1;
         $imgInsertStmt = $db->prepare("INSERT INTO property_images (property_id, image_url, sort_order) VALUES (:pid, :url, :sort)");
 
-        for ($i = 0; $i < $newFileCount; $i++) {
-            if (!empty($_FILES['images']['name'][$i])) {
-                $file = [
-                    'name'     => $_FILES['images']['name'][$i],
-                    'type'     => $_FILES['images']['type'][$i],
-                    'tmp_name' => $_FILES['images']['tmp_name'][$i],
-                    'error'    => $_FILES['images']['error'][$i],
-                    'size'     => $_FILES['images']['size'][$i]
-                ];
-
-                $valError = validateUploadedImage($file);
-                if ($valError !== null) {
-                    sendJsonResponse(false, "New image #".($i+1)." error: " . $valError, null, 400);
-                }
-
-                $relativePath = savePropertyImage($file, $propertyId, $sortOrder);
-                $imgInsertStmt->execute([
-                    ':pid'  => $propertyId,
-                    ':url'  => $relativePath,
-                    ':sort' => $sortOrder
-                ]);
-                $sortOrder++;
-            }
+        foreach ($uploadedFiles as $file) {
+            $relativePath = savePropertyImage($file, $propertyId, $sortOrder);
+            $imgInsertStmt->execute([
+                ':pid'  => $propertyId,
+                ':url'  => $relativePath,
+                ':sort' => $sortOrder
+            ]);
+            $sortOrder++;
         }
     }
 
@@ -125,5 +136,5 @@ try {
 
 } catch (Exception $e) {
     error_log("Property update error: " . $e->getMessage());
-    sendJsonResponse(false, "Failed to update property.", null, 500);
+    sendJsonResponse(false, "Failed to update property: " . $e->getMessage(), null, 500);
 }
