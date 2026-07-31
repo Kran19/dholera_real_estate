@@ -63,9 +63,9 @@ class Database {
             try {
                 self::$instance = new PDO($dsn, DB_USER, DB_PASS, $options);
             } catch (PDOException $e) {
-                // Log detailed error locally, never leak raw SQL errors to production clients
+                // Log detailed error locally
                 error_log("Database Connection Error: " . $e->getMessage());
-                throw new Exception("Database connection failed. Please ensure MySQL service is running.");
+                throw new Exception("Database connection failed: " . $e->getMessage());
             }
         }
 
