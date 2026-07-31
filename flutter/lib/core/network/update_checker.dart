@@ -17,12 +17,21 @@ class UpdateChecker {
     try {
       final response = await _apiClient.get(ApiConfig.versionConfig);
       final data = response['data'];
-      if (data == null) return;
+      if (data == null) {
+        if (showNoUpdateToast && context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Could not fetch version data from server.')),
+          );
+        }
+        return;
+      }
 
       final String latestVersion = data['latest_version'] ?? '1.0.0';
       final String apkUrl = data['apk_download_url'] ?? '';
       final String updateMessage = data['update_message'] ?? 'A new version of Dholera Real Estate is available!';
       final bool forceUpdate = data['force_update'] == true;
+
+      debugPrint('[UpdateChecker] Server: $latestVersion, Installed: ${ApiConfig.currentAppVersion}');
 
       if (_isVersionGreater(latestVersion, ApiConfig.currentAppVersion)) {
         if (!context.mounted) return;
@@ -35,19 +44,27 @@ class UpdateChecker {
         );
       } else if (showNoUpdateToast && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('You are using the latest version of Dholera Real Estate (v1.0.0).')),
+          SnackBar(
+            content: Text('You are using the latest version (v${ApiConfig.currentAppVersion}).'),
+            backgroundColor: AppColors.primary,
+          ),
         );
       }
-    } catch (_) {
-      // Silently ignore network errors during background update check
+    } catch (e) {
+      debugPrint('[UpdateChecker Error] $e');
+      if (showNoUpdateToast && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Update check failed: $e'), backgroundColor: Colors.red),
+        );
+      }
     }
   }
 
   /// Version comparison helper (e.g. "1.0.1" > "1.0.0")
   static bool _isVersionGreater(String newVersion, String currentVersion) {
     try {
-      List<int> v1 = newVersion.split('.').map((e) => int.parse(e)).toList();
-      List<int> v2 = currentVersion.split('.').map((e) => int.parse(e)).toList();
+      List<int> v1 = newVersion.split('.').map((e) => int.parse(e.trim())).toList();
+      List<int> v2 = currentVersion.split('.').map((e) => int.parse(e.trim())).toList();
       for (int i = 0; i < v1.length && i < v2.length; i++) {
         if (v1[i] > v2[i]) return true;
         if (v1[i] < v2[i]) return false;
@@ -68,6 +85,7 @@ class UpdateChecker {
   }) {
     showDialog(
       context: context,
+      useRootNavigator: true,
       barrierDismissible: !forceUpdate,
       builder: (dialogCtx) {
         return PopScope(
@@ -90,7 +108,7 @@ class UpdateChecker {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('New Update Available!', style: AppStyles.heading3.copyWith(fontSize: 18.0)),
-                      Text('Version $latestVersion', style: AppStyles.bodySmall.copyWith(color: AppColors.primary)),
+                      Text('Version $latestVersion', style: AppStyles.bodySmall.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),
@@ -127,7 +145,7 @@ class UpdateChecker {
             actions: [
               if (!forceUpdate)
                 TextButton(
-                  onPressed: () => Navigator.of(dialogCtx).pop(),
+                  onPressed: () => Navigator.of(dialogCtx, rootNavigator: true).pop(),
                   child: const Text('Later', style: TextStyle(color: AppColors.textSecondary)),
                 ),
               ElevatedButton.icon(

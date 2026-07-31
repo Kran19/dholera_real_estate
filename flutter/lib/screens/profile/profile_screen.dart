@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../core/config/api_config.dart';
+import '../../core/network/update_checker.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_styles.dart';
@@ -93,11 +95,32 @@ class ProfileScreen extends StatelessWidget {
                   const Divider(height: 24.0, color: AppColors.border),
                   _buildProfileRow('Username', user?.username ?? '-', Icons.person_outline),
                   const Divider(height: 24.0, color: AppColors.border),
+                  _buildProfileRow('Installed App Version', 'v${ApiConfig.currentAppVersion}', Icons.system_update),
+                  const Divider(height: 24.0, color: AppColors.border),
                   _buildProfileRow('Account Status', user?.status.toUpperCase() ?? 'ACTIVE', Icons.verified_user_outlined),
                 ],
               ),
             ),
-            const SizedBox(height: 32.0),
+            const SizedBox(height: 20.0),
+
+            // Check for Updates Action Card
+            SizedBox(
+              width: double.infinity,
+              height: 50.0,
+              child: OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.primary,
+                  side: const BorderSide(color: AppColors.primary, width: 1.5),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                ),
+                icon: const Icon(Icons.refresh, color: AppColors.primary),
+                label: const Text('Check for Updates', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                onPressed: () {
+                  UpdateChecker.checkForUpdates(context, showNoUpdateToast: true);
+                },
+              ),
+            ),
+            const SizedBox(height: 16.0),
 
             // Logout Button
             SizedBox(
@@ -132,7 +155,7 @@ class ProfileScreen extends StatelessWidget {
             // Branding Image
             Image.asset(AppAssets.logo, height: 40.0, fit: BoxFit.contain),
             const SizedBox(height: 8.0),
-            Text('DHOLERA REAL ESTATE v1.0', style: AppStyles.bodySmall),
+            Text('DHOLERA REAL ESTATE v${ApiConfig.currentAppVersion}', style: AppStyles.bodySmall),
           ],
         ),
       ),
