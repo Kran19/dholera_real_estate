@@ -32,6 +32,14 @@ class InquiryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _isSuccess(dynamic successVal) {
+    if (successVal == null) return false;
+    if (successVal is bool) return successVal;
+    if (successVal is int) return successVal == 1;
+    if (successVal is String) return successVal.toLowerCase() == 'true' || successVal == '1';
+    return false;
+  }
+
   /// Fetch Inquiry List
   Future<void> fetchInquiries({int page = 1, String? search}) async {
     _isLoading = true;
@@ -54,7 +62,7 @@ class InquiryProvider extends ChangeNotifier {
 
       final response = await _apiClient.get(endpoint);
 
-      if (response['success'] == true && response['data'] != null) {
+      if (_isSuccess(response['success']) && response['data'] != null) {
         _errorMessage = null; // Clear error on success
         final rawList = response['data']['inquiries'] as List? ?? [];
         _inquiries = rawList
@@ -101,7 +109,7 @@ class InquiryProvider extends ChangeNotifier {
         },
       );
 
-      if (response['success'] == true) {
+      if (_isSuccess(response['success'])) {
         _errorMessage = null; // Clear error on success
         await fetchInquiries(page: 1);
         return true;
@@ -126,7 +134,7 @@ class InquiryProvider extends ChangeNotifier {
         body: {'id': id},
       );
 
-      if (response['success'] == true) {
+      if (_isSuccess(response['success'])) {
         _errorMessage = null;
         _inquiries.removeWhere((inq) => inq.id == id);
         _totalInquiries = (_totalInquiries - 1).clamp(0, 999999);

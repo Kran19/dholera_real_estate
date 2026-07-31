@@ -10,9 +10,9 @@ require_once __DIR__ . '/../../bootstrap.php';
 handleCorsPreflight();
 
 sendJsonResponse(true, "App version configuration retrieved.", [
-    "latest_version"      => "1.1.0",
+    "latest_version"      => "1.1.1",
     "min_required_version"=> "1.0.0",
     "apk_download_url"    => "https://emperorsmartsolutions.com/dholerarealestate/php/download_apk.php",
-    "update_message"      => "Version 1.1.0 is live! Added query token authentication to PDF export launcher, self-healing DB migrations, and 18MB APK performance.",
+    "update_message"      => "Version 1.1.1 is live! Fixed inquiry response success parsing, cleared false error screens, and optimized mobile performance.",
     "force_update"        => false
 ]);

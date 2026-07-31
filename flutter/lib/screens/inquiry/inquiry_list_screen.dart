@@ -336,7 +336,7 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
               Expanded(
                 child: provider.isLoading
                     ? const LoadingWidget(message: 'Loading Inquiries...')
-                    : (provider.errorMessage != null && provider.inquiries.isEmpty)
+                    : (provider.errorMessage != null && provider.errorMessage!.isNotEmpty && !provider.errorMessage!.toLowerCase().contains('success') && provider.inquiries.isEmpty)
                         ? Center(
                             child: Padding(
                               padding: const EdgeInsets.all(20.0),
