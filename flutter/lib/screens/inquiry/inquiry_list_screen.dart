@@ -39,13 +39,22 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
   Future<void> _makePhoneCall(String phoneNumber) async {
     final cleanNumber = phoneNumber.replaceAll(RegExp(r'[^\d+]'), '');
     final Uri launchUri = Uri(scheme: 'tel', path: cleanNumber);
-    if (await canLaunchUrl(launchUri)) {
-      await launchUrl(launchUri);
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Cannot make call to $phoneNumber')),
-        );
+    try {
+      if (await canLaunchUrl(launchUri)) {
+        await launchUrl(launchUri, mode: LaunchMode.externalApplication);
+      } else {
+        await launchUrl(launchUri);
+      }
+    } catch (_) {
+      // Fallback direct launch attempt
+      try {
+        await launchUrl(launchUri);
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Cannot launch phone dialer for $phoneNumber')),
+          );
+        }
       }
     }
   }
