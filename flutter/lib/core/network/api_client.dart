@@ -122,7 +122,8 @@ class ApiClient {
     try {
       jsonResponseBody = jsonDecode(response.body);
     } catch (_) {
-      throw ApiException('Invalid JSON response received from backend server.', statusCode: response.statusCode);
+      final String preview = response.body.length > 250 ? response.body.substring(0, 250) + '...' : response.body;
+      throw ApiException('Server error (HTTP ${response.statusCode}): $preview', statusCode: response.statusCode);
     }
 
     final bool success = jsonResponseBody['success'] == true;
