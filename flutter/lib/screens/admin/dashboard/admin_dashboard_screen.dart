@@ -7,9 +7,11 @@ import '../../../core/utils/ui_helpers.dart';
 import '../../../providers/auth_provider.dart';
 import '../../../providers/user_provider.dart';
 import '../../../providers/property_provider.dart';
+import '../../../providers/inquiry_provider.dart';
 import '../../users/user_list_screen.dart';
 import '../../properties/property_list_screen.dart';
 import '../../properties/add_edit_property_screen.dart';
+import '../../inquiry/inquiry_list_screen.dart';
 import '../../auth/login/login_screen.dart';
 
 /// Super Admin Dashboard Screen
@@ -33,6 +35,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   void _loadDashboardData() {
     Provider.of<UserProvider>(context, listen: false).fetchUsers(refresh: true);
     Provider.of<PropertyProvider>(context, listen: false).fetchProperties(refresh: true);
+    Provider.of<InquiryProvider>(context, listen: false).fetchInquiries();
   }
 
   @override
@@ -40,6 +43,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     final authProvider = Provider.of<AuthProvider>(context);
     final userProvider = Provider.of<UserProvider>(context);
     final propertyProvider = Provider.of<PropertyProvider>(context);
+    final inquiryProvider = Provider.of<InquiryProvider>(context);
 
     final currentUser = authProvider.currentUser;
 
@@ -133,7 +137,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     ),
                     const SizedBox(height: 4.0),
                     Text(
-                      'Manage properties, user permissions & system records.',
+                      'Manage properties, customer inquiries & user permissions.',
                       style: AppStyles.bodyMedium.copyWith(color: Colors.white70),
                     ),
                   ],
@@ -158,10 +162,10 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   const SizedBox(width: 12.0),
                   Expanded(
                     child: _buildMetricCard(
-                      title: 'Active Users',
-                      count: '${userProvider.users.where((u) => u.isActive).length}',
-                      icon: Icons.how_to_reg_outlined,
-                      color: AppColors.success,
+                      title: 'Inquiries',
+                      count: '${inquiryProvider.totalInquiries}',
+                      icon: Icons.mark_unread_chat_alt_outlined,
+                      color: Colors.purple,
                     ),
                   ),
                   const SizedBox(width: 12.0),
@@ -179,6 +183,20 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
 
               // Action Quick Cards
               Text('Management Actions', style: AppStyles.heading3),
+              const SizedBox(height: 16.0),
+
+              _buildActionCard(
+                title: 'Customer Inquiries',
+                subtitle: 'View customer inquiries, make direct calls & export PDF report',
+                icon: Icons.contact_phone_outlined,
+                badgeText: '${inquiryProvider.totalInquiries} Inquiries',
+                color: Colors.purple,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const InquiryListScreen()),
+                  );
+                },
+              ),
               const SizedBox(height: 16.0),
 
               _buildActionCard(

@@ -5,6 +5,7 @@ import 'core/constants/app_colors.dart';
 import 'providers/auth_provider.dart';
 import 'providers/user_provider.dart';
 import 'providers/property_provider.dart';
+import 'providers/inquiry_provider.dart';
 import 'screens/splash/splash_screen.dart';
 
 void main() {
@@ -25,6 +26,7 @@ class DholeraRealEstateApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => PropertyProvider()),
+        ChangeNotifierProvider(create: (_) => InquiryProvider()),
       ],
       child: MaterialApp(
         title: 'DHOLERA REAL ESTATE',

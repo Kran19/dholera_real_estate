@@ -5,7 +5,7 @@ import '../services/property_service.dart';
 
 /**
  * Property Management & Listing Provider State (Cross-Platform Web & Mobile)
- * DHOLERA REAL ESTATE
+ * DHOLERA REAL ESTATE — Infinite Scroll Pagination (10 Items per Page)
  */
 class PropertyProvider with ChangeNotifier {
   final PropertyService _propertyService = PropertyService();
@@ -36,6 +36,8 @@ class PropertyProvider with ChangeNotifier {
   String get zoneFilter => _zoneFilter;
   String get areaUnitFilter => _areaUnitFilter;
 
+  bool get hasMorePages => _currentPage < _totalPages;
+
   // Set Search Query
   void setSearchQuery(String query) {
     _searchQuery = query;
@@ -58,12 +60,13 @@ class PropertyProvider with ChangeNotifier {
     fetchProperties(refresh: true);
   }
 
+  /// Fetch Initial / Refreshed Properties (Page 1)
   Future<void> fetchProperties({bool refresh = false}) async {
     if (refresh) {
       _currentPage = 1;
       _isLoading = true;
     } else {
-      if (_currentPage >= _totalPages || _isFetchingMore) return;
+      if (_currentPage > _totalPages || _isFetchingMore) return;
       _isFetchingMore = true;
     }
 
@@ -73,7 +76,7 @@ class PropertyProvider with ChangeNotifier {
     try {
       final res = await _propertyService.fetchProperties(
         page: _currentPage,
-        limit: 20,
+        limit: 10, // 10 items per page pagination
         search: _searchQuery,
         villageName: _villageFilter,
         zone: _zoneFilter,
@@ -94,19 +97,22 @@ class PropertyProvider with ChangeNotifier {
         _totalProperties = pagination['total'] ?? _properties.length;
       }
 
-      if (!refresh) {
-        _currentPage++;
-      }
-
       _isLoading = false;
       _isFetchingMore = false;
       notifyListeners();
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = e.toString().replaceAll('ApiException: ', '');
       _isLoading = false;
       _isFetchingMore = false;
       notifyListeners();
     }
+  }
+
+  /// Auto-load Next Page on Scroll
+  Future<void> loadNextPage() async {
+    if (_isFetchingMore || _isLoading || !hasMorePages) return;
+    _currentPage++;
+    await fetchProperties(refresh: false);
   }
 
   Future<bool> createProperty({
@@ -139,7 +145,7 @@ class PropertyProvider with ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = e.toString().replaceAll('ApiException: ', '');
       notifyListeners();
       return false;
     }
@@ -177,7 +183,7 @@ class PropertyProvider with ChangeNotifier {
       await fetchProperties(refresh: true);
       return true;
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = e.toString().replaceAll('ApiException: ', '');
       notifyListeners();
       return false;
     }
@@ -191,7 +197,7 @@ class PropertyProvider with ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = e.toString().replaceAll('ApiException: ', '');
       notifyListeners();
       return false;
     }

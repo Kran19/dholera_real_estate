@@ -1,13 +1,13 @@
 <?php
-$latestVersion = '1.0.1';
-$versionConfigFile = __DIR__ . '/api/config/version.php';
-if (file_exists($versionConfigFile)) {
-    ob_start();
-    include $versionConfigFile;
-    $output = ob_get_clean();
-    $decoded = json_decode($output, true);
-    if (isset($decoded['data']['latest_version'])) {
-        $latestVersion = $decoded['data']['latest_version'];
+/**
+ * Dholera Real Estate — Official Landing & Download Page
+ */
+$latestVersion = '1.0.3';
+$versionFile = __DIR__ . '/api/config/version.php';
+if (file_exists($versionFile)) {
+    $content = file_get_contents($versionFile);
+    if (preg_match('/"latest_version"\s*=>\s*"([^"]+)"/', $content, $matches)) {
+        $latestVersion = $matches[1];
     }
 }
 ?>

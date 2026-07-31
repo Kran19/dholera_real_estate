@@ -16,7 +16,7 @@ try {
     $baseUrl = getBaseUrl();
 
     $page = max(1, (int)($_GET['page'] ?? 1));
-    $limit = min(100, max(1, (int)($_GET['limit'] ?? 20)));
+    $limit = min(100, max(1, (int)($_GET['limit'] ?? 10)));
     $offset = ($page - 1) * $limit;
 
     $search = trim($_GET['search'] ?? '');
