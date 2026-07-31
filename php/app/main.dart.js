@@ -8418,7 +8418,7 @@ k=g==null?"":g
 f=J.aA(m,"update_message")
 j=f==null?"A new version of Dholera Real Estate is available!":f
 i=J.d(J.aA(m,"force_update"),!0)
-if(A.b2D(l,"1.0.3")){if(a.e==null){s=1
+if(A.b2D(l,"1.0.4")){if(a.e==null){s=1
 break}A.b2E(k,a,i,l,j)}else if(d&&a.e!=null)a.ae(t.Pu).f.qM(B.Vx)
 p=2
 s=6
