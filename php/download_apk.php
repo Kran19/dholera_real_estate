@@ -11,6 +11,15 @@ if (!file_exists($apkPath)) {
     die("APK file not found on server.");
 }
 
+$latestVersion = '1.0.7';
+$versionFile = __DIR__ . '/api/config/version.php';
+if (file_exists($versionFile)) {
+    $content = file_get_contents($versionFile);
+    if (preg_match('/"latest_version"\s*=>\s*"([^"]+)"/', $content, $matches)) {
+        $latestVersion = $matches[1];
+    }
+}
+
 $fileSize = filesize($apkPath);
 
 // Clear output buffers to prevent corruption
@@ -20,7 +29,7 @@ if (ob_get_level()) {
 
 header('Content-Description: File Transfer');
 header('Content-Type: application/vnd.android.package-archive');
-header('Content-Disposition: attachment; filename="DholeraRealEstate-v1.0.4.apk"');
+header('Content-Disposition: attachment; filename="DholeraRealEstate-v' . $latestVersion . '.apk"');
 header('Content-Transfer-Encoding: binary');
 header('Expires: 0');
 header('Cache-Control: must-revalidate, post-check=0, pre-check=0');

@@ -4,6 +4,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_assets.dart';
 import '../../../core/constants/app_styles.dart';
 import '../../../core/utils/ui_helpers.dart';
+import '../../../core/network/update_checker.dart';
 import '../../../providers/auth_provider.dart';
 import '../../../providers/user_provider.dart';
 import '../../../providers/property_provider.dart';
@@ -29,6 +30,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadDashboardData();
+      UpdateChecker.checkForUpdates(context);
     });
   }
 
@@ -67,6 +69,13 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           ],
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.system_update_alt, color: Colors.white),
+            tooltip: 'Check Updates',
+            onPressed: () {
+              UpdateChecker.checkForUpdates(context, showNoUpdateToast: true);
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.logout, color: Colors.white),
             tooltip: 'Logout',
