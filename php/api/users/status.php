@@ -48,5 +48,5 @@ try {
 
 } catch (Exception $e) {
     error_log("User status update error: " . $e->getMessage());
-    sendJsonResponse(false, "Failed to update user status.", null, 500);
+    sendJsonResponse(false, "Failed to update user status: " . $e->getMessage(), null, 500);
 }

@@ -5,11 +5,7 @@
  * POST /api/auth/login.php
  */
 
-require_once __DIR__ . '/../../config/database.php';
-require_once __DIR__ . '/../../config/config.php';
-require_once __DIR__ . '/../../helpers/response.php';
-require_once __DIR__ . '/../../helpers/validation.php';
-require_once __DIR__ . '/../../helpers/auth.php';
+require_once __DIR__ . '/../../bootstrap.php';
 
 handleCorsPreflight();
 
@@ -63,5 +59,5 @@ try {
 
 } catch (Exception $e) {
     error_log("Login error: " . $e->getMessage());
-    sendJsonResponse(false, "An error occurred during login. Please try again.", null, 500);
+    sendJsonResponse(false, "An error occurred during login: " . $e->getMessage(), null, 500);
 }

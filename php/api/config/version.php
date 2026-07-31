@@ -5,7 +5,7 @@
  * GET /api/config/version.php
  */
 
-require_once __DIR__ . '/../../helpers/response.php';
+require_once __DIR__ . '/../../bootstrap.php';
 
 handleCorsPreflight();
 

@@ -53,5 +53,5 @@ try {
 
 } catch (Exception $e) {
     error_log("User list error: " . $e->getMessage());
-    sendJsonResponse(false, "Failed to retrieve user list.", null, 500);
+    sendJsonResponse(false, "Failed to retrieve user list: " . $e->getMessage(), null, 500);
 }
