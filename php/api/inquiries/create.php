@@ -44,7 +44,7 @@ $customerMobile = '+91 ' . $digits;
 try {
     $db = Database::getConnection();
 
-    // Auto-create inquiries table safely if it does not exist yet (without FK constraints to prevent lock errors)
+    // Auto-create inquiries table safely if missing
     $db->exec("
         CREATE TABLE IF NOT EXISTS inquiries (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -59,6 +59,12 @@ try {
             INDEX idx_inquiries_created_at (created_at)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     ");
+
+    // Self-healing: Ensure requirement column exists on live DB instances
+    $cols = $db->query("SHOW COLUMNS FROM inquiries LIKE 'requirement'")->fetch();
+    if (!$cols) {
+        $db->exec("ALTER TABLE inquiries ADD COLUMN requirement TEXT NULL AFTER customer_mobile;");
+    }
 
     $stmt = $db->prepare("
         INSERT INTO inquiries (customer_name, customer_city, customer_mobile, requirement, notes, created_by)

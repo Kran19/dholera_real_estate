@@ -8417,9 +8417,9 @@ k=f==null?"":f
 e=J.aA(m,"update_message")
 j=e==null?"A new version of Dholera Real Estate is available!":e
 i=J.d(J.aA(m,"force_update"),!0)
-A.a5_().$1("[UpdateChecker] Server: "+A.m(l)+", Installed: 1.0.8")
-if(A.b2G(l,"1.0.8")){if(a.e==null){s=1
-break}A.b2H(k,a,i,l,j)}else if(b&&a.e!=null)a.ae(t.Pu).f.n1(A.xk(null,null,null,B.K,null,B.E,null,A.aC("You are using the latest version (v1.0.8).",null,null,null,null,null,null),null,B.cX,null,null,null,null,null,null,null,null,null,null))
+A.a5_().$1("[UpdateChecker] Server: "+A.m(l)+", Installed: 1.0.9")
+if(A.b2G(l,"1.0.9")){if(a.e==null){s=1
+break}A.b2H(k,a,i,l,j)}else if(b&&a.e!=null)a.ae(t.Pu).f.n1(A.xk(null,null,null,B.K,null,B.E,null,A.aC("You are using the latest version (v1.0.9).",null,null,null,null,null,null),null,B.cX,null,null,null,null,null,null,null,null,null,null))
 p=2
 s=6
 break
@@ -48495,9 +48495,9 @@ f=g?m:k.a
 f=n.zq("Account ID","#"+(f==null?0:f),B.KH)
 s=g?m:k.b
 s=n.zq("Username",s==null?"-":s,B.ix)
-r=n.zq("Installed App Version","v1.0.8",B.Ko)
+r=n.zq("Installed App Version","v1.0.9",B.Ko)
 g=g?m:k.d.toUpperCase()
-return A.mM(j,B.bJ,A.tE(A.ck(A.b([h,B.cv,A.bq(m,A.ck(A.b([f,B.dm,s,B.dm,r,B.dm,n.zq("Account Status",g==null?"ACTIVE":g,B.KG)],o),B.u,B.q,B.r),B.m,m,m,new A.bp(B.f,m,q,i,m,m,B.G),m,m,m,B.bq,m,m,m),B.hb,A.cO(A.aOx(B.L0,B.a00,new A.akf(a),A.aOz(m,m,m,m,m,m,m,m,m,B.K,m,m,m,m,new A.c_(A.aZ(12),B.n),B.E3,m,m,m,m)),50,1/0),B.aU,A.cO(A.vJ(B.qK,B.a0p,new A.akg(a,l),A.m1(m,m,B.ch,m,m,m,m,m,m,m,m,m,m,m,new A.c_(A.aZ(12),B.n),m,m,m,m,m)),52,1/0),B.n2,A.Pu("assets/images/logo.png",B.hA,40),B.c4,A.aC("DHOLERA REAL ESTATE v1.0.8",m,m,m,$.q1(),m,m)],o),B.u,B.q,B.r),B.l_,m,B.Y),m)},
+return A.mM(j,B.bJ,A.tE(A.ck(A.b([h,B.cv,A.bq(m,A.ck(A.b([f,B.dm,s,B.dm,r,B.dm,n.zq("Account Status",g==null?"ACTIVE":g,B.KG)],o),B.u,B.q,B.r),B.m,m,m,new A.bp(B.f,m,q,i,m,m,B.G),m,m,m,B.bq,m,m,m),B.hb,A.cO(A.aOx(B.L0,B.a00,new A.akf(a),A.aOz(m,m,m,m,m,m,m,m,m,B.K,m,m,m,m,new A.c_(A.aZ(12),B.n),B.E3,m,m,m,m)),50,1/0),B.aU,A.cO(A.vJ(B.qK,B.a0p,new A.akg(a,l),A.m1(m,m,B.ch,m,m,m,m,m,m,m,m,m,m,m,new A.c_(A.aZ(12),B.n),m,m,m,m,m)),52,1/0),B.n2,A.Pu("assets/images/logo.png",B.hA,40),B.c4,A.aC("DHOLERA REAL ESTATE v1.0.9",m,m,m,$.q1(),m,m)],o),B.u,B.q,B.r),B.l_,m,B.Y),m)},
 zq(a,b,c){var s=null
 return A.bS(A.b([A.en(c,B.a0,s,20),B.dO,A.aC(a,s,s,s,$.ju().b1(B.a0),s,s),B.js,A.aC(b,s,s,s,$.aKU().Z2(B.a7),s,s)],t.p),B.u,B.q,B.r,0)}}
 A.akf.prototype={

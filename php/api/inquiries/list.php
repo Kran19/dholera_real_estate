@@ -31,6 +31,12 @@ try {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     ");
 
+    // Self-healing: Ensure requirement column exists on live DB instances
+    $cols = $db->query("SHOW COLUMNS FROM inquiries LIKE 'requirement'")->fetch();
+    if (!$cols) {
+        $db->exec("ALTER TABLE inquiries ADD COLUMN requirement TEXT NULL AFTER customer_mobile;");
+    }
+
     $page = max(1, (int)($_GET['page'] ?? 1));
     $limit = min(100, max(1, (int)($_GET['limit'] ?? 20)));
     $offset = ($page - 1) * $limit;
@@ -67,6 +73,7 @@ try {
 
     foreach ($inquiries as &$inq) {
         $inq['id'] = (int)$inq['id'];
+        $inq['requirement'] = $inq['requirement'] ?? '';
     }
 
     sendJsonResponse(true, "Inquiries retrieved successfully.", [
