@@ -198,10 +198,16 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(6.0),
               ),
-              child: Image.asset(AppAssets.logo, height: 26.0),
+              child: Image.asset(AppAssets.logo, height: 24.0),
             ),
-            const SizedBox(width: 12.0),
-            Text('DHOLERA REAL ESTATE', style: AppStyles.heading3.copyWith(color: Colors.white, fontSize: 16.0)),
+            const SizedBox(width: 8.0),
+            Expanded(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text('DHOLERA REAL ESTATE', style: AppStyles.heading3.copyWith(color: Colors.white, fontSize: 15.0)),
+              ),
+            ),
           ],
         ),
         actions: [
@@ -425,10 +431,10 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
                                             crossAxisSpacing: screenWidth < 600 ? 10.0 : 16.0,
                                             mainAxisSpacing: screenWidth < 600 ? 10.0 : 16.0,
                                             childAspectRatio: effectiveCols == 4
-                                                ? 0.72
+                                                ? 0.70
                                                 : effectiveCols == 2
-                                                    ? (screenWidth < 600 ? 0.68 : 0.85)
-                                                    : (screenWidth < 600 ? 0.95 : 1.3),
+                                                    ? (screenWidth < 600 ? 0.60 : 0.78)
+                                                    : (screenWidth < 600 ? 0.88 : 1.25),
                                           ),
                                           itemCount: propertyProvider.properties.length + (propertyProvider.isFetchingMore ? 1 : 0),
                                           itemBuilder: (context, index) {
@@ -441,6 +447,7 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
                                             return PropertyCard(
                                               property: property,
                                               isSuperAdmin: isSuperAdmin,
+                                              isCompact: effectiveCols > 1,
                                               onTap: () {
                                                 Navigator.of(context).push(
                                                   MaterialPageRoute(builder: (_) => PropertyDetailsScreen(propertyId: property.id)),

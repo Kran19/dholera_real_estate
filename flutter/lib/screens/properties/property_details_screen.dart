@@ -378,12 +378,26 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
 
   Widget _buildSpecRow(String title, String value, IconData icon) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Icon(icon, size: 20.0, color: AppColors.textSecondary),
         const SizedBox(width: 12.0),
-        Text(title, style: AppStyles.bodyMedium.copyWith(color: AppColors.textSecondary)),
-        const Spacer(),
-        Text(value, style: AppStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold)),
+        Expanded(
+          flex: 5,
+          child: Text(
+            title,
+            style: AppStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+          ),
+        ),
+        const SizedBox(width: 8.0),
+        Expanded(
+          flex: 5,
+          child: Text(
+            value,
+            textAlign: TextAlign.right,
+            style: AppStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+          ),
+        ),
       ],
     );
   }
