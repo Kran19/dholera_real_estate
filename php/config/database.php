@@ -37,12 +37,26 @@ foreach ($envPaths as $envPath) {
     }
 }
 
-// Define constants using $_ENV, $_SERVER, or getenv with Hostinger live fallbacks
-$dbHost = $_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? (getenv('DB_HOST') ?: 'localhost');
-$dbName = $_ENV['DB_NAME'] ?? $_SERVER['DB_NAME'] ?? (getenv('DB_NAME') ?: 'u362391755_dhorelareal');
-$dbUser = $_ENV['DB_USER'] ?? $_SERVER['DB_USER'] ?? (getenv('DB_USER') ?: 'u362391755_dholerareal');
-$dbPass = $_ENV['DB_PASS'] ?? $_SERVER['DB_PASS'] ?? (getenv('DB_PASS') !== false ? getenv('DB_PASS') : 'Emperor@Admin07');
-$dbPort = $_ENV['DB_PORT'] ?? $_SERVER['DB_PORT'] ?? (getenv('DB_PORT') ?: '3306');
+// Smart Environment Detection (Hostinger Live vs Local WAMP)
+$isLiveServer = (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'emperorsmartsolutions.com') !== false)
+    || file_exists(__DIR__ . '/../.env')
+    || (isset($_SERVER['SERVER_NAME']) && strpos($_SERVER['SERVER_NAME'], 'emperorsmartsolutions') !== false);
+
+if ($isLiveServer) {
+    $dbHost = getenv('DB_HOST') ?: ($_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? 'localhost');
+    $dbName = getenv('DB_NAME') ?: ($_ENV['DB_NAME'] ?? $_SERVER['DB_NAME'] ?? 'u362391755_dhorelareal');
+    $dbUser = getenv('DB_USER') ?: ($_ENV['DB_USER'] ?? $_SERVER['DB_USER'] ?? 'u362391755_dholerareal');
+    $dbPass = getenv('DB_PASS') !== false && getenv('DB_PASS') !== '' 
+        ? getenv('DB_PASS') 
+        : ($_ENV['DB_PASS'] ?? $_SERVER['DB_PASS'] ?? 'Emperor@Admin07');
+    $dbPort = getenv('DB_PORT') ?: ($_ENV['DB_PORT'] ?? $_SERVER['DB_PORT'] ?? '3306');
+} else {
+    $dbHost = 'localhost';
+    $dbName = 'dholera_realestate';
+    $dbUser = 'root';
+    $dbPass = '';
+    $dbPort = '3306';
+}
 
 if (!defined('DB_HOST')) define('DB_HOST', $dbHost);
 if (!defined('DB_NAME')) define('DB_NAME', $dbName);
