@@ -8,6 +8,8 @@ import '../../providers/inquiry_provider.dart';
 import '../../models/inquiry_model.dart';
 import '../../widgets/loading_widget.dart';
 
+import '../../core/storage/secure_storage_service.dart';
+
 /**
  * Customer Inquiry Management Screen (Super Admin Only)
  * DHOLERA REAL ESTATE — Name, City, Mobile (+91 default, 10 digits validation), Requirement + Direct Call & PDF Export
@@ -60,14 +62,23 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
   }
 
   Future<void> _exportPdfReport() async {
-    final Uri exportUri = Uri.parse('${ApiConfig.baseUrl}${ApiConfig.inquiryExportPdf}');
-    if (await canLaunchUrl(exportUri)) {
-      await launchUrl(exportUri, mode: LaunchMode.externalApplication);
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not launch PDF export page.')),
-        );
+    final token = await SecureStorageService.getToken();
+    final Uri exportUri = Uri.parse('${ApiConfig.baseUrl}${ApiConfig.inquiryExportPdf}?token=${token ?? ''}');
+    try {
+      if (await canLaunchUrl(exportUri)) {
+        await launchUrl(exportUri, mode: LaunchMode.externalApplication);
+      } else {
+        await launchUrl(exportUri);
+      }
+    } catch (_) {
+      try {
+        await launchUrl(exportUri);
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Could not launch PDF export page.')),
+          );
+        }
       }
     }
   }
