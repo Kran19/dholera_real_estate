@@ -1,3 +1,16 @@
+<?php
+$latestVersion = '1.0.1';
+$versionConfigFile = __DIR__ . '/api/config/version.php';
+if (file_exists($versionConfigFile)) {
+    ob_start();
+    include $versionConfigFile;
+    $output = ob_get_clean();
+    $decoded = json_decode($output, true);
+    if (isset($decoded['data']['latest_version'])) {
+        $latestVersion = $decoded['data']['latest_version'];
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -267,7 +280,7 @@
                 <img src="app/assets/assets/images/logo.png" alt="Dholera Logo" onerror="this.src='app/favicon.png'">
                 <span class="brand-name">DHOLERA REAL ESTATE</span>
             </a>
-            <div class="status-badge">Official Release v1.0.0</div>
+            <div class="status-badge">Official Release v<?php echo htmlspecialchars($latestVersion); ?></div>
         </div>
     </header>
 
@@ -281,7 +294,7 @@
         <div class="actions-box">
             <a href="app-release.apk" class="btn btn-download">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Download Android App (APK)
+                Download Android App (v<?php echo htmlspecialchars($latestVersion); ?>)
             </a>
             <a href="app/" class="btn btn-portal">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
