@@ -10,9 +10,16 @@
  */
 
 // Load .env configuration file if present
-$envPaths = [__DIR__ . '/../.env', __DIR__ . '/../../.env'];
+$envPaths = [
+    __DIR__ . '/../.env',
+    __DIR__ . '/../../.env',
+    dirname(__DIR__) . '/.env',
+    $_SERVER['DOCUMENT_ROOT'] . '/.env',
+    $_SERVER['DOCUMENT_ROOT'] . '/dholerarealestate/php/.env'
+];
+
 foreach ($envPaths as $envPath) {
-    if (file_exists($envPath)) {
+    if (!empty($envPath) && file_exists($envPath)) {
         $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         foreach ($lines as $line) {
             $line = trim($line);
@@ -30,11 +37,11 @@ foreach ($envPaths as $envPath) {
     }
 }
 
-// Define constants using $_ENV, $_SERVER, or getenv for FastCGI & Hostinger compatibility
+// Define constants using $_ENV, $_SERVER, or getenv with Hostinger live fallbacks
 $dbHost = $_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? (getenv('DB_HOST') ?: 'localhost');
-$dbName = $_ENV['DB_NAME'] ?? $_SERVER['DB_NAME'] ?? (getenv('DB_NAME') ?: 'dholera_realestate');
-$dbUser = $_ENV['DB_USER'] ?? $_SERVER['DB_USER'] ?? (getenv('DB_USER') ?: 'root');
-$dbPass = $_ENV['DB_PASS'] ?? $_SERVER['DB_PASS'] ?? (getenv('DB_PASS') !== false ? getenv('DB_PASS') : '');
+$dbName = $_ENV['DB_NAME'] ?? $_SERVER['DB_NAME'] ?? (getenv('DB_NAME') ?: 'u362391755_dhorelareal');
+$dbUser = $_ENV['DB_USER'] ?? $_SERVER['DB_USER'] ?? (getenv('DB_USER') ?: 'u362391755_dholerareal');
+$dbPass = $_ENV['DB_PASS'] ?? $_SERVER['DB_PASS'] ?? (getenv('DB_PASS') !== false ? getenv('DB_PASS') : 'Emperor@Admin07');
 $dbPort = $_ENV['DB_PORT'] ?? $_SERVER['DB_PORT'] ?? (getenv('DB_PORT') ?: '3306');
 
 if (!defined('DB_HOST')) define('DB_HOST', $dbHost);
