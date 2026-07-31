@@ -1,28 +1,38 @@
 # PROJECT STATUS — DHOLERA REAL ESTATE
 
-**Current Phase:** Phase 9 & 10 — Folder Restructuring & Production Readiness  
-**Status:** ✅ Fully Restructured Top-Level Folders (`flutter/` & `php/`)  
+**Current Phase:** Phase 10 — Hostinger Live Production Deployment  
+**Status:** 🚀 **100% LIVE & OPERATIONAL**  
 **Last Updated:** 2026-07-31  
+
+---
+
+## 🌐 Live Application Endpoints
+
+- 🌐 **Live Web Application:** [https://emperorsmartsolutions.com/dholerarealestate/php/app/](https://emperorsmartsolutions.com/dholerarealestate/php/app/)
+- 📱 **Direct Android APK Download:** [https://emperorsmartsolutions.com/dholerarealestate/php/app-release.apk](https://emperorsmartsolutions.com/dholerarealestate/php/app-release.apk)
+- ⚡ **REST API Health Check:** [https://emperorsmartsolutions.com/dholerarealestate/php/api/health.php](https://emperorsmartsolutions.com/dholerarealestate/php/api/health.php)
+- 🛠️ **Live DB Diagnostic Tool:** [https://emperorsmartsolutions.com/dholerarealestate/php/test.php](https://emperorsmartsolutions.com/dholerarealestate/php/test.php)
 
 ---
 
 ## 📂 Repository Directory Layout
 
-```
+```text
 dholera_real_estate/
-├── php/                  <-- CORE PHP BACKEND (Upload this folder to Hostinger)
-│   ├── api/              <-- REST API Endpoints
-│   ├── config/           <-- DB & system settings
+├── php/                  <-- CORE PHP BACKEND & DEPLOYMENT ROOT
+│   ├── api/              <-- REST API Endpoints & Health Checks
+│   ├── app/              <-- Production Flutter Web Application
+│   ├── config/           <-- Database PDO & Env handling
 │   ├── database/         <-- Schema & Seeder
 │   ├── helpers/          <-- Response & Upload helpers
 │   ├── middleware/       <-- Auth & Admin RBAC
 │   └── uploads/          <-- Property images directory
-├── flutter/              <-- FLUTTER MOBILE APP
+├── flutter/              <-- FLUTTER MOBILE APP SOURCE
 │   ├── lib/              <-- Dart code (Models, Providers, Screens, Widgets)
 │   ├── assets/           <-- Official Logo asset
 │   └── pubspec.yaml      <-- App manifest & dependencies
 └── docs/                 <-- PROJECT DOCUMENTATION
-    └── HOSTINGER_DEPLOYMENT.md <-- Hostinger Shared Hosting Deployment Guide
+    └── DEPLOYMENT_GUIDE.md <-- Live Deployment Architecture & Log
 ```
 
 ---
@@ -41,13 +51,13 @@ dholera_real_estate/
 | **7** | **User Property Browsing & Photo Gallery** | ✅ COMPLETED |
 | **8** | **Server-Side Search, Filter & Pagination** | ✅ COMPLETED |
 | **9** | **QA Testing & Security Verification** | ✅ VERIFIED & CLEAN BUILD |
-| **10** | **Production Readiness & Hostinger Deployment Guide** | ✅ COMPLETED ([docs/HOSTINGER_DEPLOYMENT.md](file:///c:/Users/Admin/Desktop/projects/APPLICATIONS/dholera_real_estate/docs/HOSTINGER_DEPLOYMENT.md)) |
+| **10** | **Production Readiness & Live Hostinger SSH Deployment** | 🚀 **100% LIVE** ([docs/DEPLOYMENT_GUIDE.md](file:///c:/Users/Admin/Desktop/projects/APPLICATIONS/dholera_real_estate/docs/DEPLOYMENT_GUIDE.md)) |
 
 ---
 
 ## Active Documentation Index
 - [docs/README.md](file:///c:/Users/Admin/Desktop/projects/APPLICATIONS/dholera_real_estate/docs/README.md)
-- [docs/HOSTINGER_DEPLOYMENT.md](file:///c:/Users/Admin/Desktop/projects/APPLICATIONS/dholera_real_estate/docs/HOSTINGER_DEPLOYMENT.md)
+- [docs/DEPLOYMENT_GUIDE.md](file:///c:/Users/Admin/Desktop/projects/APPLICATIONS/dholera_real_estate/docs/DEPLOYMENT_GUIDE.md)
 - [docs/PROJECT_MEMORY.md](file:///c:/Users/Admin/Desktop/projects/APPLICATIONS/dholera_real_estate/docs/PROJECT_MEMORY.md)
 - [docs/ARCHITECTURE.md](file:///c:/Users/Admin/Desktop/projects/APPLICATIONS/dholera_real_estate/docs/ARCHITECTURE.md)
 - [docs/DATABASE_SCHEMA.md](file:///c:/Users/Admin/Desktop/projects/APPLICATIONS/dholera_real_estate/docs/DATABASE_SCHEMA.md)
