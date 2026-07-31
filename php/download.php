@@ -3,111 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download Dholera Real Estate App | Official Mobile & Web Portal</title>
-    <meta name="description" content="Download the official Dholera Real Estate Android Mobile App or access the live web portal for Dholera SIR property listings, survey numbers, and zone plots.">
+    <title>Dholera Real Estate — Official Mobile App & Web Portal</title>
+    <meta name="description" content="Official Property Management & Listing Platform for Dholera SIR. Download the Android app or access the live web portal.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #090d16;
-            --bg-card: #131b2e;
-            --bg-card-hover: #1a253e;
-            --primary: #10b981;
-            --primary-glow: rgba(16, 185, 129, 0.35);
-            --primary-accent: #059669;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: rgba(255, 255, 255, 0.08);
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --navy-dark: #0f172a;
+            --navy-primary: #1e3a8a;
+            --emerald-primary: #047857;
+            --emerald-hover: #065f46;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border-light: #e2e8f0;
+            --shadow-classic: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+            background-color: var(--bg-body);
+            color: var(--text-dark);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            background-image: 
-                radial-gradient(circle at 15% 20%, rgba(16, 185, 129, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 85% 80%, rgba(59, 130, 246, 0.12) 0%, transparent 45%);
-            overflow-x: hidden;
         }
 
+        /* Top Navigation Header */
         header {
             width: 100%;
-            max-width: 1200px;
-            padding: 2rem 1.5rem;
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--border-light);
+            padding: 1.2rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .logo-box {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            text-decoration: none;
-            color: var(--text-main);
-        }
-
-        .logo-img {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px var(--primary-glow);
-        }
-
-        .logo-text {
-            font-size: 1.25rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .badge-live {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--primary);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            padding: 0.35rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .badge-live::before {
-            content: '';
-            width: 7px;
-            height: 7px;
-            background-color: var(--primary);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--primary);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(0.95); opacity: 0.8; }
-            50% { transform: scale(1.2); opacity: 1; }
-            100% { transform: scale(0.95); opacity: 0.8; }
-        }
-
-        main {
+        .header-container {
+            max-width: 1100px;
             width: 100%;
-            max-width: 1000px;
-            padding: 2rem 1.5rem;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .brand-logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .brand-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--navy-dark);
+            letter-spacing: -0.3px;
+        }
+
+        .status-badge {
+            background-color: #f0fdf4;
+            color: var(--emerald-primary);
+            border: 1px solid #bbf7d0;
+            padding: 0.35rem 0.85rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Main Hero Section */
+        main {
+            max-width: 900px;
+            width: 100%;
+            padding: 3.5rem 1.5rem;
             text-align: center;
             flex: 1;
             display: flex;
@@ -116,135 +104,157 @@
             justify-content: center;
         }
 
-        .hero-tag {
-            color: var(--primary);
-            font-size: 0.9rem;
-            font-weight: 600;
+        .hero-category {
+            color: var(--navy-primary);
+            font-size: 0.85rem;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 1px;
             margin-bottom: 1rem;
         }
 
         h1 {
-            font-size: 3rem;
+            font-size: 2.6rem;
             font-weight: 800;
-            line-height: 1.15;
+            color: var(--navy-dark);
+            line-height: 1.25;
             margin-bottom: 1.2rem;
-            background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
         }
 
-        p.subtitle {
-            font-size: 1.15rem;
+        p.hero-subtitle {
+            font-size: 1.1rem;
             color: var(--text-muted);
-            max-width: 650px;
-            margin-bottom: 2.5rem;
             line-height: 1.6;
+            max-width: 680px;
+            margin-bottom: 2.5rem;
         }
 
-        .download-actions {
+        /* Action Buttons Box */
+        .actions-box {
             display: flex;
             flex-wrap: wrap;
-            gap: 1.2rem;
+            gap: 1rem;
             justify-content: center;
-            margin-bottom: 3rem;
             width: 100%;
-            max-width: 550px;
+            max-width: 520px;
+            margin-bottom: 3.5rem;
         }
 
         .btn {
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            padding: 1rem 1.8rem;
-            border-radius: 14px;
-            font-size: 1.05rem;
-            font-weight: 700;
+            padding: 0.95rem 1.8rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
             text-decoration: none;
-            transition: all 0.25s ease;
+            transition: all 0.2s ease;
             cursor: pointer;
             flex: 1;
-            min-width: 240px;
+            min-width: 230px;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-accent) 100%);
+        .btn-download {
+            background-color: var(--emerald-primary);
             color: #ffffff;
-            box-shadow: 0 10px 25px var(--primary-glow);
-            border: none;
+            border: 1px solid var(--emerald-primary);
+            box-shadow: var(--shadow-classic);
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px var(--primary-glow);
+        .btn-download:hover {
+            background-color: var(--emerald-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
         }
 
-        .btn-secondary {
-            background: var(--bg-card);
-            color: var(--text-main);
-            border: 1px solid var(--border);
+        .btn-portal {
+            background-color: #ffffff;
+            color: var(--navy-dark);
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-classic);
         }
 
-        .btn-secondary:hover {
-            background: var(--bg-card-hover);
-            transform: translateY(-2px);
-            border-color: rgba(255, 255, 255, 0.2);
+        .btn-portal:hover {
+            background-color: #f1f5f9;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
         }
 
-        .features-grid {
+        /* Feature Cards Grid */
+        .features-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 1.5rem;
             width: 100%;
-            margin-top: 1rem;
-        }
-
-        .feature-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 1.5rem;
             text-align: left;
-            transition: transform 0.2s ease;
         }
 
-        .feature-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(16, 185, 129, 0.3);
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 1.8rem;
+            box-shadow: var(--shadow-classic);
+            transition: all 0.2s ease;
         }
 
-        .feature-icon {
-            font-size: 2rem;
-            margin-bottom: 0.8rem;
+        .card:hover {
+            box-shadow: var(--shadow-hover);
+            border-color: #cbd5e1;
         }
 
-        .feature-title {
+        .card-icon-box {
+            width: 48px;
+            height: 48px;
+            background-color: #f1f5f9;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.2rem;
+            font-size: 1.5rem;
+        }
+
+        .card-title {
             font-size: 1.1rem;
             font-weight: 700;
-            margin-bottom: 0.4rem;
+            color: var(--navy-dark);
+            margin-bottom: 0.5rem;
         }
 
-        .feature-desc {
-            font-size: 0.9rem;
+        .card-desc {
+            font-size: 0.92rem;
             color: var(--text-muted);
-            line-height: 1.5;
+            line-height: 1.55;
         }
 
+        /* Footer */
         footer {
             width: 100%;
-            padding: 2rem 1.5rem;
+            background-color: #ffffff;
+            border-top: 1px solid var(--border-light);
+            padding: 1.8rem 1.5rem;
             text-align: center;
             color: var(--text-muted);
-            font-size: 0.85rem;
-            border-top: 1px solid var(--border);
-            margin-top: 3rem;
+            font-size: 0.88rem;
         }
 
-        @media (max-width: 768px) {
-            h1 { font-size: 2.2rem; }
-            p.subtitle { font-size: 1rem; }
+        footer a {
+            color: var(--navy-primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 640px) {
+            h1 { font-size: 2rem; }
+            main { padding: 2.5rem 1.2rem; }
             .btn { width: 100%; }
         }
     </style>
@@ -252,52 +262,54 @@
 <body>
 
     <header>
-        <a href="#" class="logo-box">
-            <img src="app/assets/assets/images/logo.png" alt="Dholera Logo" class="logo-img" onerror="this.src='app/favicon.png'">
-            <span class="logo-text">DHOLERA REAL ESTATE</span>
-        </a>
-        <div class="badge-live">v1.0.0 Production Live</div>
+        <div class="header-container">
+            <a href="#" class="brand-logo">
+                <img src="app/assets/assets/images/logo.png" alt="Dholera Logo" onerror="this.src='app/favicon.png'">
+                <span class="brand-name">DHOLERA REAL ESTATE</span>
+            </a>
+            <div class="status-badge">Official Release v1.0.0</div>
+        </div>
     </header>
 
     <main>
-        <div class="hero-tag">Official Mobile & Web Platform</div>
-        <h1>Manage & Explore Dholera SIR Properties Effortlessly</h1>
-        <p class="subtitle">
-            Access verified real estate plots, survey numbers, TP/FP designations, and high-resolution photo galleries. Download the Android app for your phone or launch the web portal directly.
+        <div class="hero-category">Dholera SIR Property Portal</div>
+        <h1>Real Estate Property Management & Land Directory</h1>
+        <p class="hero-subtitle">
+            Access verified real estate plots, survey numbers, TP/FP zone details, and property photo galleries across Dholera Special Investment Region.
         </p>
 
-        <div class="download-actions">
-            <a href="app-release.apk" class="btn btn-primary">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <div class="actions-box">
+            <a href="app-release.apk" class="btn btn-download">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 Download Android App (APK)
             </a>
-            <a href="app/" class="btn btn-secondary">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                Launch Web App Portal
+            <a href="app/" class="btn btn-portal">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                Launch Web Portal
             </a>
         </div>
 
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">🏘️</div>
-                <div class="feature-title">Verified Land Listings</div>
-                <div class="feature-desc">Filter plots by village name, survey number, zone designation, and plot area in Sq Yard or Bigha.</div>
+        <div class="features-container">
+            <div class="card">
+                <div class="card-icon-box">🏛️</div>
+                <div class="card-title">Verified Land Listings</div>
+                <div class="card-desc">Filter plots by village name, survey number, zone designation, and plot area measurements in Sq Yard or Bigha.</div>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon">📱</div>
-                <div class="feature-title">Responsive Layout Grid</div>
-                <div class="feature-desc">Switch seamlessly between 1-column detail views and 2-column compact grid layouts on your mobile.</div>
+            <div class="card">
+                <div class="card-icon-box">📱</div>
+                <div class="card-title">Responsive Mobile Layout</div>
+                <div class="card-desc">Switch between single-column detailed view and multi-column grid view optimized for all mobile screens.</div>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon">🔄</div>
-                <div class="feature-title">Auto In-App Updates</div>
-                <div class="feature-desc">Get automatic mobile notifications whenever new features, screens, or listings are released.</div>
+            <div class="card">
+                <div class="card-icon-box">🔒</div>
+                <div class="card-title">Role-Based Access</div>
+                <div class="card-desc">Secure JWT session management for Super Admin administration and authorized user access.</div>
             </div>
         </div>
     </main>
 
     <footer>
-        &copy; <?php echo date('Y'); ?> Dholera Real Estate. All rights reserved. | <a href="api/health.php" style="color: var(--primary); text-decoration: none;">API Health Check</a>
+        &copy; <?php echo date('Y'); ?> Dholera Real Estate. All rights reserved. | <a href="api/health.php">System Health Check</a>
     </footer>
 
 </body>
