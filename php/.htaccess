@@ -1,0 +1,19 @@
+# Apache Configuration for Core PHP REST API
+# DHOLERA REAL ESTATE
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Preserve Authorization HTTP Header across Apache and PHP CGI/FPM
+    RewriteCond %{HTTP:Authorization} ^(.*)
+    RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+</IfModule>
+
+# Disable Directory Browsing
+Options -Indexes
+
+# Security Headers
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+</IfModule>

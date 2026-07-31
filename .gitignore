@@ -1,0 +1,50 @@
+# Environment Files & Secrets
+.env
+*.env
+
+# Uploads & User Media (Keep directory structure & .htaccess)
+php/uploads/properties/*
+!php/uploads/properties/.htaccess
+!php/uploads/properties/index.html
+
+# Large Compiled Release Artifacts (Hostinger App output & APKs)
+php/app/*
+!php/app/index.html
+php/app-release.apk
+
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+
+# IDE Configuration
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/
+
+# Flutter / Dart Build Files
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+build/
+**/build/
+/coverage/
+
+# Android Studio build artifacts
+/android/app/debug
+/android/app/profile
+/android/app/release

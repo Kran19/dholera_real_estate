@@ -1,0 +1,9 @@
+# Apache 2.4 Upload Directory Security Configuration
+# Prevent PHP execution while allowing static images
+<FilesMatch "\.(php|phtml|exe|pl|cgi)$">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "\.(jpg|jpeg|png|gif|webp|svg)$">
+    Require all granted
+</FilesMatch>
