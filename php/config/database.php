@@ -38,9 +38,11 @@ foreach ($envPaths as $envPath) {
 }
 
 // Smart Environment Detection (Hostinger Live vs Local WAMP)
-$isLiveServer = (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'emperorsmartsolutions.com') !== false)
-    || file_exists(__DIR__ . '/../.env')
-    || (isset($_SERVER['SERVER_NAME']) && strpos($_SERVER['SERVER_NAME'], 'emperorsmartsolutions') !== false);
+$isLiveServer = file_exists(__DIR__ . '/../.env')
+    || file_exists(__DIR__ . '/../../.env')
+    || (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'emperorsmartsolutions.com') !== false)
+    || (isset($_SERVER['SERVER_NAME']) && strpos($_SERVER['SERVER_NAME'], 'emperorsmartsolutions') !== false)
+    || (strpos(__DIR__, 'emperorsmartsolutions') !== false || strpos(__DIR__, 'u362391755') !== false);
 
 if ($isLiveServer) {
     $dbHost = getenv('DB_HOST') ?: ($_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? 'localhost');
