@@ -17,11 +17,10 @@ if ($propertyId <= 0) {
 try {
     $db = Database::getConnection();
 
-    // Fetch property details
+    // Fetch property details safely without non-existent table joins
     $stmt = $db->prepare("
-        SELECT p.*, c.name as category_name, u.username as creator_name
+        SELECT p.*, u.username as creator_name
         FROM properties p
-        LEFT JOIN categories c ON c.id = p.category_id
         LEFT JOIN users u ON u.id = p.created_by
         WHERE p.id = :id
     ");
@@ -33,7 +32,7 @@ try {
     }
 
     // Fetch property images
-    $imgStmt = $db->prepare("SELECT image_url FROM property_images WHERE property_id = :id ORDER BY is_featured DESC, id ASC");
+    $imgStmt = $db->prepare("SELECT image_url FROM property_images WHERE property_id = :id ORDER BY id ASC");
     $imgStmt->execute([':id' => $propertyId]);
     $images = $imgStmt->fetchAll(PDO::FETCH_COLUMN);
 
@@ -43,10 +42,11 @@ try {
     $imageUrlList = [];
     if (!empty($images)) {
         foreach ($images as $img) {
-            if (strpos($img, 'http') === 0) {
+            if (preg_match('#^https?://#i', $img)) {
                 $imageUrlList[] = $img;
             } else {
-                $imageUrlList[] = $baseUrl . '/' . ltrim($img, '/');
+                $cleanPath = preg_replace('#^php/#', '', ltrim($img, '/'));
+                $imageUrlList[] = $baseUrl . '/' . $cleanPath;
             }
         }
     } else {
@@ -57,15 +57,17 @@ try {
     $sideImage1 = $imageUrlList[1] ?? $mainImage;
     $sideImage2 = $imageUrlList[2] ?? $sideImage1;
 
-    // Format Price
-    $priceVal = (float)$property['price'];
-    if ($priceVal >= 10000000) {
-        $formattedPrice = '₹ ' . number_format($priceVal / 10000000, 2) . ' Cr';
-    } else if ($priceVal >= 100000) {
-        $formattedPrice = '₹ ' . number_format($priceVal / 100000, 2) . ' Lakh';
-    } else {
-        $formattedPrice = '₹ ' . number_format($priceVal);
-    }
+    $villageName = htmlspecialchars($property['village_name'] ?? 'Dholera');
+    $surveyNo = htmlspecialchars($property['survey_no'] ?? '-');
+    $zone = htmlspecialchars($property['zone'] ?? 'General Zone');
+    $tp = !empty($property['tp']) ? htmlspecialchars($property['tp']) : '-';
+    $fp = !empty($property['fp']) ? htmlspecialchars($property['fp']) : '-';
+    $road = !empty($property['road']) ? htmlspecialchars($property['road']) : 'Main Road Touch';
+    $area = number_format((float)($property['area'] ?? 0), 2);
+    $areaUnit = htmlspecialchars($property['area_unit'] ?? 'Sq Yard');
+    $reference = !empty($property['reference']) ? htmlspecialchars($property['reference']) : 'N/A';
+
+    $displayTitle = "$villageName Plot (Survey No: $surveyNo)";
 
     header("Content-Type: text/html; charset=UTF-8");
     ?>
@@ -74,7 +76,7 @@ try {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title><?php echo htmlspecialchars($property['title']); ?> — Property Brochure</title>
+        <title><?php echo $displayTitle; ?> — Property Brochure</title>
         <style>
             @page { size: A4 portrait; margin: 0; }
             * { box-sizing: border-box; -webkit-print-color-adjust: exact; }
@@ -93,7 +95,7 @@ try {
             .property-location { font-size: 13px; color: #64748b; display: flex; align-items: center; gap: 6px; }
             .price-tag { text-align: right; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 10px 18px; border-radius: 12px; }
             .price-label { font-size: 10px; color: #166534; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
-            .price-amount { font-size: 22px; font-weight: 900; color: #15803d; margin-top: 2px; }
+            .price-amount { font-size: 20px; font-weight: 900; color: #15803d; margin-top: 2px; }
             .specs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0; }
             .spec-card { background: #f1f5f9; padding: 12px; border-radius: 10px; border-left: 3px solid #1e3a8a; }
             .spec-label { font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: 600; }
@@ -118,14 +120,14 @@ try {
         </style>
     </head>
     <body>
-        <div class="print-bar" onclick="window.print()">🖨️ Click Here to Print or Save as PDF</div>
+        <div class="print-bar" onclick="window.print()">🖨️ Click Here to Print or Save as PDF Brochure</div>
         <div class="brochure-container">
             <div class="header">
                 <div class="brand-logo">
                     <div class="brand-logo-icon">🏢</div>
                     <div>
                         <div class="brand-name">DHOLERA REAL ESTATE</div>
-                        <div class="brand-tagline">Official Property Brochure</div>
+                        <div class="brand-tagline">Official Property Catalogue Brochure</div>
                     </div>
                 </div>
                 <div class="contact-pill">
@@ -136,34 +138,34 @@ try {
             <div class="content">
                 <div class="property-meta-row">
                     <div>
-                        <span class="badge"><?php echo htmlspecialchars($property['category_name'] ?? 'Property'); ?> • Dholera SIR</span>
-                        <h1 class="property-title"><?php echo htmlspecialchars($property['title']); ?></h1>
+                        <span class="badge"><?php echo $zone; ?> • Dholera SIR</span>
+                        <h1 class="property-title"><?php echo $displayTitle; ?></h1>
                         <div class="property-location">
-                            📍 <?php echo htmlspecialchars($property['location']); ?>
+                            📍 Village: <?php echo $villageName; ?> | Zone: <?php echo $zone; ?> | Dholera SIR
                         </div>
                     </div>
                     <div class="price-tag">
-                        <div class="price-label">Asking Price</div>
-                        <div class="price-amount"><?php echo $formattedPrice; ?></div>
+                        <div class="price-label">Property Code</div>
+                        <div class="price-amount">#DRE-<?php echo $property['id']; ?></div>
                     </div>
                 </div>
 
                 <div class="specs-grid">
                     <div class="spec-card">
-                        <div class="spec-label">Plot / Built Area</div>
-                        <div class="spec-value"><?php echo htmlspecialchars($property['size']); ?></div>
+                        <div class="spec-label">Plot / Area</div>
+                        <div class="spec-value"><?php echo $area . ' ' . $areaUnit; ?></div>
                     </div>
                     <div class="spec-card">
-                        <div class="spec-label">Road Width</div>
-                        <div class="spec-value"><?php echo htmlspecialchars($property['road_width'] ?? 'Main Road Touch'); ?></div>
+                        <div class="spec-label">Road Touch</div>
+                        <div class="spec-value"><?php echo $road; ?></div>
                     </div>
                     <div class="spec-card">
-                        <div class="spec-label">Zoning / Type</div>
-                        <div class="spec-value"><?php echo htmlspecialchars($property['category_name'] ?? 'General'); ?></div>
+                        <div class="spec-label">TP / FP No.</div>
+                        <div class="spec-value">TP: <?php echo $tp; ?> | FP: <?php echo $fp; ?></div>
                     </div>
                     <div class="spec-card">
-                        <div class="spec-label">Property ID</div>
-                        <div class="spec-value">#DRE-<?php echo $property['id']; ?></div>
+                        <div class="spec-label">Survey No.</div>
+                        <div class="spec-value"><?php echo $surveyNo; ?></div>
                     </div>
                 </div>
 
@@ -177,19 +179,24 @@ try {
 
                 <div class="details-section">
                     <div>
-                        <div class="section-title">Property Overview</div>
+                        <div class="section-title">Property Information & Notes</div>
                         <div class="description-text">
-                            <?php echo nl2br(htmlspecialchars($property['description'])); ?>
+                            Village: <strong><?php echo $villageName; ?></strong><br>
+                            Survey Number: <strong><?php echo $surveyNo; ?></strong><br>
+                            Zone: <strong><?php echo $zone; ?></strong><br>
+                            Road Connection: <strong><?php echo $road; ?></strong><br>
+                            Town Planning (TP): <strong><?php echo $tp; ?></strong> | Final Plot (FP): <strong><?php echo $fp; ?></strong><br>
+                            Reference: <strong><?php echo $reference; ?></strong>
                         </div>
                     </div>
                     <div>
                         <div class="section-title">Key Highlights</div>
                         <ul class="amenities-list">
-                            <li>Clear Title (100% NA/NOC Clear)</li>
-                            <li>Immediate Possession & Registry</li>
-                            <li>Dholera SIR Master Plan Zone</li>
-                            <li>Near Expressway & Airport Axis</li>
-                            <li>Smart City Underground Infrastructure</li>
+                            <li>100% Verified Title Clearance</li>
+                            <li>Immediate Registry & Possession</li>
+                            <li>Dholera SIR Special Investment Region</li>
+                            <li>Near Expressway & Airport Hub</li>
+                            <li>Underground Smart City Infrastructure</li>
                         </ul>
                     </div>
                 </div>
