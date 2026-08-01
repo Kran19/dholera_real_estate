@@ -12,6 +12,8 @@ import '../../widgets/loading_widget.dart';
 import '../../widgets/image_gallery_viewer.dart';
 import 'add_edit_property_screen.dart';
 
+import '../../core/services/pdf_share_service.dart';
+
 /// Property Details Screen
 /// DHOLERA REAL ESTATE
 class PropertyDetailsScreen extends StatefulWidget {
@@ -83,6 +85,12 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
         title: Text('Property Details', style: AppStyles.heading3.copyWith(color: Colors.white)),
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
+          if (_property != null)
+            IconButton(
+              icon: const Icon(Icons.share, color: Color(0xFF25D366)),
+              tooltip: 'Share Brochure on WhatsApp',
+              onPressed: () => PdfShareService.sharePropertyPdf(context, _property!),
+            ),
           if (isSuperAdmin && _property != null) ...[
             IconButton(
               icon: const Icon(Icons.edit, color: Colors.white),
@@ -373,6 +381,15 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                         ],
                       ),
                     ),
+      floatingActionButton: _property != null
+          ? FloatingActionButton.extended(
+              onPressed: () => PdfShareService.sharePropertyPdf(context, _property!),
+              backgroundColor: const Color(0xFF25D366),
+              foregroundColor: Colors.white,
+              icon: const Icon(Icons.share),
+              label: const Text('Share PDF Brochure', style: TextStyle(fontWeight: FontWeight.bold)),
+            )
+          : null,
     );
   }
 

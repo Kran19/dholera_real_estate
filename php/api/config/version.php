@@ -10,9 +10,9 @@ require_once __DIR__ . '/../../bootstrap.php';
 handleCorsPreflight();
 
 sendJsonResponse(true, "App version configuration retrieved.", [
-    "latest_version"      => "1.1.2",
+    "latest_version"      => "1.2.0",
     "min_required_version"=> "1.0.0",
     "apk_download_url"    => "https://emperorsmartsolutions.com/dholerarealestate/php/download_apk.php",
-    "update_message"      => "Version 1.1.2 is live! Preserved success flag in ApiClient responses to fix list loading and toast messages.",
+    "update_message"      => "Version 1.2.0 is live! Added 1-click WhatsApp Property PDF brochure sharing with file attachments.",
     "force_update"        => false
 ]);

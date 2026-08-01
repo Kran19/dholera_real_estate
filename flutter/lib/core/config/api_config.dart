@@ -22,7 +22,7 @@ class ApiConfig {
   }
 
   // App Version (Current installed version)
-  static const String currentAppVersion = '1.1.2';
+  static const String currentAppVersion = '1.2.0';
 
   // Endpoint URLs
   static const String versionConfig = '/api/config/version.php';
@@ -40,6 +40,7 @@ class ApiConfig {
   static const String propertyCreate = '/api/properties/create.php';
   static const String propertyUpdate = '/api/properties/update.php';
   static const String propertyDelete = '/api/properties/delete.php';
+  static const String propertyExportPdf = '/api/properties/pdf_brochure.php';
 
   static const String inquiryList = '/api/inquiries/list.php';
   static const String inquiryCreate = '/api/inquiries/create.php';

@@ -4,6 +4,8 @@ import '../models/property_model.dart';
 import '../core/constants/app_colors.dart';
 import '../core/constants/app_styles.dart';
 
+import '../core/services/pdf_share_service.dart';
+
 /**
  * Responsive Property Card Component
  * DHOLERA REAL ESTATE — Optimized for 1-Col, 2-Col, and 4-Col Grid Layouts
@@ -253,7 +255,7 @@ class PropertyCard extends StatelessWidget {
 
                     SizedBox(height: isCompact ? 6.0 : 10.0),
 
-                    // Reference Notes & Admin Actions Bar
+                    // Reference Notes & Action Buttons (WhatsApp Share, Edit, Delete)
                     Row(
                       children: [
                         if (property.reference != null && property.reference!.isNotEmpty)
@@ -280,8 +282,19 @@ class PropertyCard extends StatelessWidget {
                         else
                           const Spacer(),
 
+                        // WhatsApp Brochure Share Action Button
+                        InkWell(
+                          onTap: () => PdfShareService.sharePropertyPdf(context, property),
+                          borderRadius: BorderRadius.circular(4.0),
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Icon(Icons.share, size: isCompact ? 18 : 20, color: const Color(0xFF25D366)),
+                          ),
+                        ),
+
                         // Super Admin Action Icons (Edit & Delete)
                         if (isSuperAdmin) ...[
+                          const SizedBox(width: 6.0),
                           InkWell(
                             onTap: onEdit,
                             borderRadius: BorderRadius.circular(4.0),
