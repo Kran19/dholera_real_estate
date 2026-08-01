@@ -1,72 +1,75 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:printing/printing.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../config/api_config.dart';
 import '../../models/property_model.dart';
+import 'property_pdf_builder.dart';
 
 /**
- * PDF Brochure & WhatsApp Attachment Sharing Service
- * DHOLERA REAL ESTATE — Cross-Platform File Sharing & Web Download
+ * Direct PDF Binary File & WhatsApp Attachment Sharing Service
+ * DHOLERA REAL ESTATE — Generates & Shares True application/pdf Binary Files
  */
 class PdfShareService {
-  /// Shares Property Brochure PDF on WhatsApp & Native Apps
+  /// Shares Property Brochure PDF File on WhatsApp & Native Share Sheet
   static Future<void> sharePropertyPdf(BuildContext context, PropertyModel property) async {
-    final pdfUrl = '${ApiConfig.baseUrl}${ApiConfig.propertyExportPdf}?id=${property.id}';
     final titleStr = '${property.villageName} Plot (Survey No: ${property.surveyNo})';
     final sizeStr = '${property.area} ${property.areaUnit}';
     final locationStr = '${property.villageName}, Zone: ${property.zone}';
+    final pdfUrl = '${ApiConfig.baseUrl}${ApiConfig.propertyExportPdf}?id=${property.id}';
 
-    if (kIsWeb) {
-      // Web Environment: Open live PDF brochure directly in browser
-      final Uri uri = Uri.parse(pdfUrl);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-      }
-      return;
-    }
-
-    // Mobile (Android / iOS): Fetch PDF file bytes & share file attachment via WhatsApp/System Share
     try {
-      // Show non-blocking loading toast
+      // Show non-blocking loading notification
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Preparing WhatsApp PDF Brochure for "$titleStr"...'),
+          content: Text('Generating PDF Brochure for "$titleStr"...'),
           duration: const Duration(seconds: 2),
         ),
       );
 
-      final response = await http.get(Uri.parse(pdfUrl)).timeout(const Duration(seconds: 15));
-      if (response.statusCode == 200) {
-        final tempDir = await getTemporaryDirectory();
-        final sanitizedTitle = titleStr.replaceAll(RegExp(r'[^\w\s-]'), '').replaceAll(' ', '_');
-        final filePath = '${tempDir.path}/Dholera_Property_${property.id}_$sanitizedTitle.html';
+      // Generate native A4 PDF bytes
+      final pdfBytes = await PropertyPdfBuilder.buildPdf(property);
 
-        final file = File(filePath);
-        await file.writeAsBytes(response.bodyBytes);
-
-        final xFile = XFile(filePath, mimeType: 'text/html', name: 'Dholera_Property_${property.id}.html');
-
-        final String shareText = '🏡 *Dholera Real Estate — Property Catalogue*\n\n'
-            '📍 *$titleStr*\n'
-            '📐 *Size:* $sizeStr\n'
-            '📍 *Location:* $locationStr\n\n'
-            '📄 Attached Official PDF Brochure for details & photos.';
-
-        await Share.shareXFiles(
-          [xFile],
-          text: shareText,
-          subject: 'Property Brochure — $titleStr',
+      if (kIsWeb) {
+        // Web Environment: Share/Print or Download PDF file natively
+        await Printing.sharePdf(
+          bytes: pdfBytes,
+          filename: 'Dholera_Property_${property.id}.pdf',
         );
-      } else {
-        // Fallback to URL Sharing if PDF fetch fails
-        await _fallbackUrlShare(property, pdfUrl, titleStr, sizeStr, locationStr);
+        return;
       }
+
+      // Mobile (Android / iOS): Save PDF binary file and share via WhatsApp / System Share
+      final tempDir = await getTemporaryDirectory();
+      final sanitizedTitle = titleStr.replaceAll(RegExp(r'[^\w\s-]'), '').replaceAll(' ', '_');
+      final fileName = 'Dholera_Property_${property.id}_$sanitizedTitle.pdf';
+      final filePath = '${tempDir.path}/$fileName';
+
+      final file = File(filePath);
+      await file.writeAsBytes(pdfBytes, flush: true);
+
+      final xFile = XFile(
+        filePath,
+        mimeType: 'application/pdf',
+        name: 'Dholera_Property_${property.id}.pdf',
+      );
+
+      final String shareText = '🏡 *Dholera Real Estate — Property Catalogue*\n\n'
+          '📍 *$titleStr*\n'
+          '📐 *Size:* $sizeStr\n'
+          '📍 *Location:* $locationStr\n\n'
+          '📄 Attached Official PDF Brochure Document.';
+
+      await Share.shareXFiles(
+        [xFile],
+        text: shareText,
+        subject: 'Property PDF Brochure — $titleStr',
+      );
     } catch (e) {
-      // Fallback to URL sharing
+      // Fallback to URL Sharing if file generation fails
       await _fallbackUrlShare(property, pdfUrl, titleStr, sizeStr, locationStr);
     }
   }
