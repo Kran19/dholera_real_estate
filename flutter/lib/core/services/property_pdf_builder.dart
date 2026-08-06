@@ -6,8 +6,8 @@ import 'package:pdf/widgets.dart' as pw;
 import '../../models/property_model.dart';
 
 /**
- * Native A4 PDF Binary Builder for Property Catalogue Brochures
- * DHOLERA REAL ESTATE — Generates True application/pdf Binary Stream
+ * Native A4 Landscape PDF Binary Builder for Property Catalogue Brochures
+ * DHOLERA REAL ESTATE — Generates True application/pdf Binary Stream in Landscape
  */
 class PropertyPdfBuilder {
   static Future<Uint8List> buildPdf(PropertyModel property) async {
@@ -65,7 +65,7 @@ class PropertyPdfBuilder {
     // PAGE 1: Specifications + 1st Image + mapImage1 (fixed on left)
     pdf.addPage(
       pw.Page(
-        pageFormat: PdfPageFormat.a4,
+        pageFormat: PdfPageFormat.a4.landscape,
         margin: pw.EdgeInsets.zero,
         build: (pw.Context context) {
           return pw.Container(
@@ -75,7 +75,7 @@ class PropertyPdfBuilder {
               children: [
                 // TOP BRANDING HEADER BANNER
                 pw.Container(
-                  padding: const pw.EdgeInsets.symmetric(horizontal: 28, vertical: 20),
+                  padding: const pw.EdgeInsets.symmetric(horizontal: 28, vertical: 16),
                   color: PdfColor.fromHex('#0F172A'),
                   child: pw.Row(
                     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
@@ -86,7 +86,7 @@ class PropertyPdfBuilder {
                           pw.Text(
                             'DHOLERA REAL ESTATE',
                             style: pw.TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                               fontWeight: pw.FontWeight.bold,
                               color: PdfColors.white,
                             ),
@@ -95,14 +95,14 @@ class PropertyPdfBuilder {
                           pw.Text(
                             'Official Property Catalogue Brochure',
                             style: pw.TextStyle(
-                              fontSize: 10,
+                              fontSize: 9,
                               color: PdfColor.fromHex('#93C5FD'),
                             ),
                           ),
                         ],
                       ),
                       pw.Container(
-                        padding: const pw.EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                        padding: const pw.EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                         decoration: pw.BoxDecoration(
                           color: PdfColor.fromHex('#1E3A8A'),
                           borderRadius: pw.BorderRadius.circular(16),
@@ -110,7 +110,7 @@ class PropertyPdfBuilder {
                         child: pw.Text(
                           'Call: +91 98765 43210',
                           style: pw.TextStyle(
-                            fontSize: 11,
+                            fontSize: 10,
                             fontWeight: pw.FontWeight.bold,
                             color: PdfColors.white,
                           ),
@@ -123,7 +123,7 @@ class PropertyPdfBuilder {
                 // BODY CONTENT CONTAINER
                 pw.Expanded(
                   child: pw.Padding(
-                    padding: const pw.EdgeInsets.all(28),
+                    padding: const pw.EdgeInsets.all(24),
                     child: pw.Row(
                       crossAxisAlignment: pw.CrossAxisAlignment.stretch,
                       children: [
@@ -166,54 +166,69 @@ class PropertyPdfBuilder {
                                   ),
                                 ),
                               ),
-                              pw.SizedBox(height: 8),
+                              pw.SizedBox(height: 6),
                               pw.Text(
                                 titleStr,
                                 style: pw.TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 15,
                                   fontWeight: pw.FontWeight.bold,
                                   color: PdfColor.fromHex('#0F172A'),
                                 ),
                               ),
                               pw.SizedBox(height: 10),
 
-                              // Photo 1
-                              if (primaryImageProvider != null) ...[
-                                pw.Container(
-                                  height: 150,
-                                  width: double.infinity,
-                                  decoration: pw.BoxDecoration(
-                                    borderRadius: pw.BorderRadius.circular(8),
-                                    image: pw.DecorationImage(
-                                      image: primaryImageProvider,
-                                      fit: pw.BoxFit.cover,
+                              // Photo 1 & Specs Split Side-by-Side (Landscape optimized)
+                              pw.Expanded(
+                                child: pw.Row(
+                                  crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+                                  children: [
+                                    if (primaryImageProvider != null) ...[
+                                      pw.Expanded(
+                                        flex: 5,
+                                        child: pw.Container(
+                                          decoration: pw.BoxDecoration(
+                                            borderRadius: pw.BorderRadius.circular(8),
+                                            image: pw.DecorationImage(
+                                              image: primaryImageProvider,
+                                              fit: pw.BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      pw.SizedBox(width: 15),
+                                    ],
+                                    pw.Expanded(
+                                      flex: 4,
+                                      child: pw.Column(
+                                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                        mainAxisAlignment: pw.MainAxisAlignment.center,
+                                        children: [
+                                          pw.Text(
+                                            'PROPERTY DETAILS',
+                                            style: pw.TextStyle(
+                                              fontSize: 10,
+                                              fontWeight: pw.FontWeight.bold,
+                                              color: PdfColor.fromHex('#1E3A8A'),
+                                            ),
+                                          ),
+                                          pw.Divider(color: PdfColor.fromHex('#E2E8F0')),
+                                          pw.SizedBox(height: 2),
+                                          _buildDetailRow('Village Name:', property.villageName, width: 80),
+                                          _buildDetailRow('Survey No:', property.surveyNo, width: 80),
+                                          _buildDetailRow('Zone:', property.zone, width: 80),
+                                          _buildDetailRow('Town Planning:', property.tp ?? '-', width: 80),
+                                          _buildDetailRow('Final Plot (FP):', property.fp ?? '-', width: 80),
+                                          _buildDetailRow('Road Touch:', roadStr, width: 80),
+                                          _buildDetailRow('Area Size:', areaStr, width: 80),
+                                          if (property.landingPrice != null && property.landingPrice!.isNotEmpty)
+                                            _buildDetailRow('Landing Price:', property.landingPrice!, width: 80),
+                                          _buildDetailRow('Reference:', refStr, width: 80),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ),
-                                pw.SizedBox(height: 15),
-                              ],
-
-                              // Property Specifications Table
-                              pw.Text(
-                                'PROPERTY DETAILS',
-                                style: pw.TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: pw.FontWeight.bold,
-                                  color: PdfColor.fromHex('#1E3A8A'),
+                                  ],
                                 ),
                               ),
-                              pw.Divider(color: PdfColor.fromHex('#E2E8F0')),
-                              pw.SizedBox(height: 4),
-                              _buildDetailRow('Village Name:', property.villageName, width: 85),
-                              _buildDetailRow('Survey Number:', property.surveyNo, width: 85),
-                              _buildDetailRow('Zone:', property.zone, width: 85),
-                              _buildDetailRow('Town Planning:', property.tp ?? '-', width: 85),
-                              _buildDetailRow('Final Plot (FP):', property.fp ?? '-', width: 85),
-                              _buildDetailRow('Road Touch:', roadStr, width: 85),
-                              _buildDetailRow('Area Size:', areaStr, width: 85),
-                              if (property.landingPrice != null && property.landingPrice!.isNotEmpty)
-                                _buildDetailRow('Landing Price:', property.landingPrice!, width: 85),
-                              _buildDetailRow('Reference:', refStr, width: 85),
                             ],
                           ),
                         ),
@@ -224,7 +239,7 @@ class PropertyPdfBuilder {
 
                 // FOOTER BANNER
                 pw.Container(
-                  padding: const pw.EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+                  padding: const pw.EdgeInsets.symmetric(horizontal: 28, vertical: 12),
                   color: PdfColor.fromHex('#0F172A'),
                   child: pw.Row(
                     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
@@ -235,7 +250,7 @@ class PropertyPdfBuilder {
                           pw.Text(
                             'Interested in this property? Contact us today!',
                             style: pw.TextStyle(
-                              fontSize: 11,
+                              fontSize: 10,
                               fontWeight: pw.FontWeight.bold,
                               color: PdfColor.fromHex('#60A5FA'),
                             ),
@@ -243,7 +258,7 @@ class PropertyPdfBuilder {
                           pw.Text(
                             'DHOLERA REAL ESTATE — Your Trusted Investment Partner',
                             style: pw.TextStyle(
-                              fontSize: 9,
+                              fontSize: 8,
                               color: PdfColor.fromHex('#94A3B8'),
                             ),
                           ),
@@ -252,7 +267,7 @@ class PropertyPdfBuilder {
                       pw.Text(
                         'emperorsmartsolutions.com',
                         style: pw.TextStyle(
-                          fontSize: 11,
+                          fontSize: 10,
                           fontWeight: pw.FontWeight.bold,
                           color: PdfColors.white,
                         ),
@@ -274,7 +289,7 @@ class PropertyPdfBuilder {
 
       pdf.addPage(
         pw.Page(
-          pageFormat: PdfPageFormat.a4,
+          pageFormat: PdfPageFormat.a4.landscape,
           margin: pw.EdgeInsets.zero,
           build: (pw.Context context) {
             return pw.Container(
@@ -284,7 +299,7 @@ class PropertyPdfBuilder {
                 children: [
                   // Header
                   pw.Container(
-                    padding: const pw.EdgeInsets.symmetric(horizontal: 28, vertical: 15),
+                    padding: const pw.EdgeInsets.symmetric(horizontal: 28, vertical: 12),
                     color: PdfColor.fromHex('#0F172A'),
                     child: pw.Row(
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
@@ -300,7 +315,7 @@ class PropertyPdfBuilder {
                         pw.Text(
                           'Gallery — Page 2',
                           style: pw.TextStyle(
-                            fontSize: 10,
+                            fontSize: 9,
                             color: PdfColor.fromHex('#93C5FD'),
                           ),
                         ),
@@ -311,7 +326,7 @@ class PropertyPdfBuilder {
                   // Main image area
                   pw.Expanded(
                     child: pw.Padding(
-                      padding: const pw.EdgeInsets.all(28),
+                      padding: const pw.EdgeInsets.all(24),
                       child: pw.Row(
                         crossAxisAlignment: pw.CrossAxisAlignment.stretch,
                         children: [
@@ -350,29 +365,30 @@ class PropertyPdfBuilder {
                                     ),
                                   ),
                                 ),
-                                pw.SizedBox(height: 15),
+                                pw.SizedBox(height: 12),
                                 pw.Center(
-                                  child: pw.Column(
+                                  child: pw.Row(
+                                    mainAxisAlignment: pw.MainAxisAlignment.center,
                                     children: [
-                                      pw.Text(
-                                        'Primary View',
-                                        style: pw.TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: pw.FontWeight.bold,
-                                          color: PdfColor.fromHex('#1E3A8A'),
-                                        ),
-                                      ),
-                                      pw.SizedBox(height: 6),
                                       pw.ClipOval(
                                         child: pw.Container(
-                                          width: 110,
-                                          height: 110,
+                                          width: 90,
+                                          height: 90,
                                           decoration: pw.BoxDecoration(
                                             image: pw.DecorationImage(
                                               image: firstImage,
                                               fit: pw.BoxFit.cover,
                                             ),
                                           ),
+                                        ),
+                                      ),
+                                      pw.SizedBox(width: 10),
+                                      pw.Text(
+                                        'Primary View',
+                                        style: pw.TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: pw.FontWeight.bold,
+                                          color: PdfColor.fromHex('#1E3A8A'),
                                         ),
                                       ),
                                     ],
@@ -388,18 +404,18 @@ class PropertyPdfBuilder {
 
                   // Footer
                   pw.Container(
-                    padding: const pw.EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+                    padding: const pw.EdgeInsets.symmetric(horizontal: 28, vertical: 10),
                     color: PdfColor.fromHex('#0F172A'),
                     child: pw.Row(
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: [
                         pw.Text(
                           'Property Code: #DRE-${property.id}',
-                          style: pw.TextStyle(fontSize: 9, color: PdfColor.fromHex('#94A3B8')),
+                          style: pw.TextStyle(fontSize: 8, color: PdfColor.fromHex('#94A3B8')),
                         ),
                         pw.Text(
                           'emperorsmartsolutions.com',
-                          style: pw.TextStyle(fontSize: 9, color: PdfColors.white),
+                          style: pw.TextStyle(fontSize: 8, color: PdfColors.white),
                         ),
                       ],
                     ),
@@ -412,14 +428,14 @@ class PropertyPdfBuilder {
       );
     }
 
-    // PAGE 3: 3rd Image + 1st Image rectangular beside it + mapImage3 (fixed on left)
+    // PAGE 3: 3rd Image + 2nd Image rectangular beside it + mapImage3 (fixed on left)
     if (imageProviders.length >= 3) {
-      final firstImage = imageProviders[0];
+      final secondImage = imageProviders[1];
       final thirdImage = imageProviders[2];
 
       pdf.addPage(
         pw.Page(
-          pageFormat: PdfPageFormat.a4,
+          pageFormat: PdfPageFormat.a4.landscape,
           margin: pw.EdgeInsets.zero,
           build: (pw.Context context) {
             return pw.Container(
@@ -429,7 +445,7 @@ class PropertyPdfBuilder {
                 children: [
                   // Header
                   pw.Container(
-                    padding: const pw.EdgeInsets.symmetric(horizontal: 28, vertical: 15),
+                    padding: const pw.EdgeInsets.symmetric(horizontal: 28, vertical: 12),
                     color: PdfColor.fromHex('#0F172A'),
                     child: pw.Row(
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
@@ -445,7 +461,7 @@ class PropertyPdfBuilder {
                         pw.Text(
                           'Gallery — Page 3',
                           style: pw.TextStyle(
-                            fontSize: 10,
+                            fontSize: 9,
                             color: PdfColor.fromHex('#93C5FD'),
                           ),
                         ),
@@ -456,7 +472,7 @@ class PropertyPdfBuilder {
                   // Main image area
                   pw.Expanded(
                     child: pw.Padding(
-                      padding: const pw.EdgeInsets.all(28),
+                      padding: const pw.EdgeInsets.all(24),
                       child: pw.Row(
                         crossAxisAlignment: pw.CrossAxisAlignment.stretch,
                         children: [
@@ -477,7 +493,7 @@ class PropertyPdfBuilder {
                             pw.SizedBox(width: 20),
                           ],
 
-                          // Right side: 3rd Image & 1st Image (rectangular inset)
+                          // Right side: 3rd Image & 2nd Image (rectangular inset)
                           pw.Expanded(
                             flex: 2,
                             child: pw.Column(
@@ -495,28 +511,29 @@ class PropertyPdfBuilder {
                                     ),
                                   ),
                                 ),
-                                pw.SizedBox(height: 15),
+                                pw.SizedBox(height: 12),
                                 pw.Center(
-                                  child: pw.Column(
+                                  child: pw.Row(
+                                    mainAxisAlignment: pw.MainAxisAlignment.center,
                                     children: [
-                                      pw.Text(
-                                        'Primary View',
-                                        style: pw.TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: pw.FontWeight.bold,
-                                          color: PdfColor.fromHex('#1E3A8A'),
-                                        ),
-                                      ),
-                                      pw.SizedBox(height: 6),
                                       pw.Container(
-                                        width: 110,
-                                        height: 110,
+                                        width: 90,
+                                        height: 90,
                                         decoration: pw.BoxDecoration(
-                                          borderRadius: pw.BorderRadius.circular(12),
+                                          borderRadius: pw.BorderRadius.circular(8),
                                           image: pw.DecorationImage(
-                                            image: firstImage,
+                                            image: secondImage,
                                             fit: pw.BoxFit.cover,
                                           ),
+                                        ),
+                                      ),
+                                      pw.SizedBox(width: 10),
+                                      pw.Text(
+                                        'Secondary View',
+                                        style: pw.TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: pw.FontWeight.bold,
+                                          color: PdfColor.fromHex('#1E3A8A'),
                                         ),
                                       ),
                                     ],
@@ -532,18 +549,18 @@ class PropertyPdfBuilder {
 
                   // Footer
                   pw.Container(
-                    padding: const pw.EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+                    padding: const pw.EdgeInsets.symmetric(horizontal: 28, vertical: 10),
                     color: PdfColor.fromHex('#0F172A'),
                     child: pw.Row(
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: [
                         pw.Text(
                           'Property Code: #DRE-${property.id}',
-                          style: pw.TextStyle(fontSize: 9, color: PdfColor.fromHex('#94A3B8')),
+                          style: pw.TextStyle(fontSize: 8, color: PdfColor.fromHex('#94A3B8')),
                         ),
                         pw.Text(
                           'emperorsmartsolutions.com',
-                          style: pw.TextStyle(fontSize: 9, color: PdfColors.white),
+                          style: pw.TextStyle(fontSize: 8, color: PdfColors.white),
                         ),
                       ],
                     ),
@@ -556,14 +573,14 @@ class PropertyPdfBuilder {
       );
     }
 
-    // PAGE 4+: Single-image pages for remaining photos
+    // PAGE 4+: Single-image pages for remaining photos (Landscape full-page size)
     if (imageProviders.length >= 4) {
       for (int i = 3; i < imageProviders.length; i++) {
         final currentImage = imageProviders[i];
 
         pdf.addPage(
           pw.Page(
-            pageFormat: PdfPageFormat.a4,
+            pageFormat: PdfPageFormat.a4.landscape,
             margin: pw.EdgeInsets.zero,
             build: (pw.Context context) {
               return pw.Container(
@@ -573,7 +590,7 @@ class PropertyPdfBuilder {
                   children: [
                     // Header
                     pw.Container(
-                      padding: const pw.EdgeInsets.symmetric(horizontal: 28, vertical: 15),
+                      padding: const pw.EdgeInsets.symmetric(horizontal: 28, vertical: 12),
                       color: PdfColor.fromHex('#0F172A'),
                       child: pw.Row(
                         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
@@ -589,7 +606,7 @@ class PropertyPdfBuilder {
                           pw.Text(
                             'Gallery — Page ${i + 1}',
                             style: pw.TextStyle(
-                              fontSize: 10,
+                              fontSize: 9,
                               color: PdfColor.fromHex('#93C5FD'),
                             ),
                           ),
@@ -597,10 +614,10 @@ class PropertyPdfBuilder {
                       ),
                     ),
 
-                    // Main image area
+                    // Main image area (Fits landscape photo completely)
                     pw.Expanded(
                       child: pw.Padding(
-                        padding: const pw.EdgeInsets.all(28),
+                        padding: const pw.EdgeInsets.all(24),
                         child: pw.Container(
                           decoration: pw.BoxDecoration(
                             borderRadius: pw.BorderRadius.circular(12),
@@ -615,18 +632,18 @@ class PropertyPdfBuilder {
 
                     // Footer
                     pw.Container(
-                      padding: const pw.EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+                      padding: const pw.EdgeInsets.symmetric(horizontal: 28, vertical: 10),
                       color: PdfColor.fromHex('#0F172A'),
                       child: pw.Row(
                         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                         children: [
                           pw.Text(
                             'Property Code: #DRE-${property.id}',
-                            style: pw.TextStyle(fontSize: 9, color: PdfColor.fromHex('#94A3B8')),
+                            style: pw.TextStyle(fontSize: 8, color: PdfColor.fromHex('#94A3B8')),
                           ),
                           pw.Text(
                             'emperorsmartsolutions.com',
-                            style: pw.TextStyle(fontSize: 9, color: PdfColors.white),
+                            style: pw.TextStyle(fontSize: 8, color: PdfColors.white),
                           ),
                         ],
                       ),
@@ -652,12 +669,12 @@ class PropertyPdfBuilder {
             width: width,
             child: pw.Text(
               label,
-              style: pw.TextStyle(fontSize: 10, color: PdfColor.fromHex('#64748B')),
+              style: pw.TextStyle(fontSize: 9, color: PdfColor.fromHex('#64748B')),
             ),
           ),
           pw.Text(
             value,
-            style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold, color: PdfColor.fromHex('#0F172A')),
+            style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold, color: PdfColor.fromHex('#0F172A')),
           ),
         ],
       ),
