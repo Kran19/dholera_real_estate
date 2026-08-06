@@ -125,6 +125,8 @@ class PropertyProvider with ChangeNotifier {
     required double area,
     required String areaUnit,
     String? reference,
+    String? landingPrice,
+    String? imageSequence,
     List<AppPickedImage>? images,
   }) async {
     try {
@@ -138,6 +140,8 @@ class PropertyProvider with ChangeNotifier {
         area: area,
         areaUnit: areaUnit,
         reference: reference,
+        landingPrice: landingPrice,
+        imageSequence: imageSequence,
         images: images,
       );
       _properties.insert(0, newProp);
@@ -162,6 +166,8 @@ class PropertyProvider with ChangeNotifier {
     double? area,
     String? areaUnit,
     String? reference,
+    String? landingPrice,
+    String? imageSequence,
     List<int>? deleteImageIds,
     List<AppPickedImage>? newImages,
   }) async {
@@ -177,6 +183,8 @@ class PropertyProvider with ChangeNotifier {
         area: area,
         areaUnit: areaUnit,
         reference: reference,
+        landingPrice: landingPrice,
+        imageSequence: imageSequence,
         deleteImageIds: deleteImageIds,
         newImages: newImages,
       );

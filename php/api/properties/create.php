@@ -31,6 +31,9 @@ $road        = sanitizeString($input['road']);
 $area        = (float)$input['area'];
 $areaUnit    = sanitizeString($input['area_unit']);
 $reference   = sanitizeString($input['reference'] ?? '');
+$landingPrice = sanitizeString($input['landing_price'] ?? '');
+$imageSequenceRaw = sanitizeString($input['image_sequence'] ?? '');
+$imageSequence = !empty($imageSequenceRaw) ? explode(',', $imageSequenceRaw) : [];
 
 if ($area <= 0) {
     sendJsonResponse(false, "Area must be a positive numeric value.", null, 422);
@@ -76,21 +79,22 @@ try {
     $db->beginTransaction();
 
     $stmt = $db->prepare("
-        INSERT INTO properties (village_name, survey_no, zone, tp, fp, road, area, area_unit, reference, created_by)
-        VALUES (:village_name, :survey_no, :zone, :tp, :fp, :road, :area, :area_unit, :reference, :created_by)
+        INSERT INTO properties (village_name, survey_no, zone, tp, fp, road, area, area_unit, reference, landing_price, created_by)
+        VALUES (:village_name, :survey_no, :zone, :tp, :fp, :road, :area, :area_unit, :reference, :landing_price, :created_by)
     ");
 
     $stmt->execute([
-        ':village_name' => $villageName,
-        ':survey_no'    => $surveyNo,
-        ':zone'          => $zone,
-        ':tp'            => $tp,
-        ':fp'            => $fp,
-        ':road'          => $road,
-        ':area'          => $area,
-        ':area_unit'     => $areaUnit,
-        ':reference'     => $reference,
-        ':created_by'    => $currentUser['id']
+        ':village_name'  => $villageName,
+        ':survey_no'     => $surveyNo,
+        ':zone'           => $zone,
+        ':tp'             => $tp,
+        ':fp'             => $fp,
+        ':road'           => $road,
+        ':area'           => $area,
+        ':area_unit'      => $areaUnit,
+        ':reference'      => $reference,
+        ':landing_price'  => $landingPrice,
+        ':created_by'     => $currentUser['id']
     ]);
 
     $propertyId = (int)$db->lastInsertId();
@@ -100,6 +104,7 @@ try {
     $sortOrder = 1;
     $imgInsertStmt = $db->prepare("INSERT INTO property_images (property_id, image_url, sort_order) VALUES (:pid, :url, :sort)");
 
+    $newImageIds = [];
     foreach ($uploadedFiles as $file) {
         $relativePath = savePropertyImage($file, $propertyId, $sortOrder);
         $imgInsertStmt->execute([
@@ -107,12 +112,41 @@ try {
             ':url'  => $relativePath,
             ':sort' => $sortOrder
         ]);
+        $newImageIds[] = (int)$db->lastInsertId();
         $savedImages[] = [
             "id"         => (int)$db->lastInsertId(),
             "image_url"  => getBaseUrl() . '/' . $relativePath,
             "sort_order" => $sortOrder
         ];
         $sortOrder++;
+    }
+
+    // Apply custom sort order if image sequence is provided
+    if (!empty($imageSequence)) {
+        $seqIds = [];
+        $newImgIndex = 0;
+        foreach ($imageSequence as $seqItem) {
+            $seqItem = trim($seqItem);
+            if (strpos($seqItem, 'new_') === 0) {
+                if (isset($newImageIds[$newImgIndex])) {
+                    $seqIds[] = $newImageIds[$newImgIndex];
+                    $newImgIndex++;
+                }
+            }
+        }
+
+        if (!empty($seqIds)) {
+            $updateSortStmt = $db->prepare("UPDATE property_images SET sort_order = :sort WHERE id = :id AND property_id = :pid");
+            $currentSort = 1;
+            foreach ($seqIds as $imgId) {
+                $updateSortStmt->execute([
+                    ':sort' => $currentSort,
+                    ':id'   => $imgId,
+                    ':pid'  => $propertyId
+                ]);
+                $currentSort++;
+            }
+        }
     }
 
     $db->commit();
@@ -128,8 +162,9 @@ try {
             "road"         => $road,
             "area"         => $area,
             "area_unit"    => $areaUnit,
-            "reference"    => $reference,
-            "images"       => $savedImages
+            "reference"     => $reference,
+            "landing_price" => $landingPrice,
+            "images"        => $savedImages
         ]
     ], 201);
 

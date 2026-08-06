@@ -164,6 +164,7 @@ All API endpoints return standard JSON responses and HTTP status codes.
         "area": 500.00,
         "area_unit": "Sq Yard",
         "reference": "Direct Owner",
+        "landing_price": "12 Lakhs",
         "primary_image": "http://10.0.2.2/dholera_real_estate/backend/uploads/properties/15/img_1.jpg",
         "images": [
           {
@@ -184,20 +185,22 @@ All API endpoints return standard JSON responses and HTTP status codes.
   }
 }
 ```
+*Note: The `landing_price` field is only returned if the authenticated user has the `super_admin` role.*
 
 ### `GET /api/properties/details.php?id=15`
 - **Auth Required:** Yes (All Roles)
 - **Returns:** Detailed property object with full array of images (up to 5).
+- **Behavior:** The `landing_price` field is included in the property details object only if the user role is `super_admin`.
 
 ### `POST /api/properties/create.php`
 - **Auth Required:** Yes (Super Admin Only)
 - **Content-Type:** `multipart/form-data`
-- **Fields:** `village_name`, `survey_no`, `zone`, `tp`, `fp`, `road`, `area`, `area_unit`, `reference`
+- **Fields:** `village_name`, `survey_no`, `zone`, `tp`, `fp`, `road`, `area`, `area_unit`, `reference`, `landing_price` (optional)
 - **Files:** `images[]` (Max 5 files, image/jpeg, image/png, max 5MB per file)
 
 ### `POST /api/properties/update.php`
 - **Auth Required:** Yes (Super Admin Only)
-- **Fields:** `id`, updated property fields, optional new images.
+- **Fields:** `id`, updated property fields (including `landing_price`), optional new images.
 
 ### `POST /api/properties/delete.php`
 - **Auth Required:** Yes (Super Admin Only)

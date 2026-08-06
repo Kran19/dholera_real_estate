@@ -54,6 +54,8 @@ class PropertyService {
     required double area,
     required String areaUnit,
     String? reference,
+    String? landingPrice,
+    String? imageSequence,
     List<AppPickedImage>? images,
   }) async {
     final Map<String, String> fields = {
@@ -66,7 +68,9 @@ class PropertyService {
       'area': area.toString(),
       'area_unit': areaUnit,
       'reference': reference ?? '',
+      'landing_price': landingPrice ?? '',
     };
+    if (imageSequence != null) fields['image_sequence'] = imageSequence;
 
     final response = await _apiClient.postMultipart(
       ApiConfig.propertyCreate,
@@ -89,6 +93,8 @@ class PropertyService {
     double? area,
     String? areaUnit,
     String? reference,
+    String? landingPrice,
+    String? imageSequence,
     List<int>? deleteImageIds,
     List<AppPickedImage>? newImages,
   }) async {
@@ -102,6 +108,8 @@ class PropertyService {
     if (area != null && area > 0) fields['area'] = area.toString();
     if (areaUnit != null && areaUnit.isNotEmpty) fields['area_unit'] = areaUnit;
     if (reference != null) fields['reference'] = reference;
+    if (landingPrice != null) fields['landing_price'] = landingPrice;
+    if (imageSequence != null) fields['image_sequence'] = imageSequence;
 
     if (deleteImageIds != null && deleteImageIds.isNotEmpty) {
       for (int i = 0; i < deleteImageIds.length; i++) {

@@ -72,6 +72,7 @@ CREATE TABLE IF NOT EXISTS `properties` (
   `area` DECIMAL(12, 2) NOT NULL,
   `area_unit` VARCHAR(30) NOT NULL DEFAULT 'Sq Yard',
   `reference` VARCHAR(255) DEFAULT NULL,
+  `landing_price` VARCHAR(100) DEFAULT NULL,
   `created_by` INT UNSIGNED DEFAULT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -97,6 +98,7 @@ CREATE TABLE IF NOT EXISTS `properties` (
 | `area` | DECIMAL(12,2) | NO | Numeric area measure |
 | `area_unit` | VARCHAR(30) | NO | Unit of measurement (`Sq Yard`, `Bigha`, etc.) |
 | `reference` | VARCHAR(255) | YES | Agent/Source reference details |
+| `landing_price` | VARCHAR(100) | YES | Landing price details (Admin visible only) |
 | `created_by` | INT UNSIGNED | YES | Foreign key referencing user who created property |
 | `created_at` | DATETIME | NO | Creation timestamp |
 | `updated_at` | DATETIME | NO | Last modified timestamp |

@@ -343,6 +343,10 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                                         const Divider(height: 24.0, color: AppColors.border),
                                         _buildSpecRow('Final Plot No', _property!.fp!, Icons.nature_people_outlined),
                                       ],
+                                      if (isSuperAdmin && _property!.landingPrice != null && _property!.landingPrice!.isNotEmpty) ...[
+                                        const Divider(height: 24.0, color: AppColors.border),
+                                        _buildSpecRow('Landing Price', _property!.landingPrice!, Icons.currency_rupee),
+                                      ],
                                     ],
                                   ),
                                 ),
@@ -375,21 +379,37 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                                     ),
                                   ),
                                 ],
+                                const SizedBox(height: 24.0),
+                                SizedBox(
+                                  width: double.infinity,
+                                  height: 52.0,
+                                  child: ElevatedButton.icon(
+                                    onPressed: () => PdfShareService.sharePropertyPdf(context, _property!),
+                                    icon: const Icon(Icons.share, color: Colors.white),
+                                    label: const Text(
+                                      'Share PDF Brochure',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF25D366),
+                                      foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12.0),
+                                      ),
+                                      elevation: 0,
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
                         ],
                       ),
                     ),
-      floatingActionButton: _property != null
-          ? FloatingActionButton.extended(
-              onPressed: () => PdfShareService.sharePropertyPdf(context, _property!),
-              backgroundColor: const Color(0xFF25D366),
-              foregroundColor: Colors.white,
-              icon: const Icon(Icons.share),
-              label: const Text('Share PDF Brochure', style: TextStyle(fontWeight: FontWeight.bold)),
-            )
-          : null,
     );
   }
 

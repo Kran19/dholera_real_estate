@@ -100,6 +100,10 @@ try {
         $prop['area'] = (float)$prop['area'];
         $prop['primary_image'] = $primaryImage;
         $prop['images'] = $images;
+
+        if ($currentUser['role'] !== 'super_admin') {
+            unset($prop['landing_price']);
+        }
     }
 
     sendJsonResponse(true, "Properties retrieved successfully.", [

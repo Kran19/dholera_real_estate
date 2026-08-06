@@ -5,6 +5,44 @@ Format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.3.4] - 2026-08-06
+
+### Added
+- **Horizontal Photo Reordering**: Integrated horizontal `ReorderableListView.builder` inside the property form screen, allowing admins to drag and drop images to customize the sorting sequence.
+- **Custom Image Sequence Routing**: Enabled backend sequence routing (`image_sequence`) on create and update APIs to dynamically match existing IDs and newly uploaded file indices.
+- **Multi-page Brochure PDF Builder**: Re-engineered the PDF generation layout:
+  * Page 1 shows specifications alongside the 1st image.
+  * Page 2 displays the 2nd image beside the 1st image in a circular frame.
+  * Page 3 displays the 3rd image beside the 1st image in a rectangular frame.
+  * Pages 4+ showcase remaining photos as full-page gallery layouts.
+
+---
+
+## [1.3.3] - 2026-08-06
+
+### Added
+- **Landing Price Field**: Added support for `landing_price` column in the database and property APIs.
+- **Role-Based Security Bounds**: Restrict `landing_price` visibility and editing purely to Super Admins. Filtered out key from list & details API JSON responses for normal users.
+- **Admin UI Details & Form**: Exposed Landing Price field in the Property Form and the Details specifications layout strictly under the admin view bounds.
+
+---
+
+## [1.3.2] - 2026-08-06
+
+### Changed
+- **UI Clean-up:** Removed the filter bottom-sheet and filter button next to the search bar from `PropertyListScreen` to simplify the search layout.
+- **Version Bumping:** Incremented application version to `1.3.2+17` across all config files (`pubspec.yaml`, `api_config.dart`, `version.php`, `version.json`).
+
+---
+
+## [1.3.1] - 2026-08-06
+
+### Changed
+- **UI Layout Optimization:** Moved the "Share PDF Brochure" button from a Floating Action Button to a full-width ElevatedButton at the bottom of the property details scroll view to prevent overlapping content.
+- **Version Bumping:** Incremented application version to `1.3.1+16` across all configuration files (`flutter/pubspec.yaml`, `api_config.dart`, `version.php`, `version.json`).
+
+---
+
 ## [1.0.0] - 2026-07-31
 
 ### Added

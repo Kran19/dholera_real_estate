@@ -57,7 +57,8 @@ MySQL Database (dholera_realestate)
 7. Area
 8. Area Unit (Initially: `Sq Yard`, `Bigha` — Extensible schema)
 9. Reference
-10. Property Photos (Max 5 images per property, stored on filesystem under `backend/uploads/properties/{property_id}/`)
+10. Landing Price (Admin-only field; filtered out securely on REST API level for normal users)
+11. Property Photos (Max 5 images per property, stored on filesystem under `backend/uploads/properties/{property_id}/`)
 
 ---
 

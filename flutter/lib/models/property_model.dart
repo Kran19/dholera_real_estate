@@ -19,6 +19,7 @@ class PropertyModel {
   final List<PropertyImageModel> images;
   final String? creatorName;
   final String? createdAt;
+  final String? landingPrice;
 
   PropertyModel({
     required this.id,
@@ -35,6 +36,7 @@ class PropertyModel {
     required this.images,
     this.creatorName,
     this.createdAt,
+    this.landingPrice,
   });
 
   factory PropertyModel.fromJson(Map<String, dynamic> json) {
@@ -58,6 +60,7 @@ class PropertyModel {
       images: parsedImages,
       creatorName: json['creator_name'],
       createdAt: json['created_at'],
+      landingPrice: json['landing_price'],
     );
   }
 
@@ -77,6 +80,7 @@ class PropertyModel {
       'images': images.map((img) => img.toJson()).toList(),
       'creator_name': creatorName,
       'created_at': createdAt,
+      'landing_price': landingPrice,
     };
   }
 }

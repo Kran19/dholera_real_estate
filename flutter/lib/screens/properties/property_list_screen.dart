@@ -68,115 +68,7 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
     }
   }
 
-  void _showFilterBottomSheet() {
-    final propertyProvider = Provider.of<PropertyProvider>(context, listen: false);
-    String selectedVillage = propertyProvider.villageFilter;
-    String selectedZone = propertyProvider.zoneFilter;
-    String selectedAreaUnit = propertyProvider.areaUnitFilter;
 
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: AppColors.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
-      ),
-      builder: (modalCtx) {
-        return StatefulBuilder(
-          builder: (ctx, setModalState) {
-            return Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Filter Properties', style: AppStyles.heading3),
-                      TextButton(
-                        onPressed: () {
-                          propertyProvider.clearFilters();
-                          _searchController.clear();
-                          Navigator.of(ctx).pop();
-                        },
-                        child: const Text('Reset All', style: TextStyle(color: AppColors.error)),
-                      ),
-                    ],
-                  ),
-                  const Divider(color: AppColors.border),
-                  const SizedBox(height: 12.0),
-
-                  // Area Unit Filter
-                  Text('Area Unit', style: AppStyles.labelStyle),
-                  const SizedBox(height: 8.0),
-                  Wrap(
-                    spacing: 8.0,
-                    children: ['Sq Yard', 'Bigha'].map((unit) {
-                      final isSelected = selectedAreaUnit == unit;
-                      return ChoiceChip(
-                        label: Text(unit),
-                        selected: isSelected,
-                        selectedColor: AppColors.primary,
-                        labelStyle: TextStyle(color: isSelected ? Colors.white : AppColors.textPrimary),
-                        onSelected: (val) {
-                          setModalState(() {
-                            selectedAreaUnit = val ? unit : '';
-                          });
-                        },
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 16.0),
-
-                  // Zone Filter
-                  Text('Zone', style: AppStyles.labelStyle),
-                  const SizedBox(height: 8.0),
-                  Wrap(
-                    spacing: 8.0,
-                    children: ['Residential', 'Commercial', 'Industrial', 'Agricultural'].map((z) {
-                      final isSelected = selectedZone == z;
-                      return ChoiceChip(
-                        label: Text(z),
-                        selected: isSelected,
-                        selectedColor: AppColors.primary,
-                        labelStyle: TextStyle(color: isSelected ? Colors.white : AppColors.textPrimary),
-                        onSelected: (val) {
-                          setModalState(() {
-                            selectedZone = val ? z : '';
-                          });
-                        },
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 24.0),
-
-                  SizedBox(
-                    width: double.infinity,
-                    height: 48.0,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                      ),
-                      onPressed: () {
-                        propertyProvider.setFilters(
-                          village: selectedVillage,
-                          zone: selectedZone,
-                          areaUnit: selectedAreaUnit,
-                        );
-                        Navigator.of(ctx).pop();
-                      },
-                      child: const Text('Apply Filters', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -255,54 +147,29 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
                 color: AppColors.surface,
                 child: Column(
                   children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _searchController,
-                            decoration: InputDecoration(
-                              hintText: 'Search Village, Survey No, Reference...',
-                              prefixIcon: const Icon(Icons.search, color: AppColors.textSecondary),
-                              suffixIcon: _searchController.text.isNotEmpty
-                                  ? IconButton(
-                                      icon: const Icon(Icons.clear),
-                                      onPressed: () {
-                                        _searchController.clear();
-                                        propertyProvider.setSearchQuery('');
-                                      },
-                                    )
-                                  : null,
-                              contentPadding: const EdgeInsets.symmetric(vertical: 12.0),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12.0),
-                                borderSide: const BorderSide(color: AppColors.border),
-                              ),
-                            ),
-                            onSubmitted: (val) {
-                              propertyProvider.setSearchQuery(val.trim());
-                            },
-                          ),
+                    TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        hintText: 'Search Village, Survey No, Reference...',
+                        prefixIcon: const Icon(Icons.search, color: AppColors.textSecondary),
+                        suffixIcon: _searchController.text.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.clear),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  propertyProvider.setSearchQuery('');
+                                },
+                              )
+                            : null,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 12.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          borderSide: const BorderSide(color: AppColors.border),
                         ),
-                        const SizedBox(width: 10.0),
-
-                        // Filter Button
-                        IconButton.filled(
-                          style: IconButton.styleFrom(
-                            backgroundColor: (propertyProvider.zoneFilter.isNotEmpty || propertyProvider.areaUnitFilter.isNotEmpty)
-                                ? AppColors.primaryAccent
-                                : AppColors.primary,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                            padding: const EdgeInsets.all(14.0),
-                          ),
-                          icon: Icon(
-                            Icons.filter_list,
-                            color: (propertyProvider.zoneFilter.isNotEmpty || propertyProvider.areaUnitFilter.isNotEmpty)
-                                ? AppColors.primaryDark
-                                : Colors.white,
-                          ),
-                          onPressed: _showFilterBottomSheet,
-                        ),
-                      ],
+                      ),
+                      onSubmitted: (val) {
+                        propertyProvider.setSearchQuery(val.trim());
+                      },
                     ),
                     const SizedBox(height: 12.0),
 

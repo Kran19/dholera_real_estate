@@ -40,6 +40,9 @@ try {
     $area        = isset($input['area']) ? (float)$input['area'] : null;
     $areaUnit    = sanitizeString($input['area_unit'] ?? '');
     $reference   = sanitizeString($input['reference'] ?? '');
+    $landingPrice = sanitizeString($input['landing_price'] ?? '');
+    $imageSequenceRaw = sanitizeString($input['image_sequence'] ?? '');
+    $imageSequence = !empty($imageSequenceRaw) ? explode(',', $imageSequenceRaw) : [];
 
     $updates = [];
     $params = [':id' => $propertyId];
@@ -53,6 +56,7 @@ try {
     if ($area !== null && $area > 0) { $updates[] = "area = :a"; $params[':a'] = $area; }
     if ($areaUnit !== '')    { $updates[] = "area_unit = :au";   $params[':au'] = $areaUnit; }
     if (isset($input['reference'])) { $updates[] = "reference = :ref"; $params[':ref'] = $reference; }
+    if (isset($input['landing_price'])) { $updates[] = "landing_price = :lp"; $params[':lp'] = $landingPrice; }
 
     if (!empty($updates)) {
         $sql = "UPDATE properties SET " . implode(', ', $updates) . " WHERE id = :id";
@@ -119,6 +123,7 @@ try {
         $sortOrder = $existingCount + 1;
         $imgInsertStmt = $db->prepare("INSERT INTO property_images (property_id, image_url, sort_order) VALUES (:pid, :url, :sort)");
 
+        $newImageIds = [];
         foreach ($uploadedFiles as $file) {
             $relativePath = savePropertyImage($file, $propertyId, $sortOrder);
             $imgInsertStmt->execute([
@@ -126,7 +131,39 @@ try {
                 ':url'  => $relativePath,
                 ':sort' => $sortOrder
             ]);
+            $newImageIds[] = (int)$db->lastInsertId();
             $sortOrder++;
+        }
+    }
+
+    // Apply custom sort order if image sequence is provided
+    if (!empty($imageSequence)) {
+        $seqIds = [];
+        $newImgIndex = 0;
+        foreach ($imageSequence as $seqItem) {
+            $seqItem = trim($seqItem);
+            if (strpos($seqItem, 'new_') === 0) {
+                if (isset($newImageIds[$newImgIndex])) {
+                    $seqIds[] = $newImageIds[$newImgIndex];
+                    $newImgIndex++;
+                }
+            } else if (strpos($seqItem, 'existing_') === 0) {
+                $existingId = (int)substr($seqItem, 9);
+                $seqIds[] = $existingId;
+            }
+        }
+
+        if (!empty($seqIds)) {
+            $updateSortStmt = $db->prepare("UPDATE property_images SET sort_order = :sort WHERE id = :id AND property_id = :pid");
+            $currentSort = 1;
+            foreach ($seqIds as $imgId) {
+                $updateSortStmt->execute([
+                    ':sort' => $currentSort,
+                    ':id'   => $imgId,
+                    ':pid'  => $propertyId
+                ]);
+                $currentSort++;
+            }
         }
     }
 

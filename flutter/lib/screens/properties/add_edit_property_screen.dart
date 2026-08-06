@@ -34,14 +34,14 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
   late TextEditingController _roadController;
   late TextEditingController _areaController;
   late TextEditingController _referenceController;
+  late TextEditingController _landingPriceController;
 
   String _selectedAreaUnit = 'Sq Yard';
   final List<String> _areaUnitOptions = ['Sq Yard', 'Bigha'];
 
   final ImagePicker _picker = ImagePicker();
-  final List<AppPickedImage> _newSelectedImages = [];
+  final List<dynamic> _allImages = []; // Stores both PropertyImageModel and AppPickedImage
   final List<int> _deleteImageIds = [];
-  List<PropertyImageModel> _existingImages = [];
 
   bool _isSubmitting = false;
 
@@ -58,10 +58,11 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
     _roadController = TextEditingController(text: widget.property?.road ?? '');
     _areaController = TextEditingController(text: widget.property?.area != null ? widget.property!.area.toString() : '');
     _referenceController = TextEditingController(text: widget.property?.reference ?? '');
+    _landingPriceController = TextEditingController(text: widget.property?.landingPrice ?? '');
 
     if (isEdit) {
       _selectedAreaUnit = widget.property!.areaUnit;
-      _existingImages = List.from(widget.property!.images);
+      _allImages.addAll(widget.property!.images);
     }
   }
 
@@ -75,11 +76,12 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
     _roadController.dispose();
     _areaController.dispose();
     _referenceController.dispose();
+    _landingPriceController.dispose();
     super.dispose();
   }
 
   Future<void> _pickImages() async {
-    final int currentTotal = _existingImages.length + _newSelectedImages.length;
+    final int currentTotal = _allImages.length;
     if (currentTotal >= 5) {
       if (mounted) UiHelpers.showSnackBar(context, 'Maximum limit of 5 photos reached.', isError: true);
       return;
@@ -99,7 +101,7 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
 
       for (var xFile in toAdd) {
         final bytes = await xFile.readAsBytes();
-        _newSelectedImages.add(AppPickedImage(
+        _allImages.add(AppPickedImage(
           xfile: xFile,
           bytes: bytes,
           name: xFile.name,
@@ -126,6 +128,18 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
     final propertyProvider = Provider.of<PropertyProvider>(context, listen: false);
 
     bool success;
+    final List<AppPickedImage> newImagesToSend = [];
+    final List<String> sequence = [];
+    for (var item in _allImages) {
+      if (item is PropertyImageModel) {
+        sequence.add('existing_${item.id}');
+      } else if (item is AppPickedImage) {
+        sequence.add('new_${newImagesToSend.length}');
+        newImagesToSend.add(item);
+      }
+    }
+    final String imageSequenceStr = sequence.join(',');
+
     if (isEdit) {
       success = await propertyProvider.updateProperty(
         id: widget.property!.id,
@@ -138,8 +152,10 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
         area: areaVal,
         areaUnit: _selectedAreaUnit,
         reference: _referenceController.text.trim(),
+        landingPrice: _landingPriceController.text.trim(),
+        imageSequence: imageSequenceStr,
         deleteImageIds: _deleteImageIds,
-        newImages: _newSelectedImages,
+        newImages: newImagesToSend,
       );
     } else {
       success = await propertyProvider.createProperty(
@@ -152,7 +168,9 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
         area: areaVal,
         areaUnit: _selectedAreaUnit,
         reference: _referenceController.text.trim(),
-        images: _newSelectedImages,
+        landingPrice: _landingPriceController.text.trim(),
+        imageSequence: imageSequenceStr,
+        images: newImagesToSend,
       );
     }
 
@@ -179,7 +197,7 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final int totalPhotos = _existingImages.length + _newSelectedImages.length;
+    final int totalPhotos = _allImages.length;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -253,12 +271,23 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
                     else
                       SizedBox(
                         height: 100.0,
-                        child: ListView(
+                        child: ReorderableListView.builder(
                           scrollDirection: Axis.horizontal,
-                          children: [
-                            // Render existing server images
-                            ..._existingImages.map((img) {
+                          itemCount: _allImages.length,
+                          onReorder: (oldIndex, newIndex) {
+                            setState(() {
+                              if (oldIndex < newIndex) {
+                                newIndex -= 1;
+                              }
+                              final item = _allImages.removeAt(oldIndex);
+                              _allImages.insert(newIndex, item);
+                            });
+                          },
+                          itemBuilder: (context, index) {
+                            final item = _allImages[index];
+                            if (item is PropertyImageModel) {
                               return Stack(
+                                key: ValueKey('existing_${item.id}'),
                                 children: [
                                   Container(
                                     width: 100.0,
@@ -270,7 +299,7 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(10.0),
                                       child: CachedNetworkImage(
-                                        imageUrl: img.imageUrl,
+                                        imageUrl: item.imageUrl,
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -281,8 +310,8 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
                                     child: GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          _deleteImageIds.add(img.id);
-                                          _existingImages.removeWhere((item) => item.id == img.id);
+                                          _deleteImageIds.add(item.id);
+                                          _allImages.removeAt(index);
                                         });
                                       },
                                       child: Container(
@@ -297,11 +326,9 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
                                   ),
                                 ],
                               );
-                            }),
-
-                            // Render newly picked memory images (Cross-Platform Web & Mobile)
-                            ..._newSelectedImages.map((img) {
+                            } else if (item is AppPickedImage) {
                               return Stack(
+                                key: ValueKey('new_${item.name}_$index'),
                                 children: [
                                   Container(
                                     width: 100.0,
@@ -313,7 +340,7 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(8.0),
                                       child: Image.memory(
-                                        img.bytes,
+                                        item.bytes,
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -324,7 +351,7 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
                                     child: GestureDetector(
                                       onTap: () {
                                         setState(() {
-                                          _newSelectedImages.remove(img);
+                                          _allImages.removeAt(index);
                                         });
                                       },
                                       child: Container(
@@ -339,8 +366,9 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
                                   ),
                                 ],
                               );
-                            }),
-                          ],
+                            }
+                            return SizedBox(key: ValueKey('empty_$index'));
+                          },
                         ),
                       ),
                   ],
@@ -477,6 +505,14 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(height: 16.0),
+
+              CustomTextField(
+                label: 'Landing Price',
+                hint: 'e.g. 15,00,000 or 1.5 Cr',
+                controller: _landingPriceController,
+                prefixIcon: Icons.currency_rupee,
               ),
               const SizedBox(height: 16.0),
 
