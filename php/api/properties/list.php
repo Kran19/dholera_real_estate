@@ -107,7 +107,12 @@ try {
     }
 
     sendJsonResponse(true, "Properties retrieved successfully.", [
-        "properties" => $properties
+        "properties" => $properties,
+        "debug" => [
+            "search" => $search,
+            "whereClause" => $whereClause,
+            "params" => $params
+        ]
     ], 200, [
         "page"        => $page,
         "limit"       => $limit,

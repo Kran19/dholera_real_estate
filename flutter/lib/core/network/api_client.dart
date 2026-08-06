@@ -36,9 +36,9 @@ class ApiClient {
   Future<dynamic> get(String endpoint, {Map<String, String>? queryParams}) async {
     try {
       Uri uri = Uri.parse('${ApiConfig.baseUrl}$endpoint');
-      if (queryParams != null && queryParams.isNotEmpty) {
-        uri = uri.replace(queryParameters: queryParams);
-      }
+      final Map<String, String> finalParams = queryParams != null ? Map<String, String>.from(queryParams) : {};
+      finalParams['_t'] = DateTime.now().millisecondsSinceEpoch.toString();
+      uri = uri.replace(queryParameters: finalParams);
 
       final headers = await _getHeaders();
       final response = await _client.get(uri, headers: headers).timeout(ApiConfig.timeoutDuration);

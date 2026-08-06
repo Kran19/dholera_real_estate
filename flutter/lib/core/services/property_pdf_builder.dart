@@ -35,8 +35,6 @@ class PropertyPdfBuilder {
       } catch (_) {}
     }
 
-    final pw.ImageProvider? primaryImageProvider = imageProviders.isNotEmpty ? imageProviders[0] : null;
-
     // 2. Fetch local map templates
     pw.ImageProvider? mapImage1;
     pw.ImageProvider? mapImage2;
@@ -62,7 +60,7 @@ class PropertyPdfBuilder {
     final String roadStr = property.road.isNotEmpty ? property.road : 'Main Sector Road Touch';
     final String refStr = property.reference != null && property.reference!.isNotEmpty ? property.reference! : 'N/A';
 
-    // PAGE 1: Specifications + 1st Image + mapImage1 (fixed on left)
+    // PAGE 1: Specifications + mapImage1 (fixed on left) — NO property photo on right
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4.landscape,
@@ -144,11 +142,12 @@ class PropertyPdfBuilder {
                           pw.SizedBox(width: 20),
                         ],
 
-                        // Right side: Details & Specs & 1st Photo
+                        // Right side: Details & Specs ONLY (NO property image)
                         pw.Expanded(
                           flex: 4,
                           child: pw.Column(
                             crossAxisAlignment: pw.CrossAxisAlignment.start,
+                            mainAxisAlignment: pw.MainAxisAlignment.center,
                             children: [
                               // TITLE & BADGE
                               pw.Container(
@@ -166,69 +165,37 @@ class PropertyPdfBuilder {
                                   ),
                                 ),
                               ),
-                              pw.SizedBox(height: 6),
+                              pw.SizedBox(height: 8),
                               pw.Text(
                                 titleStr,
                                 style: pw.TextStyle(
-                                  fontSize: 15,
+                                  fontSize: 16,
                                   fontWeight: pw.FontWeight.bold,
                                   color: PdfColor.fromHex('#0F172A'),
                                 ),
                               ),
-                              pw.SizedBox(height: 10),
+                              pw.SizedBox(height: 15),
 
-                              // Photo 1 & Specs Split Side-by-Side (Landscape optimized)
-                              pw.Expanded(
-                                child: pw.Row(
-                                  crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-                                  children: [
-                                    if (primaryImageProvider != null) ...[
-                                      pw.Expanded(
-                                        flex: 5,
-                                        child: pw.Container(
-                                          decoration: pw.BoxDecoration(
-                                            borderRadius: pw.BorderRadius.circular(8),
-                                            image: pw.DecorationImage(
-                                              image: primaryImageProvider,
-                                              fit: pw.BoxFit.cover,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      pw.SizedBox(width: 15),
-                                    ],
-                                    pw.Expanded(
-                                      flex: 4,
-                                      child: pw.Column(
-                                        crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                        mainAxisAlignment: pw.MainAxisAlignment.center,
-                                        children: [
-                                          pw.Text(
-                                            'PROPERTY DETAILS',
-                                            style: pw.TextStyle(
-                                              fontSize: 10,
-                                              fontWeight: pw.FontWeight.bold,
-                                              color: PdfColor.fromHex('#1E3A8A'),
-                                            ),
-                                          ),
-                                          pw.Divider(color: PdfColor.fromHex('#E2E8F0')),
-                                          pw.SizedBox(height: 2),
-                                          _buildDetailRow('Village Name:', property.villageName, width: 80),
-                                          _buildDetailRow('Survey No:', property.surveyNo, width: 80),
-                                          _buildDetailRow('Zone:', property.zone, width: 80),
-                                          _buildDetailRow('Town Planning:', property.tp ?? '-', width: 80),
-                                          _buildDetailRow('Final Plot (FP):', property.fp ?? '-', width: 80),
-                                          _buildDetailRow('Road Touch:', roadStr, width: 80),
-                                          _buildDetailRow('Area Size:', areaStr, width: 80),
-                                          if (property.landingPrice != null && property.landingPrice!.isNotEmpty)
-                                            _buildDetailRow('Landing Price:', property.landingPrice!, width: 80),
-                                          _buildDetailRow('Reference:', refStr, width: 80),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                              pw.Text(
+                                'PROPERTY DETAILS',
+                                style: pw.TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: pw.FontWeight.bold,
+                                  color: PdfColor.fromHex('#1E3A8A'),
                                 ),
                               ),
+                              pw.Divider(color: PdfColor.fromHex('#E2E8F0')),
+                              pw.SizedBox(height: 4),
+                              _buildDetailRow('Village Name:', property.villageName, width: 100),
+                              _buildDetailRow('Survey Number:', property.surveyNo, width: 100),
+                              _buildDetailRow('Zone:', property.zone, width: 100),
+                              _buildDetailRow('Town Planning:', property.tp ?? '-', width: 100),
+                              _buildDetailRow('Final Plot (FP):', property.fp ?? '-', width: 100),
+                              _buildDetailRow('Road Touch:', roadStr, width: 100),
+                              _buildDetailRow('Area Size:', areaStr, width: 100),
+                              if (property.landingPrice != null && property.landingPrice!.isNotEmpty)
+                                _buildDetailRow('Landing Price:', property.landingPrice!, width: 100),
+                              _buildDetailRow('Reference:', refStr, width: 100),
                             ],
                           ),
                         ),
@@ -282,10 +249,9 @@ class PropertyPdfBuilder {
       ),
     );
 
-    // PAGE 2: 2nd Image + 1st Image circular beside it + mapImage2 (fixed on left)
-    if (imageProviders.length >= 2) {
+    // PAGE 2: 1st Property Image in a Circle + mapImage2 (fixed on left)
+    if (imageProviders.isNotEmpty) {
       final firstImage = imageProviders[0];
-      final secondImage = imageProviders[1];
 
       pdf.addPage(
         pw.Page(
@@ -347,54 +313,36 @@ class PropertyPdfBuilder {
                             pw.SizedBox(width: 20),
                           ],
 
-                          // Right side: 2nd Image & 1st Image (circular inset)
+                          // Right side: Circular 1st Property Image (no background photo)
                           pw.Expanded(
                             flex: 2,
-                            child: pw.Column(
-                              crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-                              children: [
-                                pw.Expanded(
-                                  flex: 3,
-                                  child: pw.Container(
-                                    decoration: pw.BoxDecoration(
-                                      borderRadius: pw.BorderRadius.circular(12),
-                                      image: pw.DecorationImage(
-                                        image: secondImage,
-                                        fit: pw.BoxFit.cover,
+                            child: pw.Center(
+                              child: pw.Column(
+                                mainAxisAlignment: pw.MainAxisAlignment.center,
+                                children: [
+                                  pw.ClipOval(
+                                    child: pw.Container(
+                                      width: 180,
+                                      height: 180,
+                                      decoration: pw.BoxDecoration(
+                                        image: pw.DecorationImage(
+                                          image: firstImage,
+                                          fit: pw.BoxFit.cover,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                pw.SizedBox(height: 12),
-                                pw.Center(
-                                  child: pw.Row(
-                                    mainAxisAlignment: pw.MainAxisAlignment.center,
-                                    children: [
-                                      pw.ClipOval(
-                                        child: pw.Container(
-                                          width: 90,
-                                          height: 90,
-                                          decoration: pw.BoxDecoration(
-                                            image: pw.DecorationImage(
-                                              image: firstImage,
-                                              fit: pw.BoxFit.cover,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      pw.SizedBox(width: 10),
-                                      pw.Text(
-                                        'Primary View',
-                                        style: pw.TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: pw.FontWeight.bold,
-                                          color: PdfColor.fromHex('#1E3A8A'),
-                                        ),
-                                      ),
-                                    ],
+                                  pw.SizedBox(height: 12),
+                                  pw.Text(
+                                    'Primary Property View',
+                                    style: pw.TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: pw.FontWeight.bold,
+                                      color: PdfColor.fromHex('#1E3A8A'),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -428,10 +376,9 @@ class PropertyPdfBuilder {
       );
     }
 
-    // PAGE 3: 3rd Image + 2nd Image rectangular beside it + mapImage3 (fixed on left)
-    if (imageProviders.length >= 3) {
+    // PAGE 3: 2nd Property Image in a Rectangle + mapImage3 (fixed on left)
+    if (imageProviders.length >= 2) {
       final secondImage = imageProviders[1];
-      final thirdImage = imageProviders[2];
 
       pdf.addPage(
         pw.Page(
@@ -493,53 +440,35 @@ class PropertyPdfBuilder {
                             pw.SizedBox(width: 20),
                           ],
 
-                          // Right side: 3rd Image & 2nd Image (rectangular inset)
+                          // Right side: Rectangular 2nd Property Image (no background photo)
                           pw.Expanded(
                             flex: 2,
-                            child: pw.Column(
-                              crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-                              children: [
-                                pw.Expanded(
-                                  flex: 3,
-                                  child: pw.Container(
+                            child: pw.Center(
+                              child: pw.Column(
+                                mainAxisAlignment: pw.MainAxisAlignment.center,
+                                children: [
+                                  pw.Container(
+                                    width: 220,
+                                    height: 160,
                                     decoration: pw.BoxDecoration(
                                       borderRadius: pw.BorderRadius.circular(12),
                                       image: pw.DecorationImage(
-                                        image: thirdImage,
+                                        image: secondImage,
                                         fit: pw.BoxFit.cover,
                                       ),
                                     ),
                                   ),
-                                ),
-                                pw.SizedBox(height: 12),
-                                pw.Center(
-                                  child: pw.Row(
-                                    mainAxisAlignment: pw.MainAxisAlignment.center,
-                                    children: [
-                                      pw.Container(
-                                        width: 90,
-                                        height: 90,
-                                        decoration: pw.BoxDecoration(
-                                          borderRadius: pw.BorderRadius.circular(8),
-                                          image: pw.DecorationImage(
-                                            image: secondImage,
-                                            fit: pw.BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                      pw.SizedBox(width: 10),
-                                      pw.Text(
-                                        'Secondary View',
-                                        style: pw.TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: pw.FontWeight.bold,
-                                          color: PdfColor.fromHex('#1E3A8A'),
-                                        ),
-                                      ),
-                                    ],
+                                  pw.SizedBox(height: 12),
+                                  pw.Text(
+                                    'Secondary Property View',
+                                    style: pw.TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: pw.FontWeight.bold,
+                                      color: PdfColor.fromHex('#1E3A8A'),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -573,9 +502,9 @@ class PropertyPdfBuilder {
       );
     }
 
-    // PAGE 4+: Single-image pages for remaining photos (Landscape full-page size)
-    if (imageProviders.length >= 4) {
-      for (int i = 3; i < imageProviders.length; i++) {
+    // PAGE 4+: Single-image pages for remaining photos (Landscape full-page size — starts from 3rd image)
+    if (imageProviders.length >= 3) {
+      for (int i = 2; i < imageProviders.length; i++) {
         final currentImage = imageProviders[i];
 
         pdf.addPage(
@@ -604,7 +533,7 @@ class PropertyPdfBuilder {
                             ),
                           ),
                           pw.Text(
-                            'Gallery — Page ${i + 1}',
+                            'Gallery — Page ${i + 2}',
                             style: pw.TextStyle(
                               fontSize: 9,
                               color: PdfColor.fromHex('#93C5FD'),
