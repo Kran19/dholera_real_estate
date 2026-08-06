@@ -149,9 +149,21 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
                   children: [
                     TextField(
                       controller: _searchController,
+                      textInputAction: TextInputAction.search,
+                      onChanged: (val) {
+                        setState(() {});
+                      },
+                      onSubmitted: (val) {
+                        propertyProvider.setSearchQuery(val.trim());
+                      },
                       decoration: InputDecoration(
                         hintText: 'Search Village, Survey No, Reference...',
-                        prefixIcon: const Icon(Icons.search, color: AppColors.textSecondary),
+                        prefixIcon: IconButton(
+                          icon: const Icon(Icons.search, color: AppColors.primary),
+                          onPressed: () {
+                            propertyProvider.setSearchQuery(_searchController.text.trim());
+                          },
+                        ),
                         suffixIcon: _searchController.text.isNotEmpty
                             ? IconButton(
                                 icon: const Icon(Icons.clear),
@@ -167,9 +179,6 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
                           borderSide: const BorderSide(color: AppColors.border),
                         ),
                       ),
-                      onSubmitted: (val) {
-                        propertyProvider.setSearchQuery(val.trim());
-                      },
                     ),
                     const SizedBox(height: 12.0),
 

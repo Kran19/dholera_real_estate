@@ -5,6 +5,14 @@ Format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.3.5] - 2026-08-06
+
+### Added
+- **Embedded Map Brochure Insets**: Embedded local Dholera SIR maps directly on the left side of PDF brochure pages 1, 2, and 3.
+- **Interactive Search Enhancements**: Made search bar prefix magnifying glass icon interactive, added keyboard search action submit key, and implemented real-time clean text tracking for clear buttons.
+
+---
+
 ## [1.3.4] - 2026-08-06
 
 ### Added
