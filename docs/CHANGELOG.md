@@ -5,11 +5,22 @@ Format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## [1.3.5] - 2026-08-06
+## [1.3.7] - 2026-08-06
 
-### Added
-- **Embedded Map Brochure Insets**: Embedded local Dholera SIR maps directly on the left side of PDF brochure pages 1, 2, and 3.
-- **Interactive Search Enhancements**: Made search bar prefix magnifying glass icon interactive, added keyboard search action submit key, and implemented real-time clean text tracking for clear buttons.
+### Fixed
+- **Brochure Photo Overlay Fix**: Corrected layout mapping to show details only on page 1 (no image), circular `firstImage` on page 2, rectangular `secondImage` on page 3, and subsequent gallery images from page 4 onwards.
+- **Search Caching Bypass**: Added HTTP `Cache-Control` headers globally in PHP response helpers and integrated a timestamp-based cache-buster `_t` parameter on Flutter GET requests to bypass any server/CDN caches on Hostinger.
+
+---
+
+## [1.3.6] - 2026-08-06
+
+### Changed
+- **A4 Landscape Brochures**: Configured all brochure pages to build in true landscape (`PdfPageFormat.a4.landscape`) to display wide maps and landscape property photos cleanly without cropping.
+
+---
+
+## [1.3.5] - 2026-08-06
 
 ---
 
