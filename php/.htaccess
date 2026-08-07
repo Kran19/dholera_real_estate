@@ -15,5 +15,18 @@ Options -Indexes
 <IfModule mod_headers.c>
     Header set Access-Control-Allow-Origin "*"
     Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
-    Header set Access-Control-Allow-Headers "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+    Header set Access-Control-Allow-Headers "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, X-Auth-Token"
+
+    # Disable caching for all API routes — prevents Hostinger LiteSpeed from serving stale search results
+    <FilesMatch "\.(php)$">
+        Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </FilesMatch>
+</IfModule>
+
+# LiteSpeed no-cache directive for dynamic PHP API files
+<IfModule LiteSpeed>
+    RewriteEngine On
+    RewriteRule ^api/ - [E=Cache-Control:no-store]
 </IfModule>

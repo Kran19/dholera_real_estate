@@ -41,6 +41,10 @@ class PropertyProvider with ChangeNotifier {
   // Set Search Query
   void setSearchQuery(String query) {
     _searchQuery = query;
+    _properties = [];        // immediately clear stale list
+    _currentPage = 1;
+    _totalPages = 1;
+    notifyListeners();       // show empty/loading instantly
     fetchProperties(refresh: true);
   }
 

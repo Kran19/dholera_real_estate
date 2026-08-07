@@ -106,7 +106,7 @@ class PropertyPdfBuilder {
                           borderRadius: pw.BorderRadius.circular(16),
                         ),
                         child: pw.Text(
-                          'Call: +91 98765 43210',
+                          'Official Property Catalogue',
                           style: pw.TextStyle(
                             fontSize: 10,
                             fontWeight: pw.FontWeight.bold,
@@ -232,11 +232,10 @@ class PropertyPdfBuilder {
                         ],
                       ),
                       pw.Text(
-                        'emperorsmartsolutions.com',
+                        'Property Code: #DRE-${property.id}',
                         style: pw.TextStyle(
-                          fontSize: 10,
-                          fontWeight: pw.FontWeight.bold,
-                          color: PdfColors.white,
+                          fontSize: 8,
+                          color: PdfColor.fromHex('#94A3B8'),
                         ),
                       ),
                     ],
@@ -278,12 +277,18 @@ class PropertyPdfBuilder {
                             color: PdfColors.white,
                           ),
                         ),
-                        pw.Text(
-                          'Gallery — Page 2',
-                          style: pw.TextStyle(
-                            fontSize: 9,
-                            color: PdfColor.fromHex('#93C5FD'),
-                          ),
+                        pw.Row(
+                          children: [
+                            pw.Icon(const pw.IconData(0xe3f4), size: 12, color: PdfColor.fromHex('#93C5FD')),
+                            pw.SizedBox(width: 4),
+                            pw.Text(
+                              'Gallery — Page 2',
+                              style: pw.TextStyle(
+                                fontSize: 9,
+                                color: PdfColor.fromHex('#93C5FD'),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -354,18 +359,11 @@ class PropertyPdfBuilder {
                   pw.Container(
                     padding: const pw.EdgeInsets.symmetric(horizontal: 28, vertical: 10),
                     color: PdfColor.fromHex('#0F172A'),
-                    child: pw.Row(
-                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                      children: [
-                        pw.Text(
-                          'Property Code: #DRE-${property.id}',
-                          style: pw.TextStyle(fontSize: 8, color: PdfColor.fromHex('#94A3B8')),
-                        ),
-                        pw.Text(
-                          'emperorsmartsolutions.com',
-                          style: pw.TextStyle(fontSize: 8, color: PdfColors.white),
-                        ),
-                      ],
+                    child: pw.Center(
+                      child: pw.Text(
+                        'Property Code: #DRE-${property.id}',
+                        style: pw.TextStyle(fontSize: 8, color: PdfColor.fromHex('#94A3B8')),
+                      ),
                     ),
                   ),
                 ],
@@ -405,12 +403,18 @@ class PropertyPdfBuilder {
                             color: PdfColors.white,
                           ),
                         ),
-                        pw.Text(
-                          'Gallery — Page 3',
-                          style: pw.TextStyle(
-                            fontSize: 9,
-                            color: PdfColor.fromHex('#93C5FD'),
-                          ),
+                        pw.Row(
+                          children: [
+                            pw.Icon(const pw.IconData(0xe3f4), size: 12, color: PdfColor.fromHex('#93C5FD')),
+                            pw.SizedBox(width: 4),
+                            pw.Text(
+                              'Gallery — Page 3',
+                              style: pw.TextStyle(
+                                fontSize: 9,
+                                color: PdfColor.fromHex('#93C5FD'),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -480,18 +484,11 @@ class PropertyPdfBuilder {
                   pw.Container(
                     padding: const pw.EdgeInsets.symmetric(horizontal: 28, vertical: 10),
                     color: PdfColor.fromHex('#0F172A'),
-                    child: pw.Row(
-                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                      children: [
-                        pw.Text(
-                          'Property Code: #DRE-${property.id}',
-                          style: pw.TextStyle(fontSize: 8, color: PdfColor.fromHex('#94A3B8')),
-                        ),
-                        pw.Text(
-                          'emperorsmartsolutions.com',
-                          style: pw.TextStyle(fontSize: 8, color: PdfColors.white),
-                        ),
-                      ],
+                    child: pw.Center(
+                      child: pw.Text(
+                        'Property Code: #DRE-${property.id}',
+                        style: pw.TextStyle(fontSize: 8, color: PdfColor.fromHex('#94A3B8')),
+                      ),
                     ),
                   ),
                 ],
@@ -532,12 +529,18 @@ class PropertyPdfBuilder {
                               color: PdfColors.white,
                             ),
                           ),
-                          pw.Text(
-                            'Gallery — Page ${i + 2}',
-                            style: pw.TextStyle(
-                              fontSize: 9,
-                              color: PdfColor.fromHex('#93C5FD'),
-                            ),
+                          pw.Row(
+                            children: [
+                              pw.Icon(const pw.IconData(0xe3f4), size: 12, color: PdfColor.fromHex('#93C5FD')),
+                              pw.SizedBox(width: 4),
+                              pw.Text(
+                                'Gallery — Page ${i + 2}',
+                                style: pw.TextStyle(
+                                  fontSize: 9,
+                                  color: PdfColor.fromHex('#93C5FD'),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -563,18 +566,11 @@ class PropertyPdfBuilder {
                     pw.Container(
                       padding: const pw.EdgeInsets.symmetric(horizontal: 28, vertical: 10),
                       color: PdfColor.fromHex('#0F172A'),
-                      child: pw.Row(
-                        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                        children: [
-                          pw.Text(
-                            'Property Code: #DRE-${property.id}',
-                            style: pw.TextStyle(fontSize: 8, color: PdfColor.fromHex('#94A3B8')),
-                          ),
-                          pw.Text(
-                            'emperorsmartsolutions.com',
-                            style: pw.TextStyle(fontSize: 8, color: PdfColors.white),
-                          ),
-                        ],
+                      child: pw.Center(
+                        child: pw.Text(
+                          'Property Code: #DRE-${property.id}',
+                          style: pw.TextStyle(fontSize: 8, color: PdfColor.fromHex('#94A3B8')),
+                        ),
                       ),
                     ),
                   ],
