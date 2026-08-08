@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
@@ -30,6 +32,7 @@ class PropertyListScreen extends StatefulWidget {
 class _PropertyListScreenState extends State<PropertyListScreen> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
+  Timer? _searchDebounce;
 
   // Grid Columns State (1, 2, or 4 columns)
   int _gridCols = 2;
@@ -59,6 +62,7 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
   void dispose() {
     _scrollController.dispose();
     _searchController.dispose();
+    _searchDebounce?.cancel();
     super.dispose();
   }
 
@@ -147,38 +151,76 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
                 color: AppColors.surface,
                 child: Column(
                   children: [
-                    TextField(
-                      controller: _searchController,
-                      textInputAction: TextInputAction.search,
-                      onChanged: (val) {
-                        setState(() {});
-                      },
-                      onSubmitted: (val) {
-                        propertyProvider.setSearchQuery(val.trim());
-                      },
-                      decoration: InputDecoration(
-                        hintText: 'Search Village, Survey No, Reference...',
-                        prefixIcon: IconButton(
-                          icon: const Icon(Icons.search, color: AppColors.primary),
-                          onPressed: () {
-                            propertyProvider.setSearchQuery(_searchController.text.trim());
-                          },
+                    // ── Search Bar ──────────────────────────────────────────
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller:      _searchController,
+                            textInputAction: TextInputAction.search,
+                            onChanged: (val) {
+                              setState(() {});
+                              // Debounce: fire search 500ms after user stops typing
+                              _searchDebounce?.cancel();
+                              _searchDebounce = Timer(
+                                const Duration(milliseconds: 500),
+                                () => propertyProvider.setSearchQuery(val.trim()),
+                              );
+                            },
+                            onSubmitted: (val) {
+                              _searchDebounce?.cancel();
+                              propertyProvider.setSearchQuery(val.trim());
+                            },
+                            decoration: InputDecoration(
+                              hintText:    'Search Village, Survey No, Reference...',
+                              // Icon is decorative only — tap handled by button
+                              prefixIcon:  const Icon(Icons.search, color: AppColors.primary),
+                              suffixIcon: _searchController.text.isNotEmpty
+                                  ? IconButton(
+                                      icon: const Icon(Icons.clear),
+                                      onPressed: () {
+                                        _searchController.clear();
+                                        _searchDebounce?.cancel();
+                                        propertyProvider.setSearchQuery('');
+                                        setState(() {});
+                                      },
+                                    )
+                                  : null,
+                              contentPadding: const EdgeInsets.symmetric(vertical: 12.0),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                                borderSide:   const BorderSide(color: AppColors.border),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                                borderSide:   const BorderSide(color: AppColors.border),
+                              ),
+                            ),
+                          ),
                         ),
-                        suffixIcon: _searchController.text.isNotEmpty
-                            ? IconButton(
-                                icon: const Icon(Icons.clear),
-                                onPressed: () {
-                                  _searchController.clear();
-                                  propertyProvider.setSearchQuery('');
-                                },
-                              )
-                            : null,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 12.0),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                          borderSide: const BorderSide(color: AppColors.border),
+                        const SizedBox(width: 8),
+                        // Standalone search button — guaranteed tap on all platforms
+                        SizedBox(
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _searchDebounce?.cancel();
+                              propertyProvider.setSearchQuery(_searchController.text.trim());
+                              FocusScope.of(context).unfocus();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: Colors.white,
+                              shape:           RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                            ),
+                            child: const Text('Search',
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                     const SizedBox(height: 12.0),
 

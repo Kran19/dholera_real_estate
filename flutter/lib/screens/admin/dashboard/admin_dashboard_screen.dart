@@ -13,7 +13,9 @@ import '../../users/user_list_screen.dart';
 import '../../properties/property_list_screen.dart';
 import '../../properties/add_edit_property_screen.dart';
 import '../../inquiry/inquiry_list_screen.dart';
+import '../../admin/calls_today/calls_today_screen.dart';
 import '../../auth/login/login_screen.dart';
+import '../../../providers/call_log_provider.dart';
 
 /// Super Admin Dashboard Screen
 /// DHOLERA REAL ESTATE
@@ -38,6 +40,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     Provider.of<UserProvider>(context, listen: false).fetchUsers(refresh: true);
     Provider.of<PropertyProvider>(context, listen: false).fetchProperties(refresh: true);
     Provider.of<InquiryProvider>(context, listen: false).fetchInquiries();
+    Provider.of<CallLogProvider>(context, listen: false).loadData(silent: true);
   }
 
   @override
@@ -205,6 +208,23 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     MaterialPageRoute(builder: (_) => const InquiryListScreen()),
                   );
                 },
+              ),
+              const SizedBox(height: 16.0),
+
+              // ── Calls Today ──────────────────────────────────────────────
+              Consumer<CallLogProvider>(
+                builder: (context, callLogProvider, _) => _buildActionCard(
+                  title: 'Calls Today',
+                  subtitle: '${callLogProvider.dayLabel} — Daily 10-contact rotating follow-up',
+                  icon: Icons.phone_forwarded_outlined,
+                  badgeText: '${callLogProvider.calledTodayCount}/10 Called',
+                  color: const Color(0xFFF59E0B),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const CallsTodayScreen()),
+                    );
+                  },
+                ),
               ),
               const SizedBox(height: 16.0),
 

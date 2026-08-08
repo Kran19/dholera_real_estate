@@ -122,6 +122,27 @@ CREATE TABLE IF NOT EXISTS `property_images` (
 
 ---
 
+### E. Table: `inquiry_call_logs`
+Stores call log status and remarks for daily 10-contact follow-up batches.
+
+```sql
+CREATE TABLE IF NOT EXISTS `inquiry_call_logs` (
+  `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `inquiry_id` INT NOT NULL,
+  `called_date` DATE NOT NULL,
+  `status` ENUM('received','pending','no_answer','callback','not_interested') NOT NULL DEFAULT 'pending',
+  `remarks` TEXT NULL,
+  `created_by` INT NOT NULL,
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `uq_inquiry_date_user` (`inquiry_id`, `called_date`, `created_by`),
+  INDEX `idx_called_date` (`called_date`),
+  INDEX `idx_inquiry_id` (`inquiry_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+```
+
+---
+
 ## 2. Foreign Key & Integrity Constraints
 
 1. **`property_images.property_id` → `properties.id`**: `ON DELETE CASCADE`. When a property record is removed, associated image metadata records in DB are automatically removed.

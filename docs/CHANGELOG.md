@@ -5,6 +5,23 @@ Format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.4.0] - 2026-08-09
+
+### Added
+- **Calls Today (Daily 10-Contact Circular Batch)**:
+  * Admin menu action under "Management Actions" displaying 10 daily follow-up contacts.
+  * Mathematical circular rolling index: `startIndex = (dayIndex * 10) % N`, wrapping seamlessly across cycles.
+  * Direct dial button, contact details, requirement summary, and status picker (`Received`, `Pending`, `No Answer`, `Callback Requested`, `Not Interested`) + remarks.
+  * Backend API `inquiries/all.php` for index computation, `inquiries/call_logs/save.php` (upsert), and `inquiries/call_logs/today.php`.
+  * MySQL table `inquiry_call_logs` with unique constraint per inquiry per day per admin.
+
+### Fixed
+- **Property Search Execution**:
+  * Fixed touch event interception on Android caused by placing `IconButton` inside `TextField.prefixIcon`.
+  * Created a dedicated, standalone `ElevatedButton` search trigger and added a 500ms `Timer` debounce on text field `onChanged`.
+
+---
+
 ## [1.3.7] - 2026-08-06
 
 ### Fixed

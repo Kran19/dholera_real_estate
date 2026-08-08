@@ -22,7 +22,7 @@ class ApiConfig {
   }
 
   // App Version (Current installed version)
-  static const String currentAppVersion = '1.3.8';
+  static const String currentAppVersion = '1.4.0';
 
   // Endpoint URLs
   static const String versionConfig = '/api/config/version.php';
@@ -42,10 +42,15 @@ class ApiConfig {
   static const String propertyDelete = '/api/properties/delete.php';
   static const String propertyExportPdf = '/api/properties/pdf_brochure.php';
 
-  static const String inquiryList = '/api/inquiries/list.php';
-  static const String inquiryCreate = '/api/inquiries/create.php';
-  static const String inquiryDelete = '/api/inquiries/delete.php';
+  static const String inquiryList      = '/api/inquiries/list.php';
+  static const String inquiryAll       = '/api/inquiries/all.php';
+  static const String inquiryCreate    = '/api/inquiries/create.php';
+  static const String inquiryDelete    = '/api/inquiries/delete.php';
   static const String inquiryExportPdf = '/api/inquiries/export_pdf.php';
+
+  // Call Logs (Calls Today feature)
+  static const String callLogSave  = '/api/inquiries/call_logs/save.php';
+  static const String callLogToday = '/api/inquiries/call_logs/today.php';
 
   // Network Timeout duration (15 seconds)
   static const Duration timeoutDuration = Duration(seconds: 15);
