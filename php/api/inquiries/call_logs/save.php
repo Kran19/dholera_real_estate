@@ -57,7 +57,7 @@ try {
     $inquiryId = (int)$input['inquiry_id'];
     $status    = $input['status'];
     $remarks   = trim($input['remarks'] ?? '');
-    $createdBy = $authUser['id'];
+    $createdBy = (int)($currentUser['id'] ?? $currentUser['user_id'] ?? 1);
 
     $stmt = $db->prepare("
         INSERT INTO inquiry_call_logs (inquiry_id, called_date, status, remarks, created_by)

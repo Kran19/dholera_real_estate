@@ -48,7 +48,7 @@ try {
     ");
     $stmt->execute([
         ':date'    => $date,
-        ':user_id' => $authUser['id'],
+        ':user_id' => (int)($currentUser['id'] ?? $currentUser['user_id'] ?? 1),
     ]);
     $logs = $stmt->fetchAll();
 
