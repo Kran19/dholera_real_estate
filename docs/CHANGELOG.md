@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 Format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.4.2] - 2026-08-10
+
+### Fixed
+- **Native PDO Parameter Binding Error (`SQLSTATE[HY093]`)**:
+  * Fixed `SQLSTATE[HY093]: Invalid parameter number` error when searching properties or inquiries with `PDO::ATTR_EMULATE_PREPARES => false`.
+  * Replaced repeated `:search` named parameter in multi-field `LIKE` queries with distinct parameter tokens (`:search1`, `:search2`, `:search3` in property search; `:s1`, `:s2`, `:s3`, `:s4`, `:s5` in inquiry search).
+
 ---
 
 ## [1.4.0] - 2026-08-09

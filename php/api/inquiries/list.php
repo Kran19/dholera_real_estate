@@ -46,8 +46,13 @@ try {
     $params = [];
 
     if ($search !== '') {
-        $where[] = "(i.customer_name LIKE :search OR i.customer_city LIKE :search OR i.customer_mobile LIKE :search OR i.requirement LIKE :search OR i.notes LIKE :search)";
-        $params[':search'] = '%' . $search . '%';
+        $where[] = "(i.customer_name LIKE :s1 OR i.customer_city LIKE :s2 OR i.customer_mobile LIKE :s3 OR i.requirement LIKE :s4 OR i.notes LIKE :s5)";
+        $searchTerm = '%' . $search . '%';
+        $params[':s1'] = $searchTerm;
+        $params[':s2'] = $searchTerm;
+        $params[':s3'] = $searchTerm;
+        $params[':s4'] = $searchTerm;
+        $params[':s5'] = $searchTerm;
     }
 
     $whereClause = !empty($where) ? 'WHERE ' . implode(' AND ', $where) : '';
