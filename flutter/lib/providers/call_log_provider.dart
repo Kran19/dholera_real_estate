@@ -18,11 +18,11 @@ class CallLogProvider extends ChangeNotifier {
   final CallLogService _service = CallLogService();
 
   // ── State ───────────────────────────────────────────────────────────────────
-  List<InquiryModel>        _allInquiries = [];
-  List<InquiryModel>        _todaysBatch  = [];
-  Map<int, CallLogModel>    _todaysLogs   = {}; // inquiryId → log
-  bool                      _isLoading    = false;
-  bool                      _isSaving     = false;
+  List<InquiryModel>        _allInquiries     = [];
+  List<InquiryModel>        _todaysBatch      = [];
+  Map<int, CallLogModel>    _todaysLogs       = {}; // inquiryId → log
+  bool                      _isLoading        = false;
+  int?                      _savingInquiryId; // Tracks currently saving item
   String?                   _errorMessage;
 
   // Computed cycle info
@@ -33,14 +33,18 @@ class CallLogProvider extends ChangeNotifier {
   static final DateTime _epoch = DateTime(2026, 1, 1);
 
   // ── Getters ─────────────────────────────────────────────────────────────────
-  List<InquiryModel>     get todaysBatch   => List.unmodifiable(_todaysBatch);
-  Map<int, CallLogModel> get todaysLogs    => Map.unmodifiable(_todaysLogs);
-  bool                   get isLoading     => _isLoading;
-  bool                   get isSaving      => _isSaving;
-  String?                get errorMessage  => _errorMessage;
-  int                    get dayIndex      => _dayIndex;
-  int                    get cycleLength   => _cycleLength;
+  List<InquiryModel>     get todaysBatch    => List.unmodifiable(_todaysBatch);
+  Map<int, CallLogModel> get todaysLogs     => Map.unmodifiable(_todaysLogs);
+  bool                   get isLoading      => _isLoading;
+  bool                   get isSaving       => _savingInquiryId != null;
+  int?                   get savingInquiryId=> _savingInquiryId;
+  String?                get errorMessage   => _errorMessage;
+  int                    get dayIndex       => _dayIndex;
+  int                    get cycleLength    => _cycleLength;
   int                    get totalInquiries => _allInquiries.length;
+
+  /// Check if a specific inquiry card is currently saving
+  bool isSavingInquiry(int id) => _savingInquiryId == id;
 
   /// e.g. "Day 3 of 12"
   String get dayLabel => 'Day ${_dayIndex + 1} of $_cycleLength';
@@ -49,18 +53,24 @@ class CallLogProvider extends ChangeNotifier {
   double get cycleProgress =>
       _cycleLength > 0 ? (_dayIndex + 1) / _cycleLength : 0.0;
 
-  /// How many contacts have been logged today
-  int get calledTodayCount => _todaysLogs.values
-      .where((l) => l.status != 'pending')
-      .length;
+  /// How many contacts in today's batch have been logged today
+  int get calledTodayCount {
+    if (_todaysBatch.isEmpty) return 0;
+    final batchIds = _todaysBatch.map((i) => i.id).toSet();
+    return _todaysLogs.values
+        .where((l) => batchIds.contains(l.inquiryId) && l.status != 'pending')
+        .length;
+  }
 
-  /// Compact range label, e.g. "Contacts 21–30"
+  /// Compact range label, e.g. "Contacts 21–30" or "All 3 contacts"
   String get batchRangeLabel {
     if (_allInquiries.isEmpty) return '';
-    final n     = _allInquiries.length;
+    final n = _allInquiries.length;
+    if (n <= 10) {
+      return 'All $n contacts';
+    }
     final start = (_dayIndex * 10) % n;
     final end   = (start + 9) % n;
-    // Simple label — wraps if end < start
     if (end >= start) {
       return 'Contacts ${start + 1}–${end + 1}';
     }
@@ -101,7 +111,7 @@ class CallLogProvider extends ChangeNotifier {
     required String status,
     required String remarks,
   }) async {
-    _isSaving = true;
+    _savingInquiryId = inquiryId;
     notifyListeners();
 
     final today   = _todayDateString();
@@ -121,7 +131,7 @@ class CallLogProvider extends ChangeNotifier {
       );
     }
 
-    _isSaving = false;
+    _savingInquiryId = null;
     notifyListeners();
     return success;
   }
@@ -150,12 +160,13 @@ class CallLogProvider extends ChangeNotifier {
     _dayIndex      = _cycleLength > 0 ? daysSince % _cycleLength : 0;
   }
 
-  /// Always returns exactly 10 contacts (circular wrap).
+  /// Returns unique batch items (max 10, or total count if total < 10).
   List<InquiryModel> _computeBatch() {
     final n = _allInquiries.length;
     if (n == 0) return [];
+    final count = n < 10 ? n : 10;
     final start = (_dayIndex * 10) % n;
-    return List.generate(10, (i) => _allInquiries[(start + i) % n]);
+    return List.generate(count, (i) => _allInquiries[(start + i) % n]);
   }
 
   String _todayDateString() {

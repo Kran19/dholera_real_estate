@@ -217,7 +217,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   title: 'Calls Today',
                   subtitle: '${callLogProvider.dayLabel} — Daily 10-contact rotating follow-up',
                   icon: Icons.phone_forwarded_outlined,
-                  badgeText: '${callLogProvider.calledTodayCount}/10 Called',
+                  badgeText: '${callLogProvider.calledTodayCount}/${callLogProvider.todaysBatch.length} Called',
                   color: const Color(0xFFF59E0B),
                   onTap: () {
                     Navigator.of(context).push(

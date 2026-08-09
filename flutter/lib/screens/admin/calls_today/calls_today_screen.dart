@@ -167,7 +167,10 @@ class _CallsTodayScreenState extends State<CallsTodayScreen> {
 
   // ── Header: progress bar + day label ──────────────────────────────────────
   Widget _buildHeader(CallLogProvider provider) {
-    final called = provider.calledTodayCount;
+    final called       = provider.calledTodayCount;
+    final totalInBatch = provider.todaysBatch.length;
+    final isDone       = totalInBatch > 0 && called == totalInBatch;
+
     return Container(
       width: double.infinity,
       color: AppColors.surface,
@@ -183,15 +186,15 @@ class _CallsTodayScreenState extends State<CallsTodayScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: BoxDecoration(
-                  color: called == 10
+                  color: isDone
                       ? AppColors.success.withValues(alpha: 0.12)
                       : AppColors.warning.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  '$called / 10 Called',
+                  '$called / $totalInBatch Called',
                   style: TextStyle(
-                    color:      called == 10 ? AppColors.success : AppColors.warning,
+                    color:      isDone ? AppColors.success : AppColors.warning,
                     fontWeight: FontWeight.bold,
                     fontSize:   13,
                   ),
@@ -417,7 +420,7 @@ class _CallsTodayScreenState extends State<CallsTodayScreen> {
             // ── Save button ──────────────────────────────────────────────────
             Align(
               alignment: Alignment.centerRight,
-              child: provider.isSaving
+              child: provider.isSavingInquiry(id)
                   ? const SizedBox(
                       width: 24, height: 24,
                       child: CircularProgressIndicator(strokeWidth: 2.5),
