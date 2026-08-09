@@ -112,28 +112,34 @@ class CallLogProvider extends ChangeNotifier {
     required String remarks,
   }) async {
     _savingInquiryId = inquiryId;
+    _errorMessage    = null;
     notifyListeners();
 
-    final today   = _todayDateString();
-    final success = await _service.saveCallLog(
-      inquiryId:  inquiryId,
-      calledDate: today,
-      status:     status,
-      remarks:    remarks,
-    );
-
-    if (success) {
-      _todaysLogs[inquiryId] = CallLogModel(
+    try {
+      final today   = _todayDateString();
+      final success = await _service.saveCallLog(
         inquiryId:  inquiryId,
         calledDate: today,
         status:     status,
         remarks:    remarks,
       );
-    }
 
-    _savingInquiryId = null;
-    notifyListeners();
-    return success;
+      if (success) {
+        _todaysLogs[inquiryId] = CallLogModel(
+          inquiryId:  inquiryId,
+          calledDate: today,
+          status:     status,
+          remarks:    remarks,
+        );
+      }
+      return success;
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '').replaceAll('ApiException: ', '');
+      return false;
+    } finally {
+      _savingInquiryId = null;
+      notifyListeners();
+    }
   }
 
   /// Returns the saved log for an inquiry (null if not yet logged today).

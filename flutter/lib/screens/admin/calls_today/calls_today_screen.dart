@@ -96,12 +96,22 @@ class _CallsTodayScreenState extends State<CallsTodayScreen> {
       remarks:   remarks,
     );
     if (!mounted) return;
+
+    final String message;
+    if (success) {
+      message = '✅ Saved successfully';
+    } else if (provider.errorMessage != null && provider.errorMessage!.isNotEmpty) {
+      message = '❌ Error: ${provider.errorMessage}';
+    } else {
+      message = '❌ Failed to save. Please make sure the latest server code is deployed via git pull.';
+    }
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(success ? '✅ Saved successfully' : '❌ Failed to save. Try again.'),
+        content: Text(message),
         backgroundColor: success ? AppColors.success : AppColors.error,
         behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
