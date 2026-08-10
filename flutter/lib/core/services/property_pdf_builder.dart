@@ -5,10 +5,8 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import '../../models/property_model.dart';
 
-/**
- * Native A4 Landscape PDF Binary Builder for Property Catalogue Brochures
- * DHOLERA REAL ESTATE — Generates True application/pdf Binary Stream in Landscape
- */
+/// Property PDF Document Builder
+/// DHOLERA REAL ESTATE
 class PropertyPdfBuilder {
   static Future<Uint8List> buildPdf(PropertyModel property) async {
     final pdf = pw.Document();

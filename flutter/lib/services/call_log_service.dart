@@ -3,10 +3,8 @@ import '../core/config/api_config.dart';
 import '../models/call_log_model.dart';
 import '../models/inquiry_model.dart';
 
-/**
- * Call Log Service — Raw API calls for Calls Today feature
- * DHOLERA REAL ESTATE
- */
+/// Call Log API Service
+/// DHOLERA REAL ESTATE
 class CallLogService {
   final ApiClient _apiClient = ApiClient();
 

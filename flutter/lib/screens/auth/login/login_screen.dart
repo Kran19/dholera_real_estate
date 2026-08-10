@@ -10,10 +10,8 @@ import '../../../widgets/custom_text_field.dart';
 import '../../admin/dashboard/admin_dashboard_screen.dart';
 import '../../properties/property_list_screen.dart';
 
-/**
- * Login Screen
- * DHOLERA REAL ESTATE — Enhanced with Smooth Entrance & Loading Animations
- */
+/// Login Screen
+/// DHOLERA REAL ESTATE
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 

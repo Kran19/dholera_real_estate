@@ -274,7 +274,7 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
                         child: ReorderableListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: _allImages.length,
-                          onReorder: (oldIndex, newIndex) {
+                          onReorderItem: (oldIndex, newIndex) {
                             setState(() {
                               if (oldIndex < newIndex) {
                                 newIndex -= 1;

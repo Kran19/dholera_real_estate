@@ -1,7 +1,5 @@
-/**
- * Property Image Entity Model
- * DHOLERA REAL ESTATE
- */
+/// Property Image Data Model
+/// DHOLERA REAL ESTATE
 class PropertyImageModel {
   final int id;
   final String imageUrl;

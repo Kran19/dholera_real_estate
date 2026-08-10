@@ -1,9 +1,7 @@
 import 'property_image_model.dart';
 
-/**
- * Property Listing Entity Model
- * DHOLERA REAL ESTATE
- */
+/// Property Data Model
+/// DHOLERA REAL ESTATE
 class PropertyModel {
   final int id;
   final String villageName;

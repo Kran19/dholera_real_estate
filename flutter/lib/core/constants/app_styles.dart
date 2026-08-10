@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 
-/**
- * App Styles & Typography
- * DHOLERA REAL ESTATE
- */
+/// App Styles & Typography
+/// DHOLERA REAL ESTATE
 class AppStyles {
   // Headings (Outfit font)
   static TextStyle heading1 = GoogleFonts.outfit(

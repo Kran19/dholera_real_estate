@@ -5,10 +5,8 @@ import '../core/storage/secure_storage_service.dart';
 
 enum AuthStatus { uninitialized, authenticated, unauthenticated, loading }
 
-/**
- * Authentication Provider State Management
- * DHOLERA REAL ESTATE
- */
+/// Authentication State Provider
+/// DHOLERA REAL ESTATE
 class AuthProvider with ChangeNotifier {
   final AuthService _authService = AuthService();
 

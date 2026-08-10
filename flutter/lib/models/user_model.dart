@@ -1,7 +1,5 @@
-/**
- * User Entity Model
- * DHOLERA REAL ESTATE
- */
+/// User Data Model
+/// DHOLERA REAL ESTATE
 class UserModel {
   final int id;
   final String username;

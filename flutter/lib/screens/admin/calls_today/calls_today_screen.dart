@@ -8,19 +8,16 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_styles.dart';
 import '../../../models/inquiry_model.dart';
-import '../../../models/call_log_model.dart';
 import '../../../providers/call_log_provider.dart';
 import '../../../widgets/loading_widget.dart';
 
-/**
- * Calls Today Screen (Super Admin Only)
- * DHOLERA REAL ESTATE — Daily rotating 10-contact follow-up list
- *
- * Batch logic (computed in CallLogProvider):
- *   cycleLength = ceil(total / 10)
- *   dayIndex    = daysSince(2026-01-01) % cycleLength
- *   batch[i]    = allInquiries[(dayIndex*10 + i) % total]  ← circular
- */
+/// Calls Today Screen (Super Admin Only)
+/// DHOLERA REAL ESTATE — Daily rotating 10-contact follow-up list
+///
+/// Batch logic (computed in CallLogProvider):
+///   cycleLength = ceil(total / 10)
+///   dayIndex    = daysSince(2026-01-01) % cycleLength
+///   batch[i]    = allInquiries[(dayIndex*10 + i) % total]  ← circular
 class CallsTodayScreen extends StatefulWidget {
   const CallsTodayScreen({super.key});
 
@@ -377,7 +374,7 @@ class _CallsTodayScreenState extends State<CallsTodayScreen> {
 
             // ── Status dropdown ──────────────────────────────────────────────
             DropdownButtonFormField<String>(
-              value:       _draftStatus[id],
+              initialValue: _draftStatus[id],
               decoration:  InputDecoration(
                 labelText:       'Call Status',
                 labelStyle:      const TextStyle(fontSize: 13),

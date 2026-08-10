@@ -2,10 +2,8 @@ import '../core/network/api_client.dart';
 import '../core/config/api_config.dart';
 import '../models/user_model.dart';
 
-/**
- * Authentication Network Service
- * DHOLERA REAL ESTATE
- */
+/// Authentication API Service
+/// DHOLERA REAL ESTATE
 class AuthService {
   final ApiClient _apiClient = ApiClient();
 

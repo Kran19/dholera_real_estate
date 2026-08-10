@@ -113,11 +113,11 @@ class _UserListScreenState extends State<UserListScreen> {
                     RadioGroup<String>(
                       groupValue: selectedStatus,
                       onChanged: (val) => setModalState(() => selectedStatus = val!),
-                      child: Row(
+                      child: const Row(
                         children: [
                           Expanded(
                             child: RadioListTile<String>(
-                              title: const Text('Active', style: TextStyle(fontSize: 14)),
+                              title: Text('Active', style: TextStyle(fontSize: 14)),
                               value: 'active',
                               activeColor: AppColors.success,
                               contentPadding: EdgeInsets.zero,
@@ -125,7 +125,7 @@ class _UserListScreenState extends State<UserListScreen> {
                           ),
                           Expanded(
                             child: RadioListTile<String>(
-                              title: const Text('Inactive', style: TextStyle(fontSize: 14)),
+                              title: Text('Inactive', style: TextStyle(fontSize: 14)),
                               value: 'inactive',
                               activeColor: AppColors.error,
                               contentPadding: EdgeInsets.zero,
@@ -158,7 +158,7 @@ class _UserListScreenState extends State<UserListScreen> {
                         }
 
                         if (ctx.mounted) Navigator.of(ctx).pop();
-                        if (context.mounted) {
+                        if (mounted) {
                           if (success) {
                             UiHelpers.showSnackBar(
                               context,

@@ -14,9 +14,8 @@ void main() {
   runApp(const DholeraRealEstateApp());
 }
 
-/**
- * DHOLERA REAL ESTATE — Main Entry Point
- */
+/// Main Application Root Widget
+/// DHOLERA REAL ESTATE
 class DholeraRealEstateApp extends StatelessWidget {
   const DholeraRealEstateApp({super.key});
 

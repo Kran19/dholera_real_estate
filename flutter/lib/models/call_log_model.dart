@@ -1,7 +1,5 @@
-/**
- * Call Log Entity Model
- * DHOLERA REAL ESTATE — Stores call outcome per inquiry per day
- */
+/// Call Log Data Model
+/// DHOLERA REAL ESTATE — Stores call outcome per inquiry per day
 class CallLogModel {
   final int    inquiryId;
   final String calledDate; // "yyyy-MM-dd"

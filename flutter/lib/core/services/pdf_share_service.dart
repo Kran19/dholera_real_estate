@@ -9,10 +9,8 @@ import '../config/api_config.dart';
 import '../../models/property_model.dart';
 import 'property_pdf_builder.dart';
 
-/**
- * Direct PDF Binary File & WhatsApp Attachment Sharing Service
- * DHOLERA REAL ESTATE — Generates & Shares True application/pdf Binary Files
- */
+/// Direct PDF Binary File & WhatsApp Attachment Sharing Service
+/// DHOLERA REAL ESTATE — Generates & Shares True application/pdf Binary Files
 class PdfShareService {
   /// Shares Property Brochure PDF File on WhatsApp & Native Share Sheet
   static Future<void> sharePropertyPdf(BuildContext context, PropertyModel property) async {

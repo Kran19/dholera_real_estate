@@ -6,10 +6,8 @@ import '../core/constants/app_styles.dart';
 
 import '../core/services/pdf_share_service.dart';
 
-/**
- * Responsive Property Card Component
- * DHOLERA REAL ESTATE — Optimized for 1-Col, 2-Col, and 4-Col Grid Layouts
- */
+/// Property Listing Card Component
+/// DHOLERA REAL ESTATE
 class PropertyCard extends StatelessWidget {
   final PropertyModel property;
   final VoidCallback onTap;
@@ -225,7 +223,7 @@ class PropertyCard extends StatelessWidget {
                         ),
                         if (!isCompact && property.road.isNotEmpty) ...[
                           const SizedBox(width: 8),
-                          Icon(Icons.add_road, size: 14, color: AppColors.textSecondary),
+                          const Icon(Icons.add_road, size: 14, color: AppColors.textSecondary),
                           const SizedBox(width: 3),
                           Expanded(
                             child: Text(

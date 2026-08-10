@@ -6,10 +6,8 @@ import '../storage/secure_storage_service.dart';
 import '../../models/app_picked_image.dart';
 import 'api_exceptions.dart';
 
-/**
- * Centralized HTTP API Client
- * DHOLERA REAL ESTATE (Cross-Platform Web & Mobile)
- */
+/// Core HTTP API Client with Dynamic Base URL, Authorization, Timeout & Error Handling
+/// DHOLERA REAL ESTATE
 class ApiClient {
   final http.Client _client = http.Client();
 
@@ -122,7 +120,7 @@ class ApiClient {
     try {
       jsonResponseBody = jsonDecode(response.body);
     } catch (_) {
-      final String preview = response.body.length > 250 ? response.body.substring(0, 250) + '...' : response.body;
+      final String preview = response.body.length > 250 ? '${response.body.substring(0, 250)}...' : response.body;
       throw ApiException('Server error (HTTP ${response.statusCode}): $preview', statusCode: response.statusCode);
     }
 

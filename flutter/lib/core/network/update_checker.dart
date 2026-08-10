@@ -6,10 +6,8 @@ import '../network/api_client.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_styles.dart';
 
-/**
- * In-App Version & Automatic Update Checker Service
- * DHOLERA REAL ESTATE
- */
+/// In-App Version & Automatic Update Checker Service
+/// DHOLERA REAL ESTATE
 class UpdateChecker {
   static final ApiClient _apiClient = ApiClient();
 
@@ -45,7 +43,7 @@ class UpdateChecker {
         );
       } else if (showNoUpdateToast && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('You are using the latest version (v${ApiConfig.currentAppVersion}).'),
             backgroundColor: AppColors.primary,
           ),
@@ -101,11 +99,9 @@ class UpdateChecker {
                     color: AppColors.primaryAccent.withValues(alpha: 0.2),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
-                    kIsWeb ? Icons.refresh : Icons.system_update_alt,
-                    color: AppColors.primary,
-                    size: 28.0,
-                  ),
+                  child: kIsWeb
+                      ? const Icon(Icons.refresh, color: AppColors.primary, size: 28.0)
+                      : const Icon(Icons.system_update_alt, color: AppColors.primary, size: 28.0),
                 ),
                 const SizedBox(width: 12.0),
                 Expanded(
@@ -132,16 +128,16 @@ class UpdateChecker {
                     borderRadius: BorderRadius.circular(10.0),
                     border: Border.all(color: AppColors.border),
                   ),
-                  child: Row(
+                  child: const Row(
                     children: [
                       Icon(kIsWeb ? Icons.sync : Icons.downloading, color: AppColors.textSecondary, size: 20),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           kIsWeb
                               ? 'Tap "Refresh Now" to load the latest web app version.'
                               : 'Tap "Update Now" to download and install the new release in 1-click.',
-                          style: const TextStyle(fontSize: 11.0, color: AppColors.textSecondary),
+                          style: TextStyle(fontSize: 11.0, color: AppColors.textSecondary),
                         ),
                       ),
                     ],
@@ -161,11 +157,15 @@ class UpdateChecker {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
                 ),
-                icon: Icon(kIsWeb ? Icons.refresh : Icons.file_download_outlined, color: Colors.white, size: 20),
-                label: Text(kIsWeb ? 'Refresh Now' : 'Update Now', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                icon: kIsWeb
+                    ? const Icon(Icons.refresh, color: Colors.white, size: 20)
+                    : const Icon(Icons.file_download_outlined, color: Colors.white, size: 20),
+                label: kIsWeb
+                    ? const Text('Refresh Now', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
+                    : const Text('Update Now', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                 onPressed: () async {
                   if (kIsWeb) {
-                    final uri = Uri.parse(ApiConfig.liveBaseUrl + '/app/');
+                    final uri = Uri.parse('${ApiConfig.liveBaseUrl}/app/');
                     if (await canLaunchUrl(uri)) {
                       await launchUrl(uri, mode: LaunchMode.platformDefault);
                     }

@@ -1,8 +1,5 @@
-/**
- * Network Layer Custom Exceptions
- * DHOLERA REAL ESTATE
- */
-
+/// Network Layer Custom Exceptions
+/// DHOLERA REAL ESTATE
 class ApiException implements Exception {
   final String message;
   final int? statusCode;

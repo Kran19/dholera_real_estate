@@ -2,10 +2,8 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../models/user_model.dart';
 
-/**
- * Secure Encrypted Storage Service (with In-Memory Token Cache)
- * DHOLERA REAL ESTATE
- */
+/// Secure Local Storage Service
+/// DHOLERA REAL ESTATE
 class SecureStorageService {
   static const FlutterSecureStorage _storage = FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),

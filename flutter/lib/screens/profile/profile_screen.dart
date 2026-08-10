@@ -9,10 +9,8 @@ import '../../core/utils/ui_helpers.dart';
 import '../../providers/auth_provider.dart';
 import '../auth/login/login_screen.dart';
 
-/**
- * User Profile & Logout Screen
- * DHOLERA REAL ESTATE
- */
+/// User Profile & Logout Screen
+/// DHOLERA REAL ESTATE
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
@@ -41,7 +39,7 @@ class ProfileScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20.0),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
+                    color: Colors.black.withValues(alpha: 0.04),
                     blurRadius: 10.0,
                     offset: const Offset(0, 4),
                   ),
@@ -142,10 +140,12 @@ class ProfileScreen extends StatelessWidget {
                   );
                   if (confirm && context.mounted) {
                     await authProvider.logout();
-                    Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (_) => const LoginScreen()),
-                      (route) => false,
-                    );
+                    if (context.mounted) {
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (_) => const LoginScreen()),
+                        (route) => false,
+                      );
+                    }
                   }
                 },
               ),

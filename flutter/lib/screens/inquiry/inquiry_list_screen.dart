@@ -10,10 +10,8 @@ import '../../widgets/loading_widget.dart';
 
 import '../../core/storage/secure_storage_service.dart';
 
-/**
- * Customer Inquiry Management Screen (Super Admin Only)
- * DHOLERA REAL ESTATE — Name, City, Mobile (+91 default, 10 digits validation), Requirement + Direct Call & PDF Export
- */
+/// Customer Inquiry Management Screen (Super Admin Only)
+/// DHOLERA REAL ESTATE — Name, City, Mobile (+91 default, 10 digits validation), Requirement + Direct Call & PDF Export
 class InquiryListScreen extends StatefulWidget {
   const InquiryListScreen({super.key});
 

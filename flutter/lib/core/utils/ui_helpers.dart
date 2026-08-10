@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_styles.dart';
 
-/**
- * UI Helpers & Dialog Utilities
- * DHOLERA REAL ESTATE
- */
+/// UI Helpers & Dialog Utilities
+/// DHOLERA REAL ESTATE
 class UiHelpers {
   static void showSnackBar(BuildContext context, String message, {bool isError = false}) {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();

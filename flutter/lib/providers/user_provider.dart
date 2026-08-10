@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import '../services/user_service.dart';
 
-/**
- * User Management Provider State Management
- * DHOLERA REAL ESTATE
- */
+/// User Management Provider State Management
+/// DHOLERA REAL ESTATE
 class UserProvider with ChangeNotifier {
   final UserService _userService = UserService();
 

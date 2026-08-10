@@ -3,10 +3,8 @@ import '../models/property_model.dart';
 import '../models/app_picked_image.dart';
 import '../services/property_service.dart';
 
-/**
- * Property Management & Listing Provider State (Cross-Platform Web & Mobile)
- * DHOLERA REAL ESTATE — Infinite Scroll Pagination (10 Items per Page)
- */
+/// Property State Provider
+/// DHOLERA REAL ESTATE
 class PropertyProvider with ChangeNotifier {
   final PropertyService _propertyService = PropertyService();
 

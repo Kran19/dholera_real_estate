@@ -45,6 +45,7 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
       if (!mounted) return;
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final token = await SecureStorageService.getToken();
+      if (!mounted) return;
 
       if (!authProvider.isAuthenticated && (token == null || token.isEmpty)) {
         Navigator.of(context).pushAndRemoveUntil(

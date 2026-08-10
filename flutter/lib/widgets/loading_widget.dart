@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import '../core/constants/app_colors.dart';
 
-/**
- * Animated Loading Indicator Component
- * DHOLERA REAL ESTATE — Pulse Ring + Smooth Spinner Animation
- */
+/// Animated Loading Indicator Component
+/// DHOLERA REAL ESTATE — Pulse Ring + Smooth Spinner Animation
 class LoadingWidget extends StatefulWidget {
   final String? message;
   const LoadingWidget({super.key, this.message});

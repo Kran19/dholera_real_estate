@@ -2,10 +2,8 @@ import '../core/network/api_client.dart';
 import '../core/config/api_config.dart';
 import '../models/user_model.dart';
 
-/**
- * User Management Service (Super Admin)
- * DHOLERA REAL ESTATE
- */
+/// User Management API Service
+/// DHOLERA REAL ESTATE
 class UserService {
   final ApiClient _apiClient = ApiClient();
 

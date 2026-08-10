@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import '../core/constants/app_colors.dart';
 import '../core/constants/app_styles.dart';
 
-/**
- * Custom Input Text Field Widget
- * DHOLERA REAL ESTATE
- */
+/// Custom Input Text Field Widget
+/// DHOLERA REAL ESTATE
 class CustomTextField extends StatefulWidget {
   final String label;
   final String? hint;

@@ -3,10 +3,8 @@ import '../core/config/api_config.dart';
 import '../models/property_model.dart';
 import '../models/app_picked_image.dart';
 
-/**
- * Property Management & Listing Service (Cross-Platform Web & Mobile)
- * DHOLERA REAL ESTATE
- */
+/// Property Management & Listing Service
+/// DHOLERA REAL ESTATE
 class PropertyService {
   final ApiClient _apiClient = ApiClient();
 

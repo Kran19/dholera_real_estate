@@ -1,7 +1,5 @@
-/**
- * Customer Inquiry Entity Model
- * DHOLERA REAL ESTATE — 4 Core Fields: Name, City, Mobile, Requirement + Notes
- */
+/// Customer Inquiry Entity Model
+/// DHOLERA REAL ESTATE — 4 Core Fields: Name, City, Mobile, Requirement + Notes
 class InquiryModel {
   final int id;
   final String customerName;

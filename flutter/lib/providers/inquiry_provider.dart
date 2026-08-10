@@ -3,10 +3,8 @@ import '../core/network/api_client.dart';
 import '../core/config/api_config.dart';
 import '../models/inquiry_model.dart';
 
-/**
- * Inquiry State Management Provider
- * DHOLERA REAL ESTATE
- */
+/// Inquiry State Provider
+/// DHOLERA REAL ESTATE
 class InquiryProvider extends ChangeNotifier {
   final ApiClient _apiClient = ApiClient();
 

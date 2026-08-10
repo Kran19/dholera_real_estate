@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-/**
- * App Colors Design Tokens
- * DHOLERA REAL ESTATE
- */
+/// App Color Palette
+/// DHOLERA REAL ESTATE
 class AppColors {
   // Brand Palette
   static const Color primary = Color(0xFF0A2540);        // Deep Navy Blue

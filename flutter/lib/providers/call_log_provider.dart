@@ -3,17 +3,15 @@ import '../models/inquiry_model.dart';
 import '../models/call_log_model.dart';
 import '../services/call_log_service.dart';
 
-/**
- * Call Log Provider — State Management for "Calls Today" Feature
- * DHOLERA REAL ESTATE
- *
- * Logic:
- *   N = total inquiries, ordered by id ASC
- *   cycleLength = ceil(N / 10)
- *   dayIndex    = daysSince(epoch:2026-01-01) % cycleLength
- *   batchStart  = (dayIndex * 10) % N
- *   batch[i]    = allInquiries[(batchStart + i) % N]   ← circular wrap, always 10
- */
+/// Call Log Provider — State Management for "Calls Today" Feature
+/// DHOLERA REAL ESTATE
+///
+/// Logic:
+///   N = total inquiries, ordered by id ASC
+///   cycleLength = ceil(N / 10)
+///   dayIndex    = daysSince(epoch:2026-01-01) % cycleLength
+///   batchStart  = (dayIndex * 10) % N
+///   batch[i]    = allInquiries[(batchStart + i) % N]   ← circular wrap, always 10
 class CallLogProvider extends ChangeNotifier {
   final CallLogService _service = CallLogService();
 
