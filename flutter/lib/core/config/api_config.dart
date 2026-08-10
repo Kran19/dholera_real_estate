@@ -22,7 +22,7 @@ class ApiConfig {
   }
 
   // App Version (Current installed version)
-  static const String currentAppVersion = '1.4.2';
+  static const String currentAppVersion = '1.4.3';
 
   // Endpoint URLs
   static const String versionConfig = '/api/config/version.php';
@@ -48,9 +48,17 @@ class ApiConfig {
   static const String inquiryDelete    = '/api/inquiries/delete.php';
   static const String inquiryExportPdf = '/api/inquiries/export_pdf.php';
 
-  // Call Logs (Calls Today feature)
+  // Legacy Call Logs
   static const String callLogSave  = '/api/inquiries/call_logs/save.php';
   static const String callLogToday = '/api/inquiries/call_logs/today.php';
+
+  // Dedicated Telecalling Contacts & 10-Day Equal Distribution Endpoints
+  static const String telecallingList          = '/api/telecalling/list.php';
+  static const String telecallingCreate        = '/api/telecalling/create.php';
+  static const String telecallingToday         = '/api/telecalling/today.php';
+  static const String telecallingSaveLog       = '/api/telecalling/save_log.php';
+  static const String telecallingMoveToInquiry = '/api/telecalling/move_to_inquiry.php';
+  static const String telecallingDelete        = '/api/telecalling/delete.php';
 
   // Network Timeout duration (15 seconds)
   static const Duration timeoutDuration = Duration(seconds: 15);

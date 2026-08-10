@@ -7,6 +7,7 @@ import 'providers/user_provider.dart';
 import 'providers/property_provider.dart';
 import 'providers/inquiry_provider.dart';
 import 'providers/call_log_provider.dart';
+import 'providers/telecalling_provider.dart';
 import 'screens/splash/splash_screen.dart';
 
 void main() {
@@ -28,6 +29,7 @@ class DholeraRealEstateApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => PropertyProvider()),
         ChangeNotifierProvider(create: (_) => InquiryProvider()),
         ChangeNotifierProvider(create: (_) => CallLogProvider()),
+        ChangeNotifierProvider(create: (_) => TelecallingProvider()),
       ],
       child: MaterialApp(
         title: 'DHOLERA REAL ESTATE',
