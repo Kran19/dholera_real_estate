@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../config/api_config.dart';
@@ -100,7 +101,11 @@ class UpdateChecker {
                     color: AppColors.primaryAccent.withValues(alpha: 0.2),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.system_update_alt, color: AppColors.primary, size: 28.0),
+                  child: Icon(
+                    kIsWeb ? Icons.refresh : Icons.system_update_alt,
+                    color: AppColors.primary,
+                    size: 28.0,
+                  ),
                 ),
                 const SizedBox(width: 12.0),
                 Expanded(
@@ -127,14 +132,16 @@ class UpdateChecker {
                     borderRadius: BorderRadius.circular(10.0),
                     border: Border.all(color: AppColors.border),
                   ),
-                  child: const Row(
+                  child: Row(
                     children: [
-                      Icon(Icons.downloading, color: AppColors.textSecondary, size: 20),
-                      SizedBox(width: 8),
+                      Icon(kIsWeb ? Icons.sync : Icons.downloading, color: AppColors.textSecondary, size: 20),
+                      const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          'Tap "Update Now" to download and install the new release in 1-click.',
-                          style: TextStyle(fontSize: 11.0, color: AppColors.textSecondary),
+                          kIsWeb
+                              ? 'Tap "Refresh Now" to load the latest web app version.'
+                              : 'Tap "Update Now" to download and install the new release in 1-click.',
+                          style: const TextStyle(fontSize: 11.0, color: AppColors.textSecondary),
                         ),
                       ),
                     ],
@@ -154,13 +161,20 @@ class UpdateChecker {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
                 ),
-                icon: const Icon(Icons.file_download_outlined, color: Colors.white, size: 20),
-                label: const Text('Update Now', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                icon: Icon(kIsWeb ? Icons.refresh : Icons.file_download_outlined, color: Colors.white, size: 20),
+                label: Text(kIsWeb ? 'Refresh Now' : 'Update Now', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                 onPressed: () async {
-                  if (apkUrl.isNotEmpty) {
-                    final uri = Uri.parse(apkUrl);
+                  if (kIsWeb) {
+                    final uri = Uri.parse(ApiConfig.liveBaseUrl + '/app/');
                     if (await canLaunchUrl(uri)) {
-                      await launchUrl(uri, mode: LaunchMode.externalApplication);
+                      await launchUrl(uri, mode: LaunchMode.platformDefault);
+                    }
+                  } else {
+                    if (apkUrl.isNotEmpty) {
+                      final uri = Uri.parse(apkUrl);
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(uri, mode: LaunchMode.externalApplication);
+                      }
                     }
                   }
                 },
@@ -172,3 +186,4 @@ class UpdateChecker {
     );
   }
 }
+
