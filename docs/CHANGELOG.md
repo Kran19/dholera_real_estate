@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 Format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.4.4] - 2026-09-08
+
+### Changed
+- **A4 PDF Brochure Conversion & Visual Overhaul (`property_pdf_builder.dart`)**:
+  * Converted all PDF pages from landscape to standard A4 format (`PdfPageFormat.a4`) for native vertical mobile phone reading and standard A4 printing.
+  * **Enlarged Circle (Page 2)**: Scaled primary property view from 180 pt to **290 pt diameter** with an elegant navy border ring, increasing visual area by over 2.5×.
+  * **Enlarged Rectangle (Page 3)**: Scaled secondary property view from 220 × 160 pt to **460 × 280 pt** with rounded corners and high-definition photo containment.
+  * **Text Overflow & Clipping Fix**: Wrapped all property specification labels and values in `pw.Expanded` with `softWrap: true` in a clean 2-column card, eliminating text cut-offs on long survey numbers, road touches, and references.
+  * **Zero-Cropping Map & Image Display**: Switched all sector maps and gallery photos to `pw.BoxFit.contain`, preserving 100% of sector boundaries, town planning layouts, and property photos.
+
+---
+
 ## [1.4.2] - 2026-08-10
 
 ### Fixed
