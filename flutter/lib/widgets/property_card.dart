@@ -256,7 +256,7 @@ class PropertyCard extends StatelessWidget {
                     // Reference Notes & Action Buttons (WhatsApp Share, Edit, Delete)
                     Row(
                       children: [
-                        if (property.reference != null && property.reference!.isNotEmpty)
+                        if (isSuperAdmin && property.reference != null && property.reference!.isNotEmpty)
                           Expanded(
                             child: Row(
                               children: [

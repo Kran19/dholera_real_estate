@@ -65,7 +65,6 @@ try {
     $road = !empty($property['road']) ? htmlspecialchars($property['road']) : 'Main Road Touch';
     $area = number_format((float)($property['area'] ?? 0), 2);
     $areaUnit = htmlspecialchars($property['area_unit'] ?? 'Sq Yard');
-    $reference = !empty($property['reference']) ? htmlspecialchars($property['reference']) : 'N/A';
 
     $displayTitle = "$villageName Plot (Survey No: $surveyNo)";
 
@@ -185,8 +184,7 @@ try {
                             Survey Number: <strong><?php echo $surveyNo; ?></strong><br>
                             Zone: <strong><?php echo $zone; ?></strong><br>
                             Road Connection: <strong><?php echo $road; ?></strong><br>
-                            Town Planning (TP): <strong><?php echo $tp; ?></strong> | Final Plot (FP): <strong><?php echo $fp; ?></strong><br>
-                            Reference: <strong><?php echo $reference; ?></strong>
+                            Town Planning (TP): <strong><?php echo $tp; ?></strong> | Final Plot (FP): <strong><?php echo $fp; ?></strong>
                         </div>
                     </div>
                     <div>

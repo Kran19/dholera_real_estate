@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 Format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.4.6] - 2026-09-08
+
+### Security & Access Control
+- **Strict Super Admin Exclusivity for Landing Price & Reference/Agent Details**:
+  * **PHP API (`list.php` & `details.php`)**: Added `unset($prop['reference']);` alongside `unset($prop['landing_price']);` when `$currentUser['role'] !== 'super_admin'`. Regular users and sub-admins never receive raw reference notes or landing prices in JSON responses.
+  * **Search Privacy (`list.php`)**: Non-super_admins can only search by village name and survey number. Reference search is restricted exclusively to Super Admin.
+  * **PDF Brochure Privacy (`property_pdf_builder.dart` & `pdf_brochure.php`)**: Removed `Reference:` row completely from both the Flutter PDF brochure builder and the server-side HTML/PDF brochure. Internal agent/seller references are never leaked to external clients.
+  * **Property Card UI (`property_card.dart`)**: Guarded reference bookmark notes on listing cards with `isSuperAdmin` so they are completely hidden on sub-admin/user devices.
+  * **Property Form UI (`add_edit_property_screen.dart`)**: Guarded Landing Price and Reference Notes input fields with `isSuperAdmin`.
+
+---
+
+## [1.4.5] - 2026-09-08
+
+### Security & Privacy
+- **Landing Price Protection in PDF Brochure (`property_pdf_builder.dart`)**:
+  * Removed `landingPrice` completely from the generated PDF property brochure to guarantee confidentiality.
+  * Internal purchase/cost price is never leaked or visible to sub-admins, clients, or third parties via brochures.
+
+---
+
 ## [1.4.4] - 2026-09-08
 
 ### Changed

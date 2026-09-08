@@ -28,11 +28,17 @@ try {
     $params = [];
 
     if ($search !== '') {
-        $where[] = "(p.village_name LIKE :search1 OR p.survey_no LIKE :search2 OR p.reference LIKE :search3)";
         $searchTerm = '%' . $search . '%';
-        $params[':search1'] = $searchTerm;
-        $params[':search2'] = $searchTerm;
-        $params[':search3'] = $searchTerm;
+        if ($currentUser['role'] === 'super_admin') {
+            $where[] = "(p.village_name LIKE :search1 OR p.survey_no LIKE :search2 OR p.reference LIKE :search3)";
+            $params[':search1'] = $searchTerm;
+            $params[':search2'] = $searchTerm;
+            $params[':search3'] = $searchTerm;
+        } else {
+            $where[] = "(p.village_name LIKE :search1 OR p.survey_no LIKE :search2)";
+            $params[':search1'] = $searchTerm;
+            $params[':search2'] = $searchTerm;
+        }
     }
 
     if ($villageFilter !== '') {
@@ -106,6 +112,7 @@ try {
 
         if ($currentUser['role'] !== 'super_admin') {
             unset($prop['landing_price']);
+            unset($prop['reference']);
         }
     }
 

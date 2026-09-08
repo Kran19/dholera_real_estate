@@ -173,7 +173,9 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
                               propertyProvider.setSearchQuery(val.trim());
                             },
                             decoration: InputDecoration(
-                              hintText:    'Search Village, Survey No, Reference...',
+                              hintText: isSuperAdmin
+                                  ? 'Search Village, Survey No, Reference...'
+                                  : 'Search Village, Survey No...',
                               // Icon is decorative only — tap handled by button
                               prefixIcon:  const Icon(Icons.search, color: AppColors.primary),
                               suffixIcon: _searchController.text.isNotEmpty

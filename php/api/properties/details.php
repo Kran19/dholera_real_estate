@@ -67,6 +67,7 @@ try {
 
     if ($currentUser['role'] !== 'super_admin') {
         unset($prop['landing_price']);
+        unset($prop['reference']);
     }
 
     sendJsonResponse(true, "Property details retrieved.", [

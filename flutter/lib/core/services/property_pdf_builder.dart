@@ -56,7 +56,6 @@ class PropertyPdfBuilder {
     final String titleStr = '${property.villageName} Plot (Survey No: ${property.surveyNo})';
     final String areaStr = '${property.area} ${property.areaUnit}';
     final String roadStr = property.road.isNotEmpty ? property.road : 'Main Sector Road Touch';
-    final String refStr = property.reference != null && property.reference!.isNotEmpty ? property.reference! : 'N/A';
 
     // -------------------------------------------------------------------------
     // PAGE 1: Master Sector Map 1 (Contain) + Comprehensive Specifications Table
@@ -189,9 +188,6 @@ class PropertyPdfBuilder {
                                       children: [
                                         _buildDetailRow('Road Touch:', roadStr, labelWidth: 90),
                                         _buildDetailRow('Area Size:', areaStr, labelWidth: 90),
-                                        if (property.landingPrice != null && property.landingPrice!.isNotEmpty)
-                                          _buildDetailRow('Landing Price:', property.landingPrice!, labelWidth: 90),
-                                        _buildDetailRow('Reference:', refStr, labelWidth: 90),
                                         _buildDetailRow('Property Code:', '#DRE-${property.id}', labelWidth: 90),
                                       ],
                                     ),

@@ -352,8 +352,8 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                                 ),
                                 const SizedBox(height: 24.0),
 
-                                // Reference Notes Box
-                                if (_property!.reference != null && _property!.reference!.isNotEmpty) ...[
+                                // Reference Notes Box (Super Admin Only)
+                                if (isSuperAdmin && _property!.reference != null && _property!.reference!.isNotEmpty) ...[
                                   Text('Reference & Agent Details', style: AppStyles.heading3),
                                   const SizedBox(height: 8.0),
                                   Container(

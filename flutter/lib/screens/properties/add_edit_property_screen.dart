@@ -9,6 +9,7 @@ import '../../models/property_model.dart';
 import '../../models/property_image_model.dart';
 import '../../models/app_picked_image.dart';
 import '../../providers/property_provider.dart';
+import '../../providers/auth_provider.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text_field.dart';
 
@@ -197,6 +198,7 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isSuperAdmin = Provider.of<AuthProvider>(context, listen: false).isSuperAdmin;
     final int totalPhotos = _allImages.length;
 
     return Scaffold(
@@ -508,22 +510,24 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
               ),
               const SizedBox(height: 16.0),
 
-              CustomTextField(
-                label: 'Landing Price',
-                hint: 'e.g. 15,00,000 or 1.5 Cr',
-                controller: _landingPriceController,
-                prefixIcon: Icons.currency_rupee,
-              ),
-              const SizedBox(height: 16.0),
+              if (isSuperAdmin) ...[
+                CustomTextField(
+                  label: 'Landing Price',
+                  hint: 'e.g. 15,00,000 or 1.5 Cr',
+                  controller: _landingPriceController,
+                  prefixIcon: Icons.currency_rupee,
+                ),
+                const SizedBox(height: 16.0),
 
-              CustomTextField(
-                label: 'Reference Notes',
-                hint: 'e.g. Direct owner title clear property',
-                controller: _referenceController,
-                maxLines: 3,
-                prefixIcon: Icons.bookmark_border_outlined,
-              ),
-              const SizedBox(height: 32.0),
+                CustomTextField(
+                  label: 'Reference Notes',
+                  hint: 'e.g. Direct owner title clear property',
+                  controller: _referenceController,
+                  maxLines: 3,
+                  prefixIcon: Icons.bookmark_border_outlined,
+                ),
+                const SizedBox(height: 16.0),
+              ],
 
               CustomButton(
                 text: isEdit ? 'Update Property Listing' : 'Submit Property',
