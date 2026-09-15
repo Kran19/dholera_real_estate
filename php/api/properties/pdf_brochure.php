@@ -1,6 +1,6 @@
 <?php
 /**
- * Property PDF Presentation Generator Endpoint
+ * Property PDF Brochure Generator Endpoint
  * DHOLERA REAL ESTATE
  * GET /api/properties/pdf_brochure.php?id={property_id}
  */
@@ -54,17 +54,17 @@ try {
     $sideImage1 = $imageUrlList[1] ?? $mainImage;
     $sideImage2 = $imageUrlList[2] ?? $sideImage1;
 
-    $villageName = strtoupper(htmlspecialchars($property['village_name'] ?? 'DHOLERA'));
+    $villageName = htmlspecialchars($property['village_name'] ?? 'Dholera');
     $surveyNo = htmlspecialchars($property['survey_no'] ?? '-');
-    $zone = !empty($property['zone']) ? strtoupper(htmlspecialchars($property['zone'])) : 'INDUSTRIAL';
+    $zone = htmlspecialchars($property['zone'] ?? 'General Zone');
     $tp = !empty($property['tp']) ? htmlspecialchars($property['tp']) : '-';
     $fp = !empty($property['fp']) ? htmlspecialchars($property['fp']) : '-';
-    $road = !empty($property['road']) ? htmlspecialchars($property['road']) : '18m TP Road';
+    $road = !empty($property['road']) ? htmlspecialchars($property['road']) : 'Main Sector Road Touch';
     $areaVal = (float)($property['area'] ?? 0);
-    $areaSqYd = number_format($areaVal, 2);
-    $areaSqM = number_format($areaVal * 0.836127, 0);
+    $areaSqYd = number_format($areaVal, 2) . ' ' . htmlspecialchars($property['area_unit'] ?? 'Sq Yard');
+    $areaSqM = number_format($areaVal * 0.836127, 0) . ' Sq. Meter';
 
-    $displayTitle = "DHOLERA $zone PROPOSAL — VILLAGE $villageName";
+    $displayTitle = "$villageName Plot (Survey No: $surveyNo)";
 
     header("Content-Type: text/html; charset=UTF-8");
     ?>
@@ -73,155 +73,121 @@ try {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title><?php echo $displayTitle; ?> — Property Presentation</title>
+        <title><?php echo $displayTitle; ?> — Property Brochure</title>
         <style>
-            @page { size: A4 landscape; margin: 0; }
+            @page { size: A4 portrait; margin: 0; }
             * { box-sizing: border-box; -webkit-print-color-adjust: exact; }
-            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: #0a192f; color: #0f172a; }
-            .print-bar { background: #1e3a8a; color: white; text-align: center; padding: 12px; font-weight: 700; cursor: pointer; font-size: 14px; position: fixed; top: 0; width: 100%; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: #f8fafc; color: #0f172a; }
+            .brochure-container { width: 210mm; min-height: 297mm; margin: 0 auto; background: #ffffff; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+            .header { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: #ffffff; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid #3b82f6; }
+            .brand-logo { display: flex; align-items: center; gap: 12px; }
+            .brand-logo-icon { width: 44px; height: 44px; background: #ffffff; color: #1e3a8a; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; }
+            .brand-name { font-size: 22px; font-weight: 800; letter-spacing: 1px; }
+            .brand-tagline { font-size: 11px; color: #93c5fd; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
+            .contact-pill { background: rgba(255,255,255,0.12); padding: 8px 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.25); font-size: 13px; font-weight: 600; }
+            .content { padding: 24px 32px; flex-grow: 1; display: flex; flex-direction: column; }
+            .map-box { width: 100%; height: 260px; object-fit: contain; border-radius: 12px; border: 1px solid #cbd5e1; background: #f8fafc; margin-bottom: 20px; }
+            .property-meta-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+            .badge { background: #dbeafe; color: #1e40af; font-size: 12px; font-weight: 800; padding: 6px 14px; border-radius: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+            .property-title { font-size: 24px; font-weight: 900; color: #0f172a; margin: 0; line-height: 1.25; }
+            .specs-card-container { flex-grow: 1; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; }
+            .specs-card-title { font-size: 16px; font-weight: 800; color: #1e3a8a; letter-spacing: 0.8px; border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; margin-bottom: 16px; }
+            .specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+            .spec-item { display: flex; flex-direction: column; gap: 4px; }
+            .spec-label { font-size: 13px; color: #475569; font-weight: 700; }
+            .spec-value { font-size: 16px; font-weight: 900; color: #0f172a; }
+            .footer { background: #0f172a; color: #ffffff; padding: 18px 32px; display: flex; justify-content: space-between; align-items: center; border-top: 3px solid #3b82f6; }
+            .footer-cta { font-size: 14px; font-weight: 700; color: #60a5fa; }
+            .footer-sub { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+            .print-bar { background: #1e3a8a; color: white; text-align: center; padding: 12px; font-weight: 700; cursor: pointer; }
             @media print { .print-bar { display: none; } }
-
-            .page-slide { width: 297mm; height: 210mm; margin: 0 auto 20px auto; background: #ffffff; position: relative; page-break-after: always; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-            
-            /* Cover Slide */
-            .slide-cover { background: #0a192f; color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-            .cover-title { font-size: 48px; font-weight: 900; letter-spacing: 4px; margin: 0; }
-            .cover-subtitle { font-size: 28px; font-weight: 800; letter-spacing: 2px; margin-top: 8px; color: #ffffff; }
-            .cover-divider { width: 360px; height: 3px; background: #ffffff; margin: 20px 0; }
-            .cover-village { font-size: 22px; font-weight: 800; color: #93c5fd; letter-spacing: 1.5px; }
-            .cover-sir { font-size: 16px; color: #cbd5e1; letter-spacing: 2px; margin-top: 6px; }
-
-            /* Page 2 Specs Slide */
-            .slide-body { padding: 40px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
-            .slide-title { font-size: 32px; font-weight: 900; color: #0f172a; margin-bottom: 24px; letter-spacing: 1px; }
-            .specs-split { display: flex; gap: 40px; height: 100%; align-items: stretch; }
-            .specs-list { flex: 1; display: flex; flex-direction: column; justify-content: space-around; list-style: none; padding: 0; margin: 0; }
-            .specs-list li { font-size: 18px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 14px; }
-            .specs-list li::before { content: "•"; color: #0a192f; font-size: 24px; }
-            .specs-map-box { flex: 1.2; border: 2px solid #cbd5e1; border-radius: 14px; overflow: hidden; background: #f8fafc; display: flex; align-items: center; justify-content: center; }
-            .specs-map-box img { width: 100%; height: 100%; object-fit: contain; }
-
-            /* Header Banners & Pills */
-            .header-banner { background: #1e1b4b; color: #ffffff; padding: 20px 40px; font-size: 26px; font-weight: 900; letter-spacing: 1.5px; }
-            .header-pill { background: #4338ca; color: #ffffff; padding: 14px 44px; border-radius: 20px; font-size: 24px; font-weight: 900; letter-spacing: 1.5px; margin: 24px auto 12px auto; display: inline-block; }
-
-            /* Metric Stack */
-            .metrics-split { display: flex; gap: 40px; padding: 20px 40px 40px 40px; height: 100%; align-items: center; }
-            .metric-stack { flex: 1; display: flex; flex-direction: column; gap: 20px; justify-content: center; }
-            .metric-card { background: #4338ca; color: #ffffff; padding: 18px 28px; border-radius: 14px; font-size: 18px; font-weight: 800; letter-spacing: 1px; text-align: left; box-shadow: 0 4px 10px rgba(67,56,202,0.2); }
-            .metric-image-box { flex: 1.3; height: 100%; border: 2px solid #cbd5e1; border-radius: 14px; overflow: hidden; background: #f8fafc; }
-            .metric-image-box img { width: 100%; height: 100%; object-fit: contain; }
-
-            /* Dual Display Slide */
-            .dual-grid { display: flex; gap: 24px; padding: 24px 40px; height: calc(100% - 80px); }
-            .dual-card { flex: 1; border: 2px solid #cbd5e1; border-radius: 12px; overflow: hidden; background: #f8fafc; }
-            .dual-card img { width: 100%; height: 100%; object-fit: contain; }
-
-            /* Document Slide */
-            .doc-split { display: flex; height: 100%; }
-            .doc-side-bar { width: 260px; background: #4338ca; color: #ffffff; display: flex; align-items: center; justify-content: center; padding: 30px; text-align: center; }
-            .doc-side-title { font-size: 28px; font-weight: 900; letter-spacing: 2px; }
-            .doc-content { flex: 1; padding: 30px; display: flex; align-items: center; justify-content: center; }
-            .doc-box { width: 100%; height: 100%; border: 2px solid #cbd5e1; border-radius: 14px; overflow: hidden; background: #f8fafc; }
-            .doc-box img { width: 100%; height: 100%; object-fit: contain; }
         </style>
     </head>
     <body>
-        <div class="print-bar" onclick="window.print()">🖨️ Click Here to Print or Save Presentation PDF Brochure</div>
-
-        <div style="padding-top: 60px;">
-            <!-- SLIDE 1: Cover Slide -->
-            <div class="page-slide slide-cover">
-                <h1 class="cover-title">DHOLERA</h1>
-                <div class="cover-subtitle"><?php echo $zone; ?> PROPOSAL</div>
-                <div class="cover-divider"></div>
-                <div class="cover-village">VILLAGE - <?php echo $villageName; ?></div>
-                <div class="cover-sir">DHOLERA SIR</div>
+        <div class="print-bar" onclick="window.print()">🖨️ Click Here to Print or Save as PDF Brochure</div>
+        <div class="brochure-container">
+            <div class="header">
+                <div class="brand-logo">
+                    <div class="brand-logo-icon">🏢</div>
+                    <div>
+                        <div class="brand-name">DHOLERA REAL ESTATE</div>
+                        <div class="brand-tagline">Official Property Catalogue Brochure</div>
+                    </div>
+                </div>
+                <div class="contact-pill">
+                    📞 +91 98765 43210
+                </div>
             </div>
 
-            <!-- SLIDE 2: Specifications & Activation Map -->
-            <div class="page-slide">
-                <div class="slide-body">
-                    <h2 class="slide-title">VILLAGE - <?php echo $villageName; ?></h2>
-                    <div class="specs-split">
-                        <ul class="specs-list">
-                            <li>NEW SURVEY No. – <?php echo $surveyNo; ?></li>
-                            <li>OLD SURVEY No. – <?php echo $surveyNo; ?>p</li>
-                            <li>TP <?php echo $tp; ?></li>
-                            <li>TP ROAD – <?php echo $road; ?></li>
-                            <li>AREA IN SQ. YARD – <?php echo $areaSqYd; ?></li>
-                            <li>AREA IN METER – <?php echo $areaSqM; ?></li>
-                            <li>READY NA</li>
-                            <li>ZONING – <?php echo $zone; ?></li>
-                            <li>ALL TITLE CLEAR</li>
-                        </ul>
-                        <div class="specs-map-box">
-                            <img src="<?php echo htmlspecialchars($baseUrl . '/../flutter/assets/images/Images-01.jpg.jpeg'); ?>" alt="Activation Map">
+            <div class="content">
+                <img src="<?php echo htmlspecialchars($baseUrl . '/../flutter/assets/images/Images-01.jpg.jpeg'); ?>" class="map-box" alt="Map View">
+
+                <div class="property-meta-row">
+                    <h1 class="property-title"><?php echo $displayTitle; ?></h1>
+                    <span class="badge"><?php echo $zone; ?> Zone • Dholera SIR</span>
+                </div>
+
+                <div class="specs-card-container">
+                    <div class="specs-card-title">PROPERTY SPECIFICATIONS & DETAILS</div>
+                    <div class="specs-grid">
+                        <div class="spec-item">
+                            <span class="spec-label">Village Name:</span>
+                            <span class="spec-value"><?php echo $villageName; ?></span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Road Touch:</span>
+                            <span class="spec-value"><?php echo $road; ?></span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Survey Number:</span>
+                            <span class="spec-value"><?php echo $surveyNo; ?></span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Area Size (SqYd):</span>
+                            <span class="spec-value"><?php echo $areaSqYd; ?></span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Zoning:</span>
+                            <span class="spec-value"><?php echo $zone; ?></span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Area Size (SqM):</span>
+                            <span class="spec-value"><?php echo $areaSqM; ?></span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Town Planning (TP):</span>
+                            <span class="spec-value"><?php echo $tp; ?></span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Title Clearance:</span>
+                            <span class="spec-value" style="color: #16a34a;">100% Clear</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Final Plot (FP):</span>
+                            <span class="spec-value"><?php echo $fp; ?></span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Plot Status:</span>
+                            <span class="spec-value" style="color: #16a34a;">Ready N.A. Plot</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- SLIDE 3: Zone DP Location -->
-            <div class="page-slide">
-                <div class="header-banner">
-                    <?php echo $zone; ?> ZONE – DP LOCATION
+            <div class="footer">
+                <div>
+                    <div class="footer-cta">Interested in this property? Contact us today!</div>
+                    <div class="footer-sub">DHOLERA REAL ESTATE - Your Trusted Investment Partner</div>
                 </div>
-                <div class="dual-grid">
-                    <div class="dual-card">
-                        <img src="<?php echo htmlspecialchars($baseUrl . '/../flutter/assets/images/Images-02.jpg.jpeg'); ?>" alt="DP Location Map">
-                    </div>
-                    <div class="dual-card">
-                        <img src="<?php echo htmlspecialchars($mainImage); ?>" alt="Site Photo">
-                    </div>
+                <div style="font-size: 12px; color: #cbd5e1; font-weight: 700;">
+                    Dholera SIR Special Investment Region
                 </div>
             </div>
-
-            <!-- SLIDE 4: Open Plot Location & Metrics -->
-            <div class="page-slide" style="text-align: center;">
-                <div class="header-pill">OPEN PLOT LOCATION</div>
-                <div class="metrics-split">
-                    <div class="metric-stack">
-                        <div class="metric-card">AREA IN SQYD : <?php echo $areaSqYd; ?></div>
-                        <div class="metric-card">AREA IN METERS : <?php echo $areaSqM; ?></div>
-                        <div class="metric-card">TP ROAD : <?php echo $road; ?></div>
-                    </div>
-                    <div class="metric-image-box">
-                        <img src="<?php echo htmlspecialchars($sideImage1); ?>" alt="Plot CAD View">
-                    </div>
-                </div>
-            </div>
-
-            <!-- SLIDE 5: Dholera SIR Master Plan Infographic -->
-            <div class="page-slide" style="text-align: center;">
-                <div class="header-pill">MASTER PLAN DHOLERA SIR</div>
-                <div style="flex: 1; padding: 20px 40px 40px 40px;">
-                    <img src="<?php echo htmlspecialchars($baseUrl . '/../flutter/assets/images/Images-03.jpg.jpeg'); ?>" style="width: 100%; height: 100%; object-fit: contain;" alt="Master Plan Infographic">
-                </div>
-            </div>
-
-            <!-- SLIDE 6+: Additional Documents / Photos -->
-            <?php for ($i = 2; $i < count($imageUrlList); $i++): 
-                $docTitle = ($i == 2) ? 'NA ORDER' : (($i == 3) ? 'ZONING CERTIFICATE' : 'DOCUMENT ' . ($i - 1));
-            ?>
-                <div class="page-slide">
-                    <div class="doc-split">
-                        <div class="doc-side-bar">
-                            <div class="doc-side-title"><?php echo $docTitle; ?></div>
-                        </div>
-                        <div class="doc-content">
-                            <div class="doc-box">
-                                <img src="<?php echo htmlspecialchars($imageUrlList[$i]); ?>" alt="<?php echo $docTitle; ?>">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            <?php endfor; ?>
         </div>
     </body>
     </html>
     <?php
 
 } catch (Throwable $e) {
-    sendJsonResponse(false, "Failed to generate presentation brochure: " . $e->getMessage(), null, 500);
+    sendJsonResponse(false, "Failed to generate PDF brochure: " . $e->getMessage(), null, 500);
 }
