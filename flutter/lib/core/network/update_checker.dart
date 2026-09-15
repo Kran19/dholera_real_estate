@@ -13,6 +13,7 @@ class UpdateChecker {
 
   /// Checks for available updates from Hostinger server
   static Future<void> checkForUpdates(BuildContext context, {bool showNoUpdateToast = false}) async {
+    if (kIsWeb && !showNoUpdateToast) return; // Skip auto popup on Web; Web app is served live from Hostinger
     try {
       final response = await _apiClient.get(ApiConfig.versionConfig);
       final data = response['data'];

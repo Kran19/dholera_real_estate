@@ -10,9 +10,9 @@ require_once __DIR__ . '/../../bootstrap.php';
 handleCorsPreflight();
 
 sendJsonResponse(true, "App version configuration retrieved.", [
-    "latest_version"       => "1.4.9",
+    "latest_version"       => "1.5.0",
     "min_required_version" => "1.0.0",
     "apk_download_url"     => "https://emperorsmartsolutions.com/dholerarealestate/php/download_apk.php",
-    "update_message"       => "v1.4.9 is live! High-impact PDF brochures with enlarged fonts, zero blank space, clean footer icons, and removed Property Code.",
+    "update_message"       => "v1.5.0 is live! High-impact PDF brochures and web cache optimization.",
     "force_update"         => false
 ]);

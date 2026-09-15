@@ -9449,12 +9449,13 @@ Xi:function Xi(a){this.a=a},
 C1(a,b){return A.bjh(a,b)},
 bjh(a,b){var s=0,r=A.y(t.H),q,p=2,o=[],n,m,l,k,j,i,h,g,f,e,d,c
 var $async$C1=A.u(function(a0,a1){if(a0===1){o.push(a1)
-s=p}for(;;)switch(s){case 0:p=4
+s=p}for(;;)switch(s){case 0:if(!b){s=1
+break}p=4
 s=7
 return A.r($.b9g().dz(0,"/api/config/version.php"),$async$C1)
 case 7:n=a1
 m=J.i(n,"data")
-if(m==null){if(b&&a.e!=null)a.an(t.d).f.jz(B.aXF)
+if(m==null){if(a.e!=null)a.an(t.d).f.jz(B.aXF)
 s=1
 break}g=J.i(m,"latest_version")
 l=g==null?"1.0.0":g
@@ -9463,9 +9464,9 @@ k=f==null?"":f
 e=J.i(m,"update_message")
 j=e==null?"A new version of Dholera Real Estate is available!":e
 i=J.e(J.i(m,"force_update"),!0)
-A.b7A().$1("[UpdateChecker] Server: "+A.n(l)+", Installed: 1.4.9")
-if(A.bjf(l,"1.4.9")){if(a.e==null){s=1
-break}A.bjg(k,a,i,l,j)}else if(b&&a.e!=null)a.an(t.d).f.jz(B.aXE)
+A.b7A().$1("[UpdateChecker] Server: "+A.n(l)+", Installed: 1.5.0")
+if(A.bjf(l,"1.5.0")){if(a.e==null){s=1
+break}A.bjg(k,a,i,l,j)}else if(a.e!=null)a.an(t.d).f.jz(B.aXE)
 p=2
 s=6
 break
@@ -9473,7 +9474,7 @@ case 4:p=3
 c=o.pop()
 h=A.a1(c)
 A.b7A().$1("[UpdateChecker Error] "+A.n(h))
-if(b&&a.e!=null)a.an(t.d).f.jz(A.n5(null,null,null,B.fk,null,B.aa,null,A.av("Update check failed: "+A.n(h),null,null,null,null,null,null),null,B.du,null,null,null,null,null,null,null,null,null,null))
+if(a.e!=null)a.an(t.d).f.jz(A.n5(null,null,null,B.fk,null,B.aa,null,A.av("Update check failed: "+A.n(h),null,null,null,null,null,null),null,B.du,null,null,null,null,null,null,null,null,null,null))
 s=6
 break
 case 3:s=2
@@ -57465,15 +57466,15 @@ n.push(A.bdG(l,e,k,new A.aFE(j,h),t.N))
 n.push(B.jQ)
 n.push(A.a0o(i,B.ew,!1,i,!0,B.aa,i,A.aUq(),s.h(0,h),i,i,i,i,i,2,A.zW(i,new A.eW(4,A.aW(10),B.i9),i,B.wY,i,i,i,i,!0,i,i,i,i,i,i,i,i,i,i,i,i,i,i,i,i,i,i,i,i,i,i,"e.g. Call back tomorrow at 4 PM",i,i,i,i,i,i,i,i,"Remarks (optional)",!0,!0,!1,i,i,i,i,i,i,i,i,i,i,i,i,i,i),B.aM,!0,i,!0,i,!1,i,B.ej,i,i,i,i,i,i,i,i,2,i,i,!1,"\u2022",i,i,i,i,i,!1,i,i,!1,i,!0,i,B.cI,i,i,i,i,i,i,i,i,i,i,i,i,!0,B.bD,i,B.jX,i,i,i,i))
 n.push(B.aXs)
-e=A.jp(B.ZQ,B.b2v,new A.aFF(j,a,b),A.hq(i,i,B.cH,i,i,i,i,i,i,B.D,i,i,B.pR,i,new A.ci(A.aW(8),B.S),i,i,i,i,i))
+e=A.jp(B.ZQ,B.b2u,new A.aFF(j,a,b),A.hq(i,i,B.cH,i,i,i,i,i,i,B.D,i,i,B.pR,i,new A.ci(A.aW(8),B.S),i,i,i,i,i))
 if(b.f===h)s=B.aXw
 else{s=f?B.bN:B.ad
 l=f?B.dJ:B.D
-l=A.jp(B.Z_,B.b2k,new A.aFG(j,h,b),A.hq(i,i,s,i,i,i,i,i,i,l,i,i,B.X5,i,new A.ci(A.aW(8),B.S),i,i,i,i,i))
+l=A.jp(B.Z_,B.b2j,new A.aFG(j,h,b),A.hq(i,i,s,i,i,i,i,i,i,l,i,i,B.X5,i,new A.ci(A.aW(8),B.S),i,i,i,i,i))
 s=l}n.push(A.bZ(A.b([e,s],m),B.U,B.cX,B.R,0))
 return A.bC(i,new A.bH(B.cU,A.cl(n,B.aB,B.Q,B.R),i),B.N,i,i,new A.bF(r,i,p,q,o,i,B.ae),i,i,B.wU,i,i,i,i)},
 ajH(a){var s=null
-return A.ep(new A.bH(B.l0,A.cl(A.b([B.Ze,B.br,A.av("No Telecalling Contacts Found",s,s,s,$.eo(),s,s),B.d2,B.b2u,B.dh,A.jp(B.yb,B.b2K,new A.aFJ(this,a),A.hq(s,s,B.ad,s,s,s,s,s,s,B.D,s,s,s,s,s,s,s,s,s,s))],t.p),B.U,B.Q,B.bn),s),s,s)},
+return A.ep(new A.bH(B.l0,A.cl(A.b([B.Ze,B.br,A.av("No Telecalling Contacts Found",s,s,s,$.eo(),s,s),B.d2,B.b2t,B.dh,A.jp(B.yb,B.b2K,new A.aFJ(this,a),A.hq(s,s,B.ad,s,s,s,s,s,s,B.D,s,s,s,s,s,s,s,s,s,s))],t.p),B.U,B.Q,B.bn),s),s,s)},
 ak8(a){var s=null,r=A.av("Failed to load telecalling batch",s,s,s,$.eo(),s,s),q=a.r
 if(q==null)q="Unknown error"
 return A.ep(new A.bH(B.l0,A.cl(A.b([B.ZK,B.br,r,B.d2,A.av(q,s,s,s,$.k5(),B.d3,s),B.dh,A.jp(B.y8,B.uj,new A.aFK(a),A.hq(s,s,B.ad,s,s,s,s,s,s,B.D,s,s,s,s,s,s,s,s,s,s))],t.p),B.U,B.Q,B.bn),s),s,s)}}
@@ -57484,7 +57485,7 @@ A.dC(s,!1,t.p1).GS()},
 $S:5}
 A.aFP.prototype={
 $1(a){var s=this,r=null,q=s.a,p=t.p,o=s.b,n=s.c,m=s.d,l=s.e
-return new A.bH(new A.as(20,20,20,A.bY(a,r,t.w).w.f.d+20),A.GD(A.cl(A.b([A.bZ(A.b([A.av("\u2795 Add Telecalling Contact",r,r,r,$.E6(),r,r),A.eE(r,r,r,B.ln,r,r,new A.aFL(a),r,r,r,r)],p),B.U,B.cX,B.R,0),B.bL,A.h5(o,"e.g. Rahul Sharma",!1,B.c_,"Contact Name",1,r,new A.aFM()),B.bL,A.h5(n,"10-digit mobile number",!1,B.Pj,"Mobile Number",1,r,new A.aFN()),B.bL,A.h5(m,"e.g. Ahmedabad, Rajkot",!1,B.c_,"City (Optional)",1,r,r),B.bL,A.h5(l,"e.g. Interested in commercial plots",!1,B.c_,"Notes / Remarks (Optional)",2,r,r),B.fx,new A.bq(1/0,r,A.G0(B.b2q,new A.aFO(q,s.f,o,n,m,l,a,s.r),A.hq(r,r,B.ad,r,r,r,r,r,r,B.D,r,r,B.pP,r,new A.ci(A.aW(10),B.S),r,r,r,r,r)),r)],p),B.aB,B.Q,B.bn),q),r)},
+return new A.bH(new A.as(20,20,20,A.bY(a,r,t.w).w.f.d+20),A.GD(A.cl(A.b([A.bZ(A.b([A.av("\u2795 Add Telecalling Contact",r,r,r,$.E6(),r,r),A.eE(r,r,r,B.ln,r,r,new A.aFL(a),r,r,r,r)],p),B.U,B.cX,B.R,0),B.bL,A.h5(o,"e.g. Rahul Sharma",!1,B.c_,"Contact Name",1,r,new A.aFM()),B.bL,A.h5(n,"10-digit mobile number",!1,B.Pj,"Mobile Number",1,r,new A.aFN()),B.bL,A.h5(m,"e.g. Ahmedabad, Rajkot",!1,B.c_,"City (Optional)",1,r,r),B.bL,A.h5(l,"e.g. Interested in commercial plots",!1,B.c_,"Notes / Remarks (Optional)",2,r,r),B.fx,new A.bq(1/0,r,A.G0(B.b2p,new A.aFO(q,s.f,o,n,m,l,a,s.r),A.hq(r,r,B.ad,r,r,r,r,r,r,B.D,r,r,B.pP,r,new A.ci(A.aW(10),B.S),r,r,r,r,r)),r)],p),B.aB,B.Q,B.bn),q),r)},
 $S:121}
 A.aFL.prototype={
 $0(){A.c1(this.a,!1).ib(null)
@@ -57522,7 +57523,7 @@ $1(a){var s,r,q=this,p=null,o=A.bY(a,p,t.w).w,n=q.a,m=t.p,l=A.bZ(A.b([A.av("\ud8
 f=f.length!==0?f:"N/A"
 s=q.c
 r=q.d
-return new A.bH(new A.as(20,20,20,o.f.d+20),A.GD(A.cl(A.b([l,B.d2,A.bC(p,A.bZ(A.b([B.Zi,B.u3,A.cl(A.b([g,A.av("\ud83d\udcde "+h.c+"  \u2022  \ud83d\udccd "+f,p,p,p,$.k5(),p,p)],m),B.aB,B.Q,B.R)],m),B.U,B.Q,B.R,0),B.N,p,p,new A.bF(k,p,i,j,p,p,B.ae),p,p,p,B.iH,p,p,p),B.br,A.h5(s,"e.g. Looking for 500 sq.yd residential plot in Dholera SIR",!1,B.c_,"Customer Requirement *",3,p,new A.aFR()),B.bL,A.h5(r,"Special remarks or notes",!1,B.c_,"Additional Notes",2,p,p),B.fx,new A.bq(1/0,p,A.jp(B.Z9,B.b2l,new A.aFS(n,q.e,h,s,r,a,q.f),A.hq(p,p,B.cH,p,p,p,p,p,p,B.D,p,p,B.pP,p,new A.ci(A.aW(10),B.S),p,p,p,p,p)),p)],m),B.aB,B.Q,B.bn),n),p)},
+return new A.bH(new A.as(20,20,20,o.f.d+20),A.GD(A.cl(A.b([l,B.d2,A.bC(p,A.bZ(A.b([B.Zi,B.u3,A.cl(A.b([g,A.av("\ud83d\udcde "+h.c+"  \u2022  \ud83d\udccd "+f,p,p,p,$.k5(),p,p)],m),B.aB,B.Q,B.R)],m),B.U,B.Q,B.R,0),B.N,p,p,new A.bF(k,p,i,j,p,p,B.ae),p,p,p,B.iH,p,p,p),B.br,A.h5(s,"e.g. Looking for 500 sq.yd residential plot in Dholera SIR",!1,B.c_,"Customer Requirement *",3,p,new A.aFR()),B.bL,A.h5(r,"Special remarks or notes",!1,B.c_,"Additional Notes",2,p,p),B.fx,new A.bq(1/0,p,A.jp(B.Z9,B.b2k,new A.aFS(n,q.e,h,s,r,a,q.f),A.hq(p,p,B.cH,p,p,p,p,p,p,B.D,p,p,B.pP,p,new A.ci(A.aW(10),B.S),p,p,p,p,p)),p)],m),B.aB,B.Q,B.bn),n),p)},
 $S:121}
 A.aFQ.prototype={
 $0(){A.c1(this.a,!1).ib(null)
@@ -57553,7 +57554,7 @@ if(!b.e&&A.ij(b.b,t.aF).length!==0)this.a.asW(b)
 s=A.av("\ud83d\udcde Calls Today (10-Day Cycle)",p,p,p,$.eo().bp(B.D),p,p)
 r=this.a
 s=A.pN(A.b([A.eE(p,p,p,B.Z8,p,p,new A.aFU(r,a,b),p,p,p,"Add Contact"),A.eE(p,p,p,B.qK,p,p,new A.aFV(b),p,p,p,"Refresh")],t.p),B.ad,0,p,s)
-q=A.ajK(B.ad,B.D,B.yb,B.b2m,new A.aFW(r,a,b))
+q=A.ajK(B.ad,B.D,B.yb,B.b2l,new A.aFW(r,a,b))
 if(b.e)r=B.aOk
 else r=b.r!=null?r.ak8(b):r.ajF(b)
 return A.mY(s,B.cT,r,q)},
@@ -57603,7 +57604,7 @@ return A.x($async$$0,r)},
 $S:7}
 A.aFx.prototype={
 $1(a){var s=null,r=A.av("Are you sure you want to delete "+this.a.b+"?",s,s,s,s,s,s)
-return A.adM(A.b([A.wW(B.Pu,new A.aFu(a),s),A.wW(B.Pt,new A.aFv(a),s)],t.p),r,s,B.b2t)},
+return A.adM(A.b([A.wW(B.Pu,new A.aFu(a),s),A.wW(B.Pt,new A.aFv(a),s)],t.p),r,s,B.b2s)},
 $S:100}
 A.aFu.prototype={
 $0(){A.c1(this.a,!1).ib(!1)
@@ -57958,7 +57959,7 @@ A.dC(s,!1,t.UP).GP()},
 $S:5}
 A.aJS.prototype={
 $1(a){var s=this,r=null,q=s.b,p=t.p,o=s.c,n=s.d,m=s.e,l=s.f,k=s.r
-return new A.bH(new A.as(20,20,20,A.bY(a,r,t.w).w.f.d+20),A.GD(A.wP(A.cl(A.b([A.bZ(A.b([B.b2z,A.eE(r,r,r,B.ln,r,r,new A.aJM(a),r,r,r,r)],p),B.U,B.cX,B.R,0),B.OL,A.L2(o,B.a_e,r,r,r,1,!1,r,new A.aJN()),B.bL,A.L2(n,B.a_d,r,r,r,1,!1,r,new A.aJO()),B.bL,A.L2(m,B.a_g,A.b([$.b85()],t.VS),B.aYv,10,1,!1,r,new A.aJP()),B.bL,A.L2(l,B.a_h,r,r,r,2,!1,r,new A.aJQ()),B.bL,A.L2(k,B.a_f,r,r,r,2,!1,r,r),B.fx,new A.bq(1/0,48,A.jp(B.Z7,B.b2r,new A.aJR(s.a,q,m,a,o,n,l,k),A.hq(r,r,B.ad,r,r,r,r,r,r,B.D,r,r,r,r,r,r,r,r,r,r)),r)],p),B.aB,B.Q,B.bn),r,r,B.ax),q),r)},
+return new A.bH(new A.as(20,20,20,A.bY(a,r,t.w).w.f.d+20),A.GD(A.wP(A.cl(A.b([A.bZ(A.b([B.b2z,A.eE(r,r,r,B.ln,r,r,new A.aJM(a),r,r,r,r)],p),B.U,B.cX,B.R,0),B.OL,A.L2(o,B.a_e,r,r,r,1,!1,r,new A.aJN()),B.bL,A.L2(n,B.a_d,r,r,r,1,!1,r,new A.aJO()),B.bL,A.L2(m,B.a_g,A.b([$.b85()],t.VS),B.aYv,10,1,!1,r,new A.aJP()),B.bL,A.L2(l,B.a_h,r,r,r,2,!1,r,new A.aJQ()),B.bL,A.L2(k,B.a_f,r,r,r,2,!1,r,r),B.fx,new A.bq(1/0,48,A.jp(B.Z7,B.b2q,new A.aJR(s.a,q,m,a,o,n,l,k),A.hq(r,r,B.ad,r,r,r,r,r,r,B.D,r,r,r,r,r,r,r,r,r,r)),r)],p),B.aB,B.Q,B.bn),r,r,B.ax),q),r)},
 $S:121}
 A.aJM.prototype={
 $0(){A.c1(this.a,!1).ib(null)
@@ -58047,7 +58048,7 @@ $0(){return this.a.rO(this.b.d)},
 $S:0}
 A.aJL.prototype={
 $1(a){var s=null,r=this.b,q=A.av('Are you sure you want to delete inquiry for "'+r.b+'"?',s,s,s,s,s,s)
-return A.adM(A.b([A.wW(B.Pu,new A.aJJ(a),s),A.wW(B.b2x,new A.aJK(this.a,a,r),A.aX_(s,s,s,s,s,s,s,s,s,B.fk,s,s,s,s,s,s,s,s,s,s))],t.p),q,s,B.b2n)},
+return A.adM(A.b([A.wW(B.Pu,new A.aJJ(a),s),A.wW(B.b2x,new A.aJK(this.a,a,r),A.aX_(s,s,s,s,s,s,s,s,s,B.fk,s,s,s,s,s,s,s,s,s,s))],t.p),q,s,B.b2m)},
 $S:100}
 A.aJJ.prototype={
 $0(){A.c1(this.a,!1).ib(null)
@@ -58086,9 +58087,9 @@ f=g?m:k.a
 f=n.Dl("Account ID","#"+(f==null?0:f),B.YQ)
 s=g?m:k.b
 s=n.Dl("Username",s==null?"-":s,B.lm)
-r=n.Dl("Installed App Version","v1.4.9",B.Yt)
+r=n.Dl("Installed App Version","v1.5.0",B.Yt)
 g=g?m:k.d.toUpperCase()
-return A.mY(j,B.cT,A.wP(A.cl(A.b([h,B.dh,A.bC(m,A.cl(A.b([f,B.er,s,B.er,r,B.er,n.Dl("Account Status",g==null?"ACTIVE":g,B.YP)],o),B.U,B.Q,B.R),B.N,m,m,new A.bF(B.D,m,q,i,m,m,B.ae),m,m,m,B.cI,m,m,m),B.fx,new A.bq(1/0,50,A.b27(B.Zg,B.b2N,new A.auf(a),A.b29(m,m,m,m,m,m,m,m,m,B.ad,m,m,m,m,new A.ci(A.aW(12),B.S),B.Rj,m,m,m,m)),m),B.br,new A.bq(1/0,52,A.jp(B.y7,B.b2c,new A.aug(a,l),A.hq(m,m,B.cv,m,m,m,m,m,m,m,m,m,m,m,new A.ci(A.aW(12),B.S),m,m,m,m,m)),m),B.ON,A.VR("assets/images/logo.png",B.kn,40),B.d2,A.av("DHOLERA REAL ESTATE v1.4.9",m,m,m,$.k5(),m,m)],o),B.U,B.Q,B.R),B.pS,m,B.ax),m)},
+return A.mY(j,B.cT,A.wP(A.cl(A.b([h,B.dh,A.bC(m,A.cl(A.b([f,B.er,s,B.er,r,B.er,n.Dl("Account Status",g==null?"ACTIVE":g,B.YP)],o),B.U,B.Q,B.R),B.N,m,m,new A.bF(B.D,m,q,i,m,m,B.ae),m,m,m,B.cI,m,m,m),B.fx,new A.bq(1/0,50,A.b27(B.Zg,B.b2N,new A.auf(a),A.b29(m,m,m,m,m,m,m,m,m,B.ad,m,m,m,m,new A.ci(A.aW(12),B.S),B.Rj,m,m,m,m)),m),B.br,new A.bq(1/0,52,A.jp(B.y7,B.b2c,new A.aug(a,l),A.hq(m,m,B.cv,m,m,m,m,m,m,m,m,m,m,m,new A.ci(A.aW(12),B.S),m,m,m,m,m)),m),B.ON,A.VR("assets/images/logo.png",B.kn,40),B.d2,A.av("DHOLERA REAL ESTATE v1.5.0",m,m,m,$.k5(),m,m)],o),B.U,B.Q,B.R),B.pS,m,B.ax),m)},
 Dl(a,b,c){var s=null
 return A.bZ(A.b([A.fg(c,B.aN,s,20),B.eC,A.av(a,s,s,s,$.k4().bp(B.aN),s,s),B.nY,A.av(b,s,s,s,$.aYM().Gc(B.aH),s,s)],t.p),B.U,B.Q,B.R,0)}}
 A.auf.prototype={
@@ -58512,7 +58513,7 @@ p=A.fN(B.V4,B.X,1)
 o=l.e.y
 o.toString
 B.m.P(s,A.b([r,B.d2,A.bC(k,A.bZ(A.b([B.Za,B.u3,A.d6(A.av(o,k,k,k,$.k4().bp(B.UO),k,k),1)],h),B.aB,B.Q,B.R,0),B.N,k,k,new A.bF(B.Vs,k,p,q,k,k,B.ae),k,k,k,B.cU,k,k,1/0)],h))}s.push(B.dh)
-s.push(new A.bq(1/0,52,A.jp(B.YU,B.b2j,new A.aMC(l,a),A.hq(k,k,B.pq,k,k,k,0,k,k,B.D,k,k,k,k,new A.ci(A.aW(12),B.S),k,k,k,k,k)),k))
+s.push(new A.bq(1/0,52,A.jp(B.YU,B.b2i,new A.aMC(l,a),A.hq(k,k,B.pq,k,k,k,0,k,k,B.D,k,k,k,k,new A.ci(A.aW(12),B.S),k,k,k,k,k)),k))
 g.push(new A.bH(B.cI,A.cl(s,B.aB,B.Q,B.R),k))
 h=A.wP(A.cl(g,B.aB,B.Q,B.R),k,k,B.ax)}}return A.mY(i,B.cT,h,k)},
 uN(a,b,c){var s=null
@@ -58904,7 +58905,7 @@ A.aUn(B.D,new A.aRz(r,this,new A.bp(null,t.am),q,new A.cR(new A.cs(p,B.ca,B.b2),
 azH(){return this.a25(null)},
 K(a){var s,r,q,p,o=this,n=null,m=A.dC(a,!0,t.nj),l=A.dC(a,!0,t.W0).c,k=l==null?n:l.a
 l=A.pN(n,B.ad,n,B.hg,A.av("User Management",n,n,n,$.eo().bp(B.D),n,n))
-s=A.ajK(B.ad,n,B.ZF,B.b2o,new A.aRD(o))
+s=A.ajK(B.ad,n,B.ZF,B.b2n,new A.aRD(o))
 r=o.d
 q=r.a.a.length!==0?A.eE(n,n,n,B.qL,n,n,new A.aRE(o,m),n,n,n,n):n
 p=t.p
@@ -59018,7 +59019,7 @@ $2(a,b){var s,r,q,p=null,o=this.b,n=J.i(o.b,b),m=n.a===this.c,l=A.aW(12),k=A.fN(
 h=A.b_v(h,A.fg(i?B.xN:B.ll,B.D,p,20),p)
 s=t.p
 r=A.b([A.av(n.b,p,p,p,$.eo().mg(16),p,p)],s)
-if(m)B.m.P(r,A.b([B.d1,A.bC(p,B.b2p,B.N,p,p,new A.bF(B.bN.dn(0.2),p,p,A.aW(4),p,p,B.ae),p,p,p,B.Xf,p,p,p)],s))
+if(m)B.m.P(r,A.b([B.d1,A.bC(p,B.b2o,B.N,p,p,new A.bF(B.bN.dn(0.2),p,p,A.aW(4),p,p,B.ae),p,p,p,B.Xf,p,p,p)],s))
 r=A.bZ(r,B.U,B.Q,B.R,0)
 q=n.d
 j=A.av("Role: "+j+" | Status: "+q.toUpperCase(),p,p,p,$.k5(),p,p)
@@ -59419,7 +59420,7 @@ if(o!=null)B.m.P(p,A.b([B.dh,A.b27(B.y8,B.b2O,o,A.b29(r,r,r,r,r,r,r,r,r,B.ad,r,r
 return new A.bH(B.l0,A.ep(A.cl(p,B.U,B.cx,B.R),r,r),r)}}
 A.Uy.prototype={
 K(a){var s=null
-return new A.bH(B.l0,A.ep(A.cl(A.b([B.Zt,B.br,A.av("Oops! Something went wrong",s,s,s,$.eo(),B.d3,s),B.d2,A.av(this.c,s,s,s,$.k4().bp(B.aN),B.d3,s),B.dh,A.jp(B.qK,B.b2h,this.d,A.hq(s,s,B.ad,s,s,s,s,s,s,s,s,s,s,s,new A.ci(A.aW(10),B.S),s,s,s,s,s))],t.p),B.U,B.cx,B.R),s,s),s)}}
+return new A.bH(B.l0,A.ep(A.cl(A.b([B.Zt,B.br,A.av("Oops! Something went wrong",s,s,s,$.eo(),B.d3,s),B.d2,A.av(this.c,s,s,s,$.k4().bp(B.aN),B.d3,s),B.dh,A.jp(B.qK,B.b2g,this.d,A.hq(s,s,B.ad,s,s,s,s,s,s,s,s,s,s,s,new A.ci(A.aW(10),B.S),s,s,s,s,s))],t.p),B.U,B.cx,B.R),s,s),s)}}
 A.uU.prototype={
 al(){return new A.a51()}}
 A.a51.prototype={
@@ -130172,8 +130173,8 @@ B.Z4=new A.bl(B.YG,36,B.f_,null,null)
 B.jR=new A.bq(null,4,null,null)
 B.aN=new A.G(1,0.4117647058823529,0.45098039215686275,0.5254901960784314,B.C)
 B.b0a=new A.z(!0,B.aN,null,null,null,null,12,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.b2i=new A.c3("No photos selected yet.",null,B.b0a,null,null,null,null,null,null)
-B.avV=s([B.Z4,B.jR,B.b2i],t.p)
+B.b2h=new A.c3("No photos selected yet.",null,B.b0a,null,null,null,null,null,null)
+B.avV=s([B.Z4,B.jR,B.b2h],t.p)
 B.VA=new A.lc(B.ax,B.cx,B.R,B.U,null,B.cA,null,0,B.avV,null)
 B.TK=new A.hO(B.aA,null,null,B.VA,null)
 B.U0=new A.i8(null,null,null,null,null,B.ad,null,null,null,null)
@@ -136638,10 +136639,10 @@ B.aXA=new A.n6(3,"hide")
 B.b7t=new A.n6(4,"remove")
 B.aXB=new A.n6(5,"timeout")
 B.aXC=new A.Br(null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.b2s=new A.c3("Could not launch PDF export page.",null,null,null,null,null,null,null,null)
-B.aXD=new A.n4(B.b2s,null,null,null,null,null,null,null,null,null,null,null,null,B.du,!1,null,null,null,B.aa,null)
-B.b2g=new A.c3("You are using the latest version (v1.4.9).",null,null,null,null,null,null,null,null)
-B.aXE=new A.n4(B.b2g,B.ad,null,null,null,null,null,null,null,null,null,null,null,B.du,!1,null,null,null,B.aa,null)
+B.b2r=new A.c3("Could not launch PDF export page.",null,null,null,null,null,null,null,null)
+B.aXD=new A.n4(B.b2r,null,null,null,null,null,null,null,null,null,null,null,null,B.du,!1,null,null,null,B.aa,null)
+B.b2v=new A.c3("You are using the latest version (v1.5.0).",null,null,null,null,null,null,null,null)
+B.aXE=new A.n4(B.b2v,B.ad,null,null,null,null,null,null,null,null,null,null,null,B.du,!1,null,null,null,B.aa,null)
 B.b2Q=new A.c3("Could not fetch version data from server.",null,null,null,null,null,null,null,null)
 B.aXF=new A.n4(B.b2Q,null,null,null,null,null,null,null,null,null,null,null,null,B.du,!1,null,null,null,B.aa,null)
 B.b2E=new A.c3("Mobile copied",null,null,null,null,null,null,null,null)
@@ -137046,23 +137047,23 @@ B.b2c=new A.c3("Sign Out",null,B.Pn,null,null,null,null,null,null)
 B.b2d=new A.c3("Add Inquiry",null,null,null,null,null,null,null,null)
 B.b_Y=new A.z(!0,B.aN,null,null,null,null,13,B.aH,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.b2f=new A.c3("View Layout:",null,B.b_Y,null,null,null,null,null,null)
-B.b2h=new A.c3("Try Again",null,B.Po,null,null,null,null,null,null)
-B.b2j=new A.c3("Share PDF Brochure",null,B.Pn,null,null,null,null,null,null)
-B.b2k=new A.c3("Save Log",null,null,null,null,null,null,null,null)
+B.b2g=new A.c3("Try Again",null,B.Po,null,null,null,null,null,null)
+B.b2i=new A.c3("Share PDF Brochure",null,B.Pn,null,null,null,null,null,null)
+B.b2j=new A.c3("Save Log",null,null,null,null,null,null,null,null)
 B.Pq=new A.z(!0,null,null,null,null,null,15,B.aH,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.b2l=new A.c3("Confirm & Transfer to Inquiries",null,B.Pq,null,null,null,null,null,null)
-B.b2m=new A.c3("Add Contact",null,B.hR,null,null,null,null,null,null)
-B.b2n=new A.c3("Delete Inquiry?",null,null,null,null,null,null,null,null)
-B.b2o=new A.c3("Add User",null,B.ug,null,null,null,null,null,null)
+B.b2k=new A.c3("Confirm & Transfer to Inquiries",null,B.Pq,null,null,null,null,null,null)
+B.b2l=new A.c3("Add Contact",null,B.hR,null,null,null,null,null,null)
+B.b2m=new A.c3("Delete Inquiry?",null,null,null,null,null,null,null,null)
+B.b2n=new A.c3("Add User",null,B.ug,null,null,null,null,null,null)
 B.b1B=new A.z(!0,null,null,null,null,null,10,B.aH,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.b2p=new A.c3("YOU",null,B.b1B,null,null,null,null,null,null)
+B.b2o=new A.c3("YOU",null,B.b1B,null,null,null,null,null,null)
 B.Ps=new A.z(!0,null,null,null,null,null,16,B.aH,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.b2q=new A.c3("Save Contact",null,B.Ps,null,null,null,null,null,null)
-B.b2r=new A.c3("Save Inquiry",null,B.Ps,null,null,null,null,null,null)
-B.b2t=new A.c3("Delete Contact",null,null,null,null,null,null,null,null)
+B.b2p=new A.c3("Save Contact",null,B.Ps,null,null,null,null,null,null)
+B.b2q=new A.c3("Save Inquiry",null,B.Ps,null,null,null,null,null,null)
+B.b2s=new A.c3("Delete Contact",null,null,null,null,null,null,null,null)
 B.Pu=new A.c3("Cancel",null,null,null,null,null,null,null,null)
-B.b2u=new A.c3("Add telecalling numbers to start the 10-day automated rotation cycle.",null,B.ui,B.d3,null,null,null,null,null)
-B.b2v=new A.c3("Move to Inquiry",null,null,null,null,null,null,null,null)
+B.b2t=new A.c3("Add telecalling numbers to start the 10-day automated rotation cycle.",null,B.ui,B.d3,null,null,null,null,null)
+B.b2u=new A.c3("Move to Inquiry",null,null,null,null,null,null,null,null)
 B.b2w=new A.c3("Call Now",null,null,null,null,null,null,null,null)
 B.b2x=new A.c3("Delete",null,null,null,null,null,null,null,null)
 B.aZA=new A.z(!0,B.dJ,null,null,null,null,11,B.aH,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
