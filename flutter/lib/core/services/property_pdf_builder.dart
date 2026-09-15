@@ -5,8 +5,8 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import '../../models/property_model.dart';
 
-/// Property PDF Document Builder
-/// DHOLERA REAL ESTATE — A4 Format Brochure with Zero-Clipping & Scaled Visuals
+/// Property PDF Presentation Builder
+/// DHOLERA REAL ESTATE — Modern Proposal Presentation Format
 class PropertyPdfBuilder {
   static Future<Uint8List> buildPdf(PropertyModel property) async {
     final pdf = pw.Document();
@@ -53,156 +53,155 @@ class PropertyPdfBuilder {
       mapImage3 = pw.MemoryImage(data3.buffer.asUint8List());
     } catch (_) {}
 
-    final String titleStr = '${property.villageName} Plot (Survey No: ${property.surveyNo})';
-    final String areaStr = '${property.area} ${property.areaUnit}';
-    final String roadStr = property.road.isNotEmpty ? property.road : 'Main Sector Road Touch';
+    final String villageName = property.villageName.toUpperCase();
+    final String surveyNo = property.surveyNo;
+    final String zoneStr = property.zone.isNotEmpty ? property.zone.toUpperCase() : 'INDUSTRIAL';
+    final String tpStr = (property.tp != null && property.tp!.isNotEmpty) ? property.tp! : '-';
+    final String fpStr = (property.fp != null && property.fp!.isNotEmpty) ? property.fp! : '-';
+    final String roadStr = property.road.isNotEmpty ? property.road : '18m TP Road';
+    final String areaSqYd = '${property.area}';
+
+    // Calculate Square Meters (1 Sq Yard = ~0.836127 Sq Meter)
+    final double sqMetersNum = property.area * 0.836127;
+    final String areaSqM = sqMetersNum.toStringAsFixed(0);
 
     // -------------------------------------------------------------------------
-    // PAGE 1: Master Sector Map 1 (Contain) + Comprehensive Specifications Table
+    // PAGE 1: Modern Deep Navy Cover Page (Matching Sample Page 1)
     // -------------------------------------------------------------------------
     pdf.addPage(
       pw.Page(
-        pageFormat: PdfPageFormat.a4,
+        pageFormat: PdfPageFormat.a4.landscape,
+        margin: pw.EdgeInsets.zero,
+        build: (pw.Context context) {
+          return pw.Container(
+            color: PdfColor.fromHex('#0A192F'),
+            child: pw.Center(
+              child: pw.Column(
+                mainAxisAlignment: pw.MainAxisAlignment.center,
+                crossAxisAlignment: pw.CrossAxisAlignment.center,
+                children: [
+                  pw.Text(
+                    'DHOLERA',
+                    style: pw.TextStyle(
+                      fontSize: 40,
+                      fontWeight: pw.FontWeight.bold,
+                      color: PdfColors.white,
+                      letterSpacing: 4,
+                    ),
+                  ),
+                  pw.SizedBox(height: 8),
+                  pw.Text(
+                    '$zoneStr PROPOSAL',
+                    style: pw.TextStyle(
+                      fontSize: 26,
+                      fontWeight: pw.FontWeight.bold,
+                      color: PdfColors.white,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                  pw.SizedBox(height: 12),
+                  pw.Container(
+                    width: 320,
+                    height: 2,
+                    color: PdfColors.white,
+                  ),
+                  pw.SizedBox(height: 16),
+                  pw.Text(
+                    'VILLAGE - $villageName',
+                    style: pw.TextStyle(
+                      fontSize: 18,
+                      fontWeight: pw.FontWeight.bold,
+                      color: PdfColor.fromHex('#93C5FD'),
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                  pw.SizedBox(height: 8),
+                  pw.Text(
+                    'DHOLERA SIR',
+                    style: pw.TextStyle(
+                      fontSize: 14,
+                      color: PdfColors.white,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+
+    // -------------------------------------------------------------------------
+    // PAGE 2: Property Specifications & Activation Map (Matching Sample Page 2)
+    // -------------------------------------------------------------------------
+    pdf.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4.landscape,
         margin: pw.EdgeInsets.zero,
         build: (pw.Context context) {
           return pw.Container(
             color: PdfColors.white,
+            padding: const pw.EdgeInsets.all(32),
             child: pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
-                _buildHeader(
-                  title: 'DHOLERA REAL ESTATE',
-                  subtitle: 'Official Property Catalogue Brochure',
-                  badgeText: 'Official Property Catalogue',
-                ),
-
-                // Body Content Container
-                pw.Expanded(
-                  child: pw.Padding(
-                    padding: const pw.EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                    child: pw.Column(
-                      crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-                      children: [
-                        // Master Map 1 Container (BoxFit.contain so no map details are cut off)
-                        if (mapImage1 != null) ...[
-                          pw.Container(
-                            height: 280,
-                            decoration: pw.BoxDecoration(
-                              color: PdfColor.fromHex('#F8FAFC'),
-                              borderRadius: pw.BorderRadius.circular(10),
-                              border: pw.Border.all(color: PdfColor.fromHex('#CBD5E1'), width: 1),
-                            ),
-                            child: pw.ClipRRect(
-                              horizontalRadius: 9,
-                              verticalRadius: 9,
-                              child: pw.Center(
-                                child: pw.Image(
-                                  mapImage1,
-                                  fit: pw.BoxFit.contain,
-                                ),
-                              ),
-                            ),
-                          ),
-                          pw.SizedBox(height: 14),
-                        ],
-
-                        // Title & Zone Badge
-                        pw.Row(
-                          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: pw.CrossAxisAlignment.center,
-                          children: [
-                            pw.Expanded(
-                              child: pw.Text(
-                                titleStr,
-                                softWrap: true,
-                                style: pw.TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: pw.FontWeight.bold,
-                                  color: PdfColor.fromHex('#0F172A'),
-                                ),
-                              ),
-                            ),
-                            pw.SizedBox(width: 12),
-                            pw.Container(
-                              padding: const pw.EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                              decoration: pw.BoxDecoration(
-                                color: PdfColor.fromHex('#DBEAFE'),
-                                borderRadius: pw.BorderRadius.circular(6),
-                              ),
-                              child: pw.Text(
-                                '${property.zone} Zone • Dholera SIR',
-                                style: pw.TextStyle(
-                                  fontSize: 9,
-                                  fontWeight: pw.FontWeight.bold,
-                                  color: PdfColor.fromHex('#1E40AF'),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        pw.SizedBox(height: 12),
-
-                        // Specifications 2-Column Structured Card
-                        pw.Container(
-                          padding: const pw.EdgeInsets.all(14),
-                          decoration: pw.BoxDecoration(
-                            color: PdfColor.fromHex('#F8FAFC'),
-                            borderRadius: pw.BorderRadius.circular(10),
-                            border: pw.Border.all(color: PdfColor.fromHex('#E2E8F0'), width: 1),
-                          ),
-                          child: pw.Column(
-                            crossAxisAlignment: pw.CrossAxisAlignment.start,
-                            children: [
-                              pw.Text(
-                                'PROPERTY SPECIFICATIONS & DETAILS',
-                                style: pw.TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: pw.FontWeight.bold,
-                                  color: PdfColor.fromHex('#1E3A8A'),
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                              pw.Divider(color: PdfColor.fromHex('#CBD5E1'), thickness: 0.8),
-                              pw.SizedBox(height: 6),
-                              pw.Row(
-                                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                children: [
-                                  // Left Specifications Column
-                                  pw.Expanded(
-                                    child: pw.Column(
-                                      crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                      children: [
-                                        _buildDetailRow('Village Name:', property.villageName, labelWidth: 95),
-                                        _buildDetailRow('Survey Number:', property.surveyNo, labelWidth: 95),
-                                        _buildDetailRow('Zone:', property.zone, labelWidth: 95),
-                                        _buildDetailRow('Town Planning:', property.tp ?? '-', labelWidth: 95),
-                                        _buildDetailRow('Final Plot (FP):', property.fp ?? '-', labelWidth: 95),
-                                      ],
-                                    ),
-                                  ),
-                                  pw.SizedBox(width: 16),
-                                  // Right Specifications Column
-                                  pw.Expanded(
-                                    child: pw.Column(
-                                      crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                      children: [
-                                        _buildDetailRow('Road Touch:', roadStr, labelWidth: 90),
-                                        _buildDetailRow('Area Size:', areaStr, labelWidth: 90),
-                                        _buildDetailRow('Property Code:', '#DRE-${property.id}', labelWidth: 90),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                pw.Text(
+                  'VILLAGE - $villageName',
+                  style: pw.TextStyle(
+                    fontSize: 24,
+                    fontWeight: pw.FontWeight.bold,
+                    color: PdfColor.fromHex('#0F172A'),
+                    letterSpacing: 1,
                   ),
                 ),
-
-                _buildFooter(property.id),
+                pw.SizedBox(height: 20),
+                pw.Expanded(
+                  child: pw.Row(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                      // Left Column: Bullet List
+                      pw.Expanded(
+                        flex: 5,
+                        child: pw.Column(
+                          crossAxisAlignment: pw.CrossAxisAlignment.start,
+                          mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _buildBulletItem('NEW SURVEY No. – $surveyNo'),
+                            _buildBulletItem('OLD SURVEY No. – ${surveyNo}p'),
+                            _buildBulletItem('TP $tpStr'),
+                            _buildBulletItem('FINAL PLOT (FP) – $fpStr'),
+                            _buildBulletItem('TP ROAD – $roadStr'),
+                            _buildBulletItem('AREA IN SQ. YARD – $areaSqYd'),
+                            _buildBulletItem('AREA IN METER – $areaSqM'),
+                            _buildBulletItem('READY NA'),
+                            _buildBulletItem('ZONING – $zoneStr'),
+                            _buildBulletItem('ALL TITLE CLEAR'),
+                          ],
+                        ),
+                      ),
+                      pw.SizedBox(width: 20),
+                      // Right Column: Activation Map
+                      pw.Expanded(
+                        flex: 6,
+                        child: pw.Container(
+                          decoration: pw.BoxDecoration(
+                            color: PdfColor.fromHex('#F8FAFC'),
+                            borderRadius: pw.BorderRadius.circular(12),
+                            border: pw.Border.all(color: PdfColor.fromHex('#CBD5E1'), width: 1.5),
+                          ),
+                          child: pw.ClipRRect(
+                            horizontalRadius: 11,
+                            verticalRadius: 11,
+                            child: mapImage1 != null
+                                ? pw.Image(mapImage1, fit: pw.BoxFit.contain)
+                                : pw.Center(child: pw.Text('Activation Map')),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           );
@@ -211,265 +210,266 @@ class PropertyPdfBuilder {
     );
 
     // -------------------------------------------------------------------------
-    // PAGE 2: Master Map 2 (Contain) + Primary Property Photo (Enlarged Circle)
+    // PAGE 3: Zone - DP Location (Matching Sample Page 3)
     // -------------------------------------------------------------------------
-    if (imageProviders.isNotEmpty) {
-      final firstImage = imageProviders[0];
-
-      pdf.addPage(
-        pw.Page(
-          pageFormat: PdfPageFormat.a4,
-          margin: pw.EdgeInsets.zero,
-          build: (pw.Context context) {
-            return pw.Container(
-              color: PdfColors.white,
-              child: pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-                children: [
-                  _buildHeader(
-                    title: 'DHOLERA REAL ESTATE',
-                    subtitle: 'Official Property Catalogue Brochure',
-                    badgeText: 'Gallery — Page 2',
-                  ),
-
-                  pw.Expanded(
-                    child: pw.Padding(
-                      padding: const pw.EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                      child: pw.Column(
-                        crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-                        children: [
-                          // Top Map 2 Container (Contain mode)
-                          if (mapImage2 != null) ...[
-                            pw.Container(
-                              height: 280,
-                              decoration: pw.BoxDecoration(
-                                color: PdfColor.fromHex('#F8FAFC'),
-                                borderRadius: pw.BorderRadius.circular(10),
-                                border: pw.Border.all(color: PdfColor.fromHex('#CBD5E1'), width: 1),
-                              ),
-                              child: pw.ClipRRect(
-                                horizontalRadius: 9,
-                                verticalRadius: 9,
-                                child: pw.Center(
-                                  child: pw.Image(
-                                    mapImage2,
-                                    fit: pw.BoxFit.contain,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            pw.SizedBox(height: 20),
-                          ],
-
-                          // Enlarged Circular Primary Property View (290x290 with Navy Ring)
-                          pw.Expanded(
-                            child: pw.Center(
-                              child: pw.Column(
-                                mainAxisAlignment: pw.MainAxisAlignment.center,
-                                children: [
-                                  pw.Container(
-                                    width: 290,
-                                    height: 290,
-                                    decoration: pw.BoxDecoration(
-                                      shape: pw.BoxShape.circle,
-                                      color: PdfColor.fromHex('#F1F5F9'),
-                                      border: pw.Border.all(
-                                        color: PdfColor.fromHex('#1E3A8A'),
-                                        width: 4,
-                                      ),
-                                    ),
-                                    child: pw.ClipOval(
-                                      child: pw.Image(
-                                        firstImage,
-                                        fit: pw.BoxFit.cover,
-                                        width: 290,
-                                        height: 290,
-                                      ),
-                                    ),
-                                  ),
-                                  pw.SizedBox(height: 14),
-                                  pw.Text(
-                                    'Primary Property View',
-                                    style: pw.TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: pw.FontWeight.bold,
-                                      color: PdfColor.fromHex('#1E3A8A'),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+    pdf.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4.landscape,
+        margin: pw.EdgeInsets.zero,
+        build: (pw.Context context) {
+          return pw.Container(
+            color: PdfColors.white,
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+              children: [
+                // Top Purple/Navy Header Banner
+                pw.Container(
+                  color: PdfColor.fromHex('#1E1B4B'),
+                  padding: const pw.EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  child: pw.Text(
+                    '$zoneStr ZONE – DP LOCATION',
+                    style: pw.TextStyle(
+                      fontSize: 22,
+                      fontWeight: pw.FontWeight.bold,
+                      color: PdfColors.white,
+                      letterSpacing: 1.5,
                     ),
                   ),
-
-                  _buildFooter(property.id),
-                ],
-              ),
-            );
-          },
-        ),
-      );
-    }
-
-    // -------------------------------------------------------------------------
-    // PAGE 3: Master Map 3 (Contain) + Secondary Property Photo (Enlarged Rectangle)
-    // -------------------------------------------------------------------------
-    if (imageProviders.length >= 2) {
-      final secondImage = imageProviders[1];
-
-      pdf.addPage(
-        pw.Page(
-          pageFormat: PdfPageFormat.a4,
-          margin: pw.EdgeInsets.zero,
-          build: (pw.Context context) {
-            return pw.Container(
-              color: PdfColors.white,
-              child: pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-                children: [
-                  _buildHeader(
-                    title: 'DHOLERA REAL ESTATE',
-                    subtitle: 'Official Property Catalogue Brochure',
-                    badgeText: 'Gallery — Page 3',
-                  ),
-
-                  pw.Expanded(
-                    child: pw.Padding(
-                      padding: const pw.EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                      child: pw.Column(
-                        crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-                        children: [
-                          // Top Map 3 Container (Contain mode)
-                          if (mapImage3 != null) ...[
-                            pw.Container(
-                              height: 280,
-                              decoration: pw.BoxDecoration(
-                                color: PdfColor.fromHex('#F8FAFC'),
-                                borderRadius: pw.BorderRadius.circular(10),
-                                border: pw.Border.all(color: PdfColor.fromHex('#CBD5E1'), width: 1),
-                              ),
-                              child: pw.ClipRRect(
-                                horizontalRadius: 9,
-                                verticalRadius: 9,
-                                child: pw.Center(
-                                  child: pw.Image(
-                                    mapImage3,
-                                    fit: pw.BoxFit.contain,
-                                  ),
-                                ),
-                              ),
+                ),
+                // Body: Dual Display
+                pw.Expanded(
+                  child: pw.Padding(
+                    padding: const pw.EdgeInsets.all(24),
+                    child: pw.Row(
+                      children: [
+                        // DP Map
+                        pw.Expanded(
+                          child: pw.Container(
+                            decoration: pw.BoxDecoration(
+                              borderRadius: pw.BorderRadius.circular(10),
+                              border: pw.Border.all(color: PdfColor.fromHex('#CBD5E1'), width: 1),
                             ),
-                            pw.SizedBox(height: 16),
-                          ],
-
-                          // Enlarged Rectangular Secondary Property View (460x280 with Contain)
-                          pw.Expanded(
-                            child: pw.Center(
-                              child: pw.Column(
-                                mainAxisAlignment: pw.MainAxisAlignment.center,
-                                children: [
-                                  pw.Container(
-                                    width: 460,
-                                    height: 280,
-                                    decoration: pw.BoxDecoration(
-                                      color: PdfColor.fromHex('#F8FAFC'),
-                                      borderRadius: pw.BorderRadius.circular(14),
-                                      border: pw.Border.all(
-                                        color: PdfColor.fromHex('#1E3A8A'),
-                                        width: 2.5,
-                                      ),
-                                    ),
-                                    child: pw.ClipRRect(
-                                      horizontalRadius: 11,
-                                      verticalRadius: 11,
-                                      child: pw.Center(
-                                        child: pw.Image(
-                                          secondImage,
-                                          fit: pw.BoxFit.contain,
-                                          width: 460,
-                                          height: 280,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  pw.SizedBox(height: 14),
-                                  pw.Text(
-                                    'Secondary Property View',
-                                    style: pw.TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: pw.FontWeight.bold,
-                                      color: PdfColor.fromHex('#1E3A8A'),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            child: pw.ClipRRect(
+                              horizontalRadius: 9,
+                              verticalRadius: 9,
+                              child: mapImage2 != null
+                                  ? pw.Image(mapImage2, fit: pw.BoxFit.contain)
+                                  : pw.Center(child: pw.Text('DP Map')),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                        pw.SizedBox(width: 16),
+                        // Primary Site / CAD Photo
+                        pw.Expanded(
+                          child: pw.Container(
+                            decoration: pw.BoxDecoration(
+                              color: PdfColor.fromHex('#F8FAFC'),
+                              borderRadius: pw.BorderRadius.circular(10),
+                              border: pw.Border.all(color: PdfColor.fromHex('#CBD5E1'), width: 1),
+                            ),
+                            child: pw.ClipRRect(
+                              horizontalRadius: 9,
+                              verticalRadius: 9,
+                              child: imageProviders.isNotEmpty
+                                  ? pw.Image(imageProviders[0], fit: pw.BoxFit.contain)
+                                  : (mapImage2 != null
+                                      ? pw.Image(mapImage2, fit: pw.BoxFit.contain)
+                                      : pw.Center(child: pw.Text('Site Plan'))),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-
-                  _buildFooter(property.id),
-                ],
-              ),
-            );
-          },
-        ),
-      );
-    }
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
 
     // -------------------------------------------------------------------------
-    // PAGE 4+: Full Gallery Views for Remaining Photographs (BoxFit.contain)
+    // PAGE 4: Open Plot Location & Metric Callouts (Matching Sample Page 4)
+    // -------------------------------------------------------------------------
+    pdf.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4.landscape,
+        margin: pw.EdgeInsets.zero,
+        build: (pw.Context context) {
+          return pw.Container(
+            color: PdfColors.white,
+            child: pw.Column(
+              children: [
+                pw.SizedBox(height: 20),
+                // Top Header Pill Container
+                pw.Container(
+                  padding: const pw.EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                  decoration: pw.BoxDecoration(
+                    color: PdfColor.fromHex('#4338CA'),
+                    borderRadius: pw.BorderRadius.circular(16),
+                  ),
+                  child: pw.Text(
+                    'OPEN PLOT LOCATION',
+                    style: pw.TextStyle(
+                      fontSize: 20,
+                      fontWeight: pw.FontWeight.bold,
+                      color: PdfColors.white,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                ),
+                pw.SizedBox(height: 20),
+                // Body
+                pw.Expanded(
+                  child: pw.Padding(
+                    padding: const pw.EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                    child: pw.Row(
+                      children: [
+                        // Left Metric Stack
+                        pw.Expanded(
+                          flex: 4,
+                          child: pw.Column(
+                            mainAxisAlignment: pw.MainAxisAlignment.center,
+                            children: [
+                              _buildMetricCard('AREA IN SQYD : $areaSqYd'),
+                              pw.SizedBox(height: 16),
+                              _buildMetricCard('AREA IN METERS : $areaSqM'),
+                              pw.SizedBox(height: 16),
+                              _buildMetricCard('TP ROAD : $roadStr'),
+                            ],
+                          ),
+                        ),
+                        pw.SizedBox(width: 24),
+                        // Right CAD/Plot View
+                        pw.Expanded(
+                          flex: 6,
+                          child: pw.Container(
+                            decoration: pw.BoxDecoration(
+                              color: PdfColor.fromHex('#F8FAFC'),
+                              borderRadius: pw.BorderRadius.circular(12),
+                              border: pw.Border.all(color: PdfColor.fromHex('#CBD5E1'), width: 1.5),
+                            ),
+                            child: pw.ClipRRect(
+                              horizontalRadius: 11,
+                              verticalRadius: 11,
+                              child: imageProviders.length >= 2
+                                  ? pw.Image(imageProviders[1], fit: pw.BoxFit.contain)
+                                  : (imageProviders.isNotEmpty
+                                      ? pw.Image(imageProviders[0], fit: pw.BoxFit.contain)
+                                      : pw.Center(child: pw.Text('Plot CAD View'))),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+
+    // -------------------------------------------------------------------------
+    // PAGE 5: Dholera SIR Master Plan Infographic (Matching Sample Page 8)
+    // -------------------------------------------------------------------------
+    pdf.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4.landscape,
+        margin: pw.EdgeInsets.zero,
+        build: (pw.Context context) {
+          return pw.Container(
+            color: PdfColors.white,
+            child: pw.Column(
+              children: [
+                pw.SizedBox(height: 18),
+                pw.Container(
+                  padding: const pw.EdgeInsets.symmetric(horizontal: 36, vertical: 10),
+                  decoration: pw.BoxDecoration(
+                    color: PdfColor.fromHex('#4338CA'),
+                    borderRadius: pw.BorderRadius.circular(14),
+                  ),
+                  child: pw.Text(
+                    'MASTER PLAN DHOLERA SIR',
+                    style: pw.TextStyle(
+                      fontSize: 18,
+                      fontWeight: pw.FontWeight.bold,
+                      color: PdfColors.white,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                ),
+                pw.SizedBox(height: 14),
+                pw.Expanded(
+                  child: pw.Padding(
+                    padding: const pw.EdgeInsets.all(16),
+                    child: mapImage3 != null
+                        ? pw.Image(mapImage3, fit: pw.BoxFit.contain)
+                        : pw.Center(child: pw.Text('Dholera SIR Master Plan Infographic')),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+
+    // -------------------------------------------------------------------------
+    // PAGE 6+: Uploaded Property Documents & Scans (NA Order / Zoning Cert / Photos)
     // -------------------------------------------------------------------------
     if (imageProviders.length >= 3) {
       for (int i = 2; i < imageProviders.length; i++) {
         final currentImage = imageProviders[i];
+        final String docTitle = (i == 2) ? 'NA ORDER' : ((i == 3) ? 'ZONING CERTIFICATE' : 'PROPERTY DOCUMENT ${i - 1}');
 
         pdf.addPage(
           pw.Page(
-            pageFormat: PdfPageFormat.a4,
+            pageFormat: PdfPageFormat.a4.landscape,
             margin: pw.EdgeInsets.zero,
             build: (pw.Context context) {
               return pw.Container(
                 color: PdfColors.white,
-                child: pw.Column(
-                  crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+                child: pw.Row(
                   children: [
-                    _buildHeader(
-                      title: 'DHOLERA REAL ESTATE',
-                      subtitle: 'Official Property Catalogue Brochure',
-                      badgeText: 'Gallery — Page ${i + 2}',
+                    // Left Purple Title Bar (Matching Sample Page 5 NA Order layout)
+                    pw.Container(
+                      width: 220,
+                      color: PdfColor.fromHex('#4338CA'),
+                      child: pw.Center(
+                        child: pw.Text(
+                          docTitle,
+                          style: pw.TextStyle(
+                            fontSize: 22,
+                            fontWeight: pw.FontWeight.bold,
+                            color: PdfColors.white,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                      ),
                     ),
-
-                    // Main image area with contain fit (100% visible, zero cropping)
+                    // Right Document Scan Area
                     pw.Expanded(
                       child: pw.Padding(
-                        padding: const pw.EdgeInsets.all(24),
+                        padding: const pw.EdgeInsets.all(20),
                         child: pw.Container(
                           decoration: pw.BoxDecoration(
                             color: PdfColor.fromHex('#F8FAFC'),
-                            borderRadius: pw.BorderRadius.circular(14),
+                            borderRadius: pw.BorderRadius.circular(10),
                             border: pw.Border.all(color: PdfColor.fromHex('#CBD5E1'), width: 1),
                           ),
                           child: pw.ClipRRect(
-                            horizontalRadius: 13,
-                            verticalRadius: 13,
+                            horizontalRadius: 9,
+                            verticalRadius: 9,
                             child: pw.Center(
-                              child: pw.Image(
-                                currentImage,
-                                fit: pw.BoxFit.contain,
-                              ),
+                              child: pw.Image(currentImage, fit: pw.BoxFit.contain),
                             ),
                           ),
                         ),
                       ),
                     ),
-
-                    _buildFooter(property.id),
                   ],
                 ),
               );
@@ -482,128 +482,52 @@ class PropertyPdfBuilder {
     return pdf.save();
   }
 
-  /// Builds standardized branded top banner
-  static pw.Widget _buildHeader({
-    required String title,
-    required String subtitle,
-    required String badgeText,
-  }) {
-    return pw.Container(
-      padding: const pw.EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-      color: PdfColor.fromHex('#0F172A'),
-      child: pw.Row(
-        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-        children: [
-          pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Text(
-                title,
-                style: pw.TextStyle(
-                  fontSize: 16,
-                  fontWeight: pw.FontWeight.bold,
-                  color: PdfColors.white,
-                ),
-              ),
-              pw.SizedBox(height: 2),
-              pw.Text(
-                subtitle,
-                style: pw.TextStyle(
-                  fontSize: 8.5,
-                  color: PdfColor.fromHex('#93C5FD'),
-                ),
-              ),
-            ],
+  /// Helper to build bullet point specification item
+  static pw.Widget _buildBulletItem(String text) {
+    return pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.center,
+      children: [
+        pw.Container(
+          width: 6,
+          height: 6,
+          decoration: const pw.BoxDecoration(
+            color: PdfColors.black,
+            shape: pw.BoxShape.circle,
           ),
-          pw.Container(
-            padding: const pw.EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-            decoration: pw.BoxDecoration(
-              color: PdfColor.fromHex('#1E3A8A'),
-              borderRadius: pw.BorderRadius.circular(16),
-            ),
-            child: pw.Text(
-              badgeText,
-              style: pw.TextStyle(
-                fontSize: 9.5,
-                fontWeight: pw.FontWeight.bold,
-                color: PdfColors.white,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Builds standardized branded footer banner
-  static pw.Widget _buildFooter(int propertyId) {
-    return pw.Container(
-      padding: const pw.EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-      color: PdfColor.fromHex('#0F172A'),
-      child: pw.Row(
-        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-        children: [
-          pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Text(
-                'Interested in this property? Contact us today!',
-                style: pw.TextStyle(
-                  fontSize: 9,
-                  fontWeight: pw.FontWeight.bold,
-                  color: PdfColor.fromHex('#60A5FA'),
-                ),
-              ),
-              pw.Text(
-                'DHOLERA REAL ESTATE — Your Trusted Investment Partner',
-                style: pw.TextStyle(
-                  fontSize: 7.5,
-                  color: PdfColor.fromHex('#94A3B8'),
-                ),
-              ),
-            ],
-          ),
-          pw.Text(
-            'Property Code: #DRE-$propertyId',
+        ),
+        pw.SizedBox(width: 10),
+        pw.Expanded(
+          child: pw.Text(
+            text,
             style: pw.TextStyle(
-              fontSize: 8,
-              color: PdfColor.fromHex('#94A3B8'),
+              fontSize: 14,
+              fontWeight: pw.FontWeight.bold,
+              color: PdfColor.fromHex('#0F172A'),
+              letterSpacing: 0.5,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  /// Builds robust detail row with Expanded wrapper and softWrap to prevent text clipping
-  static pw.Widget _buildDetailRow(String label, String value, {double labelWidth = 95}) {
-    return pw.Padding(
-      padding: const pw.EdgeInsets.only(bottom: 5),
-      child: pw.Row(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.SizedBox(
-            width: labelWidth,
-            child: pw.Text(
-              label,
-              style: pw.TextStyle(
-                fontSize: 9.5,
-                color: PdfColor.fromHex('#64748B'),
-              ),
-            ),
-          ),
-          pw.Expanded(
-            child: pw.Text(
-              value,
-              softWrap: true,
-              style: pw.TextStyle(
-                fontSize: 9.5,
-                fontWeight: pw.FontWeight.bold,
-                color: PdfColor.fromHex('#0F172A'),
-              ),
-            ),
-          ),
-        ],
+  /// Helper to build rounded metric card
+  static pw.Widget _buildMetricCard(String text) {
+    return pw.Container(
+      width: double.infinity,
+      padding: const pw.EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      decoration: pw.BoxDecoration(
+        color: PdfColor.fromHex('#4338CA'),
+        borderRadius: pw.BorderRadius.circular(12),
+      ),
+      child: pw.Text(
+        text,
+        style: pw.TextStyle(
+          fontSize: 14,
+          fontWeight: pw.FontWeight.bold,
+          color: PdfColors.white,
+          letterSpacing: 0.8,
+        ),
       ),
     );
   }

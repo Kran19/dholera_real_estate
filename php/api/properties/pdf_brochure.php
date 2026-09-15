@@ -1,6 +1,6 @@
 <?php
 /**
- * Property PDF Brochure Generator Endpoint
+ * Property PDF Presentation Generator Endpoint
  * DHOLERA REAL ESTATE
  * GET /api/properties/pdf_brochure.php?id={property_id}
  */
@@ -17,7 +17,6 @@ if ($propertyId <= 0) {
 try {
     $db = Database::getConnection();
 
-    // Fetch property details safely without non-existent table joins
     $stmt = $db->prepare("
         SELECT p.*, u.username as creator_name
         FROM properties p
@@ -31,14 +30,12 @@ try {
         sendJsonResponse(false, "Property not found.", null, 404);
     }
 
-    // Fetch property images
     $imgStmt = $db->prepare("SELECT image_url FROM property_images WHERE property_id = :id ORDER BY id ASC");
     $imgStmt->execute([':id' => $propertyId]);
     $images = $imgStmt->fetchAll(PDO::FETCH_COLUMN);
 
     $baseUrl = 'https://emperorsmartsolutions.com/dholerarealestate/php';
     
-    // Resolve absolute image URLs
     $imageUrlList = [];
     if (!empty($images)) {
         foreach ($images as $img) {
@@ -57,16 +54,17 @@ try {
     $sideImage1 = $imageUrlList[1] ?? $mainImage;
     $sideImage2 = $imageUrlList[2] ?? $sideImage1;
 
-    $villageName = htmlspecialchars($property['village_name'] ?? 'Dholera');
+    $villageName = strtoupper(htmlspecialchars($property['village_name'] ?? 'DHOLERA'));
     $surveyNo = htmlspecialchars($property['survey_no'] ?? '-');
-    $zone = htmlspecialchars($property['zone'] ?? 'General Zone');
+    $zone = !empty($property['zone']) ? strtoupper(htmlspecialchars($property['zone'])) : 'INDUSTRIAL';
     $tp = !empty($property['tp']) ? htmlspecialchars($property['tp']) : '-';
     $fp = !empty($property['fp']) ? htmlspecialchars($property['fp']) : '-';
-    $road = !empty($property['road']) ? htmlspecialchars($property['road']) : 'Main Road Touch';
-    $area = number_format((float)($property['area'] ?? 0), 2);
-    $areaUnit = htmlspecialchars($property['area_unit'] ?? 'Sq Yard');
+    $road = !empty($property['road']) ? htmlspecialchars($property['road']) : '18m TP Road';
+    $areaVal = (float)($property['area'] ?? 0);
+    $areaSqYd = number_format($areaVal, 2);
+    $areaSqM = number_format($areaVal * 0.836127, 0);
 
-    $displayTitle = "$villageName Plot (Survey No: $surveyNo)";
+    $displayTitle = "DHOLERA $zone PROPOSAL — VILLAGE $villageName";
 
     header("Content-Type: text/html; charset=UTF-8");
     ?>
@@ -75,150 +73,155 @@ try {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title><?php echo $displayTitle; ?> — Property Brochure</title>
+        <title><?php echo $displayTitle; ?> — Property Presentation</title>
         <style>
-            @page { size: A4 portrait; margin: 0; }
+            @page { size: A4 landscape; margin: 0; }
             * { box-sizing: border-box; -webkit-print-color-adjust: exact; }
-            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: #f8fafc; color: #0f172a; }
-            .brochure-container { width: 210mm; min-height: 297mm; margin: 0 auto; background: #ffffff; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-            .header { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: #ffffff; padding: 24px 32px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid #3b82f6; }
-            .brand-logo { display: flex; align-items: center; gap: 12px; }
-            .brand-logo-icon { width: 44px; height: 44px; background: #ffffff; color: #1e3a8a; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; }
-            .brand-name { font-size: 22px; font-weight: 800; letter-spacing: 1px; }
-            .brand-tagline { font-size: 11px; color: #93c5fd; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
-            .contact-pill { background: rgba(255,255,255,0.12); padding: 8px 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.25); font-size: 13px; font-weight: 600; }
-            .content { padding: 28px 32px; flex-grow: 1; }
-            .property-meta-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
-            .badge { background: #dbeafe; color: #1e40af; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; margin-bottom: 8px; }
-            .property-title { font-size: 24px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0; line-height: 1.25; }
-            .property-location { font-size: 13px; color: #64748b; display: flex; align-items: center; gap: 6px; }
-            .price-tag { text-align: right; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 10px 18px; border-radius: 12px; }
-            .price-label { font-size: 10px; color: #166534; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
-            .price-amount { font-size: 20px; font-weight: 900; color: #15803d; margin-top: 2px; }
-            .specs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0; }
-            .spec-card { background: #f1f5f9; padding: 12px; border-radius: 10px; border-left: 3px solid #1e3a8a; }
-            .spec-label { font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: 600; }
-            .spec-value { font-size: 14px; font-weight: 700; color: #0f172a; margin-top: 4px; }
-            .gallery-container { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-bottom: 24px; }
-            .main-img { width: 100%; height: 220px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
-            .side-gallery { display: flex; flex-direction: column; gap: 12px; }
-            .sub-img { width: 100%; height: 104px; object-fit: cover; border-radius: 10px; }
-            .details-section { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; margin-bottom: 20px; }
-            .section-title { font-size: 14px; font-weight: 700; color: #1e3a8a; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 10px; letter-spacing: 0.5px; }
-            .description-text { font-size: 12px; line-height: 1.6; color: #334155; }
-            .amenities-list { list-style: none; padding: 0; margin: 0; }
-            .amenities-list li { font-size: 12px; color: #1e293b; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-            .amenities-list li::before { content: "✓"; color: #16a34a; font-weight: 900; background: #dcfce7; width: 18px; height: 18px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; }
-            .footer { background: #0f172a; color: #ffffff; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; border-top: 3px solid #3b82f6; }
-            .footer-cta { font-size: 14px; font-weight: 700; color: #60a5fa; }
-            .footer-contacts { display: flex; gap: 20px; font-size: 12px; }
-            .footer-item { display: flex; align-items: center; gap: 6px; color: #cbd5e1; }
-            .footer-item strong { color: #ffffff; }
-            .print-bar { background: #1e3a8a; color: white; text-align: center; padding: 10px; font-weight: 600; cursor: pointer; }
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: #0a192f; color: #0f172a; }
+            .print-bar { background: #1e3a8a; color: white; text-align: center; padding: 12px; font-weight: 700; cursor: pointer; font-size: 14px; position: fixed; top: 0; width: 100%; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
             @media print { .print-bar { display: none; } }
+
+            .page-slide { width: 297mm; height: 210mm; margin: 0 auto 20px auto; background: #ffffff; position: relative; page-break-after: always; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+            
+            /* Cover Slide */
+            .slide-cover { background: #0a192f; color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+            .cover-title { font-size: 48px; font-weight: 900; letter-spacing: 4px; margin: 0; }
+            .cover-subtitle { font-size: 28px; font-weight: 800; letter-spacing: 2px; margin-top: 8px; color: #ffffff; }
+            .cover-divider { width: 360px; height: 3px; background: #ffffff; margin: 20px 0; }
+            .cover-village { font-size: 22px; font-weight: 800; color: #93c5fd; letter-spacing: 1.5px; }
+            .cover-sir { font-size: 16px; color: #cbd5e1; letter-spacing: 2px; margin-top: 6px; }
+
+            /* Page 2 Specs Slide */
+            .slide-body { padding: 40px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
+            .slide-title { font-size: 32px; font-weight: 900; color: #0f172a; margin-bottom: 24px; letter-spacing: 1px; }
+            .specs-split { display: flex; gap: 40px; height: 100%; align-items: stretch; }
+            .specs-list { flex: 1; display: flex; flex-direction: column; justify-content: space-around; list-style: none; padding: 0; margin: 0; }
+            .specs-list li { font-size: 18px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 14px; }
+            .specs-list li::before { content: "•"; color: #0a192f; font-size: 24px; }
+            .specs-map-box { flex: 1.2; border: 2px solid #cbd5e1; border-radius: 14px; overflow: hidden; background: #f8fafc; display: flex; align-items: center; justify-content: center; }
+            .specs-map-box img { width: 100%; height: 100%; object-fit: contain; }
+
+            /* Header Banners & Pills */
+            .header-banner { background: #1e1b4b; color: #ffffff; padding: 20px 40px; font-size: 26px; font-weight: 900; letter-spacing: 1.5px; }
+            .header-pill { background: #4338ca; color: #ffffff; padding: 14px 44px; border-radius: 20px; font-size: 24px; font-weight: 900; letter-spacing: 1.5px; margin: 24px auto 12px auto; display: inline-block; }
+
+            /* Metric Stack */
+            .metrics-split { display: flex; gap: 40px; padding: 20px 40px 40px 40px; height: 100%; align-items: center; }
+            .metric-stack { flex: 1; display: flex; flex-direction: column; gap: 20px; justify-content: center; }
+            .metric-card { background: #4338ca; color: #ffffff; padding: 18px 28px; border-radius: 14px; font-size: 18px; font-weight: 800; letter-spacing: 1px; text-align: left; box-shadow: 0 4px 10px rgba(67,56,202,0.2); }
+            .metric-image-box { flex: 1.3; height: 100%; border: 2px solid #cbd5e1; border-radius: 14px; overflow: hidden; background: #f8fafc; }
+            .metric-image-box img { width: 100%; height: 100%; object-fit: contain; }
+
+            /* Dual Display Slide */
+            .dual-grid { display: flex; gap: 24px; padding: 24px 40px; height: calc(100% - 80px); }
+            .dual-card { flex: 1; border: 2px solid #cbd5e1; border-radius: 12px; overflow: hidden; background: #f8fafc; }
+            .dual-card img { width: 100%; height: 100%; object-fit: contain; }
+
+            /* Document Slide */
+            .doc-split { display: flex; height: 100%; }
+            .doc-side-bar { width: 260px; background: #4338ca; color: #ffffff; display: flex; align-items: center; justify-content: center; padding: 30px; text-align: center; }
+            .doc-side-title { font-size: 28px; font-weight: 900; letter-spacing: 2px; }
+            .doc-content { flex: 1; padding: 30px; display: flex; align-items: center; justify-content: center; }
+            .doc-box { width: 100%; height: 100%; border: 2px solid #cbd5e1; border-radius: 14px; overflow: hidden; background: #f8fafc; }
+            .doc-box img { width: 100%; height: 100%; object-fit: contain; }
         </style>
     </head>
     <body>
-        <div class="print-bar" onclick="window.print()">🖨️ Click Here to Print or Save as PDF Brochure</div>
-        <div class="brochure-container">
-            <div class="header">
-                <div class="brand-logo">
-                    <div class="brand-logo-icon">🏢</div>
-                    <div>
-                        <div class="brand-name">DHOLERA REAL ESTATE</div>
-                        <div class="brand-tagline">Official Property Catalogue Brochure</div>
-                    </div>
-                </div>
-                <div class="contact-pill">
-                    📞 +91 98765 43210
-                </div>
+        <div class="print-bar" onclick="window.print()">🖨️ Click Here to Print or Save Presentation PDF Brochure</div>
+
+        <div style="padding-top: 60px;">
+            <!-- SLIDE 1: Cover Slide -->
+            <div class="page-slide slide-cover">
+                <h1 class="cover-title">DHOLERA</h1>
+                <div class="cover-subtitle"><?php echo $zone; ?> PROPOSAL</div>
+                <div class="cover-divider"></div>
+                <div class="cover-village">VILLAGE - <?php echo $villageName; ?></div>
+                <div class="cover-sir">DHOLERA SIR</div>
             </div>
 
-            <div class="content">
-                <div class="property-meta-row">
-                    <div>
-                        <span class="badge"><?php echo $zone; ?> • Dholera SIR</span>
-                        <h1 class="property-title"><?php echo $displayTitle; ?></h1>
-                        <div class="property-location">
-                            📍 Village: <?php echo $villageName; ?> | Zone: <?php echo $zone; ?> | Dholera SIR
-                        </div>
-                    </div>
-                    <div class="price-tag">
-                        <div class="price-label">Property Code</div>
-                        <div class="price-amount">#DRE-<?php echo $property['id']; ?></div>
-                    </div>
-                </div>
-
-                <div class="specs-grid">
-                    <div class="spec-card">
-                        <div class="spec-label">Plot / Area</div>
-                        <div class="spec-value"><?php echo $area . ' ' . $areaUnit; ?></div>
-                    </div>
-                    <div class="spec-card">
-                        <div class="spec-label">Road Touch</div>
-                        <div class="spec-value"><?php echo $road; ?></div>
-                    </div>
-                    <div class="spec-card">
-                        <div class="spec-label">TP / FP No.</div>
-                        <div class="spec-value">TP: <?php echo $tp; ?> | FP: <?php echo $fp; ?></div>
-                    </div>
-                    <div class="spec-card">
-                        <div class="spec-label">Survey No.</div>
-                        <div class="spec-value"><?php echo $surveyNo; ?></div>
-                    </div>
-                </div>
-
-                <div class="gallery-container">
-                    <img src="<?php echo htmlspecialchars($mainImage); ?>" class="main-img" alt="Main Photo">
-                    <div class="side-gallery">
-                        <img src="<?php echo htmlspecialchars($sideImage1); ?>" class="sub-img" alt="Side Photo 1">
-                        <img src="<?php echo htmlspecialchars($sideImage2); ?>" class="sub-img" alt="Side Photo 2">
-                    </div>
-                </div>
-
-                <div class="details-section">
-                    <div>
-                        <div class="section-title">Property Information & Notes</div>
-                        <div class="description-text">
-                            Village: <strong><?php echo $villageName; ?></strong><br>
-                            Survey Number: <strong><?php echo $surveyNo; ?></strong><br>
-                            Zone: <strong><?php echo $zone; ?></strong><br>
-                            Road Connection: <strong><?php echo $road; ?></strong><br>
-                            Town Planning (TP): <strong><?php echo $tp; ?></strong> | Final Plot (FP): <strong><?php echo $fp; ?></strong>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="section-title">Key Highlights</div>
-                        <ul class="amenities-list">
-                            <li>100% Verified Title Clearance</li>
-                            <li>Immediate Registry & Possession</li>
-                            <li>Dholera SIR Special Investment Region</li>
-                            <li>Near Expressway & Airport Hub</li>
-                            <li>Underground Smart City Infrastructure</li>
+            <!-- SLIDE 2: Specifications & Activation Map -->
+            <div class="page-slide">
+                <div class="slide-body">
+                    <h2 class="slide-title">VILLAGE - <?php echo $villageName; ?></h2>
+                    <div class="specs-split">
+                        <ul class="specs-list">
+                            <li>NEW SURVEY No. – <?php echo $surveyNo; ?></li>
+                            <li>OLD SURVEY No. – <?php echo $surveyNo; ?>p</li>
+                            <li>TP <?php echo $tp; ?></li>
+                            <li>TP ROAD – <?php echo $road; ?></li>
+                            <li>AREA IN SQ. YARD – <?php echo $areaSqYd; ?></li>
+                            <li>AREA IN METER – <?php echo $areaSqM; ?></li>
+                            <li>READY NA</li>
+                            <li>ZONING – <?php echo $zone; ?></li>
+                            <li>ALL TITLE CLEAR</li>
                         </ul>
+                        <div class="specs-map-box">
+                            <img src="<?php echo htmlspecialchars($baseUrl . '/../flutter/assets/images/Images-01.jpg.jpeg'); ?>" alt="Activation Map">
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="footer">
-                <div>
-                    <div class="footer-cta">Interested in this property? Contact us today!</div>
-                    <div style="font-size: 11px; color: #94a3b8; margin-top: 2px;">DHOLERA REAL ESTATE — Your Trusted Investment Partner</div>
+            <!-- SLIDE 3: Zone DP Location -->
+            <div class="page-slide">
+                <div class="header-banner">
+                    <?php echo $zone; ?> ZONE – DP LOCATION
                 </div>
-                <div class="footer-contacts">
-                    <div class="footer-item">
-                        <span>📞</span> <strong>+91 98765 43210</strong>
+                <div class="dual-grid">
+                    <div class="dual-card">
+                        <img src="<?php echo htmlspecialchars($baseUrl . '/../flutter/assets/images/Images-02.jpg.jpeg'); ?>" alt="DP Location Map">
                     </div>
-                    <div class="footer-item">
-                        <span>🌐</span> <strong>emperorsmartsolutions.com</strong>
+                    <div class="dual-card">
+                        <img src="<?php echo htmlspecialchars($mainImage); ?>" alt="Site Photo">
                     </div>
                 </div>
             </div>
+
+            <!-- SLIDE 4: Open Plot Location & Metrics -->
+            <div class="page-slide" style="text-align: center;">
+                <div class="header-pill">OPEN PLOT LOCATION</div>
+                <div class="metrics-split">
+                    <div class="metric-stack">
+                        <div class="metric-card">AREA IN SQYD : <?php echo $areaSqYd; ?></div>
+                        <div class="metric-card">AREA IN METERS : <?php echo $areaSqM; ?></div>
+                        <div class="metric-card">TP ROAD : <?php echo $road; ?></div>
+                    </div>
+                    <div class="metric-image-box">
+                        <img src="<?php echo htmlspecialchars($sideImage1); ?>" alt="Plot CAD View">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 5: Dholera SIR Master Plan Infographic -->
+            <div class="page-slide" style="text-align: center;">
+                <div class="header-pill">MASTER PLAN DHOLERA SIR</div>
+                <div style="flex: 1; padding: 20px 40px 40px 40px;">
+                    <img src="<?php echo htmlspecialchars($baseUrl . '/../flutter/assets/images/Images-03.jpg.jpeg'); ?>" style="width: 100%; height: 100%; object-fit: contain;" alt="Master Plan Infographic">
+                </div>
+            </div>
+
+            <!-- SLIDE 6+: Additional Documents / Photos -->
+            <?php for ($i = 2; $i < count($imageUrlList); $i++): 
+                $docTitle = ($i == 2) ? 'NA ORDER' : (($i == 3) ? 'ZONING CERTIFICATE' : 'DOCUMENT ' . ($i - 1));
+            ?>
+                <div class="page-slide">
+                    <div class="doc-split">
+                        <div class="doc-side-bar">
+                            <div class="doc-side-title"><?php echo $docTitle; ?></div>
+                        </div>
+                        <div class="doc-content">
+                            <div class="doc-box">
+                                <img src="<?php echo htmlspecialchars($imageUrlList[$i]); ?>" alt="<?php echo $docTitle; ?>">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endfor; ?>
         </div>
     </body>
     </html>
     <?php
 
 } catch (Throwable $e) {
-    sendJsonResponse(false, "Failed to generate PDF brochure: " . $e->getMessage(), null, 500);
+    sendJsonResponse(false, "Failed to generate presentation brochure: " . $e->getMessage(), null, 500);
 }
