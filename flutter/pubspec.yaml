@@ -21,6 +21,7 @@ dependencies:
   path_provider: ^2.1.5
   pdf: ^3.11.1
   printing: ^5.13.2
+  intl: ^0.20.3
 
 dev_dependencies:
   flutter_test:
@@ -38,3 +39,9 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+  fonts:
+    - family: NotoSans
+      fonts:
+        - asset: assets/fonts/NotoSans-Regular.ttf
+        - asset: assets/fonts/NotoSans-Bold.ttf
+          weight: 700
