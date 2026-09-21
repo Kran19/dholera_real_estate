@@ -29,18 +29,14 @@ class PropertyPdfBuilder {
     pw.ImageProvider? fixedPage8Img;
     pw.ImageProvider? masterPlanImg;
     try {
-      final ByteData data7 = await rootBundle.load('assets/images/page7.png');
+      final ByteData data7 = await rootBundle.load('assets/images/Images-02.jpg.jpeg');
       fixedPage7Img = pw.MemoryImage(data7.buffer.asUint8List());
       masterPlanImg = fixedPage7Img; // Used in page 3
-    } catch (e) {
-      print('Error loading fixed page 7 image: $e');
-    }
+    } catch (_) {}
     try {
-      final ByteData data8 = await rootBundle.load('assets/images/page8.png');
+      final ByteData data8 = await rootBundle.load('assets/images/Images-03.jpg.jpeg');
       fixedPage8Img = pw.MemoryImage(data8.buffer.asUint8List());
-    } catch (e) {
-      print('Error loading fixed page 8 image: $e');
-    }
+    } catch (_) {}
 
     final List<pw.ImageProvider> propertyImages = [];
     if (property.primaryImage != null && property.primaryImage!.isNotEmpty) {
@@ -163,187 +159,181 @@ class PropertyPdfBuilder {
     );
 
     // PAGE 3: DP LOCATION
-    if (getImg(0) != null) {
-      pdf.addPage(
-        pw.Page(
-          pageTheme: pw.PageTheme(
-            pageFormat: PdfPageFormat.a4.landscape,
-            margin: const pw.EdgeInsets.symmetric(vertical: 40),
-          ),
-          build: (pw.Context context) {
-            return pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [
-                pw.Container(
-                  height: 80,
-                  width: double.infinity,
-                  child: pw.Row(
-                    children: [
-                      pw.Container(
-                        width: 400,
-                        color: PdfColors.black,
-                        padding: const pw.EdgeInsets.only(left: 60, top: 15, bottom: 15),
-                        alignment: pw.Alignment.centerLeft,
-                        child: pw.Column(
-                          crossAxisAlignment: pw.CrossAxisAlignment.start,
-                          mainAxisAlignment: pw.MainAxisAlignment.center,
-                          children: [
-                            pw.Text('INDUSTRIAL ZONE – DP', style: pw.TextStyle(font: ttfBold, fontSize: 28, color: PdfColors.white)),
-                            pw.Text('LOCATION', style: pw.TextStyle(font: ttfBold, fontSize: 28, color: PdfColors.white)),
-                          ]
-                        )
-                      ),
-                      pw.Expanded(
-                        child: pw.Container(color: PdfColor.fromHex('#8E24AA'))
+    pdf.addPage(
+      pw.Page(
+        pageTheme: pw.PageTheme(
+          pageFormat: PdfPageFormat.a4.landscape,
+          margin: const pw.EdgeInsets.symmetric(vertical: 40),
+        ),
+        build: (pw.Context context) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Container(
+                height: 80,
+                width: double.infinity,
+                child: pw.Row(
+                  children: [
+                    pw.Container(
+                      width: 400,
+                      color: PdfColors.black,
+                      padding: const pw.EdgeInsets.only(left: 60, top: 15, bottom: 15),
+                      alignment: pw.Alignment.centerLeft,
+                      child: pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        mainAxisAlignment: pw.MainAxisAlignment.center,
+                        children: [
+                          pw.Text('INDUSTRIAL ZONE – DP', style: pw.TextStyle(font: ttfBold, fontSize: 28, color: PdfColors.white)),
+                          pw.Text('LOCATION', style: pw.TextStyle(font: ttfBold, fontSize: 28, color: PdfColors.white)),
+                        ]
                       )
-                    ]
-                  )
-                ),
-                pw.SizedBox(height: 20),
-                pw.Expanded(
-                  child: pw.Row(
-                    children: [
-                      pw.Expanded(
-                        child: pw.Padding(
-                          padding: const pw.EdgeInsets.all(20),
-                          child: masterPlanImg != null ? pw.Image(masterPlanImg!, fit: pw.BoxFit.contain) : pw.Container(),
-                        )
-                      ),
-                      pw.Expanded(
-                        child: pw.Padding(
-                          padding: const pw.EdgeInsets.all(20),
-                          child: pw.Image(getImg(0)!, fit: pw.BoxFit.contain),
-                        )
-                      )
-                    ]
-                  )
+                    ),
+                    pw.Expanded(
+                      child: pw.Container(color: PdfColor.fromHex('#8E24AA'))
+                    )
+                  ]
                 )
-              ]
-            );
-          }
-        )
-      );
-    }
+              ),
+              pw.SizedBox(height: 20),
+              pw.Expanded(
+                child: pw.Row(
+                  children: [
+                    pw.Expanded(
+                      child: pw.Padding(
+                        padding: const pw.EdgeInsets.all(20),
+                        child: masterPlanImg != null ? pw.Image(masterPlanImg!, fit: pw.BoxFit.contain) : pw.Container(),
+                      )
+                    ),
+                    pw.Expanded(
+                      child: pw.Padding(
+                        padding: const pw.EdgeInsets.all(20),
+                        child: getImg(0) != null ? pw.Image(getImg(0)!, fit: pw.BoxFit.contain) : pw.Center(child: pw.Text('DP Location Not Available', style: pw.TextStyle(font: ttf))),
+                      )
+                    )
+                  ]
+                )
+              )
+            ]
+          );
+        }
+      )
+    );
 
     // PAGE 4: OPEN PLOT LOCATION
-    if (getImg(1) != null) {
-      pdf.addPage(
-        pw.Page(
-          pageTheme: landscapeTheme,
-          build: (pw.Context context) {
-            return pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.center,
-              children: [
-                pw.Container(
-                  padding: const pw.EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  decoration: pw.BoxDecoration(
-                    color: PdfColor.fromHex('#5E5CA7'),
-                    borderRadius: pw.BorderRadius.circular(10),
-                  ),
-                  child: pw.Text('OPEN PLOT LOCATION', style: pw.TextStyle(font: ttfBold, fontSize: 28, color: PdfColors.white)),
+    pdf.addPage(
+      pw.Page(
+        pageTheme: landscapeTheme,
+        build: (pw.Context context) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.center,
+            children: [
+              pw.Container(
+                padding: const pw.EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                decoration: pw.BoxDecoration(
+                  color: PdfColor.fromHex('#5E5CA7'),
+                  borderRadius: pw.BorderRadius.circular(10),
                 ),
-                pw.SizedBox(height: 40),
-                pw.Expanded(
-                  child: pw.Row(
-                    children: [
-                      pw.Expanded(
-                        flex: 4,
-                        child: pw.Column(
-                          mainAxisAlignment: pw.MainAxisAlignment.center,
-                          crossAxisAlignment: pw.CrossAxisAlignment.start,
-                          children: [
-                            _buildBadge('AREA IN SQYD : $areaStr', ttfBold),
-                            pw.SizedBox(height: 25),
-                            _buildBadge('AREA IN METERS : $sqMetersStr', ttfBold),
-                            pw.SizedBox(height: 25),
-                            _buildBadge('TP ROAD : $roadStr', ttfBold),
-                          ]
-                        )
-                      ),
-                      pw.Expanded(
-                        flex: 6,
-                        child: pw.Image(getImg(1)!, fit: pw.BoxFit.contain)
+                child: pw.Text('OPEN PLOT LOCATION', style: pw.TextStyle(font: ttfBold, fontSize: 28, color: PdfColors.white)),
+              ),
+              pw.SizedBox(height: 40),
+              pw.Expanded(
+                child: pw.Row(
+                  children: [
+                    pw.Expanded(
+                      flex: 4,
+                      child: pw.Column(
+                        mainAxisAlignment: pw.MainAxisAlignment.center,
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          _buildBadge('AREA IN SQYD : $areaStr', ttfBold),
+                          pw.SizedBox(height: 25),
+                          _buildBadge('AREA IN METERS : $sqMetersStr', ttfBold),
+                          pw.SizedBox(height: 25),
+                          _buildBadge('TP ROAD : $roadStr', ttfBold),
+                        ]
                       )
-                    ]
-                  )
+                    ),
+                    pw.Expanded(
+                      flex: 6,
+                      child: getImg(1) != null ? pw.Image(getImg(1)!, fit: pw.BoxFit.contain) : pw.Center(child: pw.Text('Map Not Available', style: pw.TextStyle(font: ttf)))
+                    )
+                  ]
                 )
-              ]
-            );
-          }
-        )
-      );
-    }
+              )
+            ]
+          );
+        }
+      )
+    );
 
     // PAGE 5: NA ORDER
-    if (getImg(2) != null) {
-      pdf.addPage(
-        pw.Page(
-          pageTheme: pw.PageTheme(
-            pageFormat: PdfPageFormat.a4.landscape,
-            margin: const pw.EdgeInsets.only(top: 0, bottom: 40, right: 40, left: 0),
-          ),
-          build: (pw.Context context) {
-            return pw.Row(
-              crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-              children: [
-                pw.Container(
-                  width: 300,
-                  decoration: pw.BoxDecoration(
-                    color: PdfColor.fromHex('#8E24AA'),
-                    borderRadius: const pw.BorderRadius.only(bottomRight: pw.Radius.circular(250)),
-                  ),
-                  child: pw.Center(
-                    child: pw.Text('NA ORDER', style: pw.TextStyle(font: ttfBold, fontSize: 40, color: PdfColors.white)),
-                  ),
+    pdf.addPage(
+      pw.Page(
+        pageTheme: pw.PageTheme(
+          pageFormat: PdfPageFormat.a4.landscape,
+          margin: const pw.EdgeInsets.only(top: 0, bottom: 40, right: 40, left: 0),
+        ),
+        build: (pw.Context context) {
+          return pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+            children: [
+              pw.Container(
+                width: 300,
+                decoration: pw.BoxDecoration(
+                  color: PdfColor.fromHex('#8E24AA'),
+                  borderRadius: const pw.BorderRadius.only(bottomRight: pw.Radius.circular(250)),
                 ),
-                pw.Expanded(
-                  child: pw.Padding(
-                    padding: const pw.EdgeInsets.only(top: 40, left: 40),
-                    child: pw.Image(getImg(2)!, fit: pw.BoxFit.contain),
-                  )
+                child: pw.Center(
+                  child: pw.Text('NA ORDER', style: pw.TextStyle(font: ttfBold, fontSize: 40, color: PdfColors.white)),
+                ),
+              ),
+              pw.Expanded(
+                child: pw.Padding(
+                  padding: const pw.EdgeInsets.only(top: 40, left: 40),
+                  child: getImg(2) != null ? pw.Image(getImg(2)!, fit: pw.BoxFit.contain) : pw.Center(child: pw.Text('NA Order Not Available', style: pw.TextStyle(font: ttf))),
                 )
-              ]
-            );
-          }
-        )
-      );
-    }
+              )
+            ]
+          );
+        }
+      )
+    );
 
     // PAGE 6: ZONING CERTIFICATE
-    if (getImg(3) != null || getImg(4) != null || getImg(5) != null) {
-      pdf.addPage(
-        pw.Page(
-          pageTheme: landscapeTheme,
-          build: (pw.Context context) {
-            return pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.center,
-              children: [
-                pw.Container(
-                  padding: const pw.EdgeInsets.symmetric(horizontal: 70, vertical: 20),
-                  decoration: pw.BoxDecoration(
-                    color: PdfColor.fromHex('#8E24AA'),
-                    borderRadius: pw.BorderRadius.circular(15),
-                  ),
-                  child: pw.Text('ZONING CERTIFICATE', style: pw.TextStyle(font: ttfBold, fontSize: 36, color: PdfColors.white)),
+    pdf.addPage(
+      pw.Page(
+        pageTheme: landscapeTheme,
+        build: (pw.Context context) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.center,
+            children: [
+              pw.Container(
+                padding: const pw.EdgeInsets.symmetric(horizontal: 70, vertical: 20),
+                decoration: pw.BoxDecoration(
+                  color: PdfColor.fromHex('#8E24AA'),
+                  borderRadius: pw.BorderRadius.circular(15),
                 ),
-                pw.SizedBox(height: 30),
-                pw.Expanded(
-                  child: pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: pw.CrossAxisAlignment.center,
-                    children: [
-                      if (getImg(3) != null) pw.Expanded(child: pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(3)!, fit: pw.BoxFit.contain))),
-                      if (getImg(4) != null) pw.Expanded(child: pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(4)!, fit: pw.BoxFit.contain))),
-                      if (getImg(5) != null) pw.Expanded(child: pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(5)!, fit: pw.BoxFit.contain))),
-                    ]
-                  )
+                child: pw.Text('ZONING CERTIFICATE', style: pw.TextStyle(font: ttfBold, fontSize: 36, color: PdfColors.white)),
+              ),
+              pw.SizedBox(height: 30),
+              pw.Expanded(
+                child: pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: pw.CrossAxisAlignment.center,
+                  children: [
+                    if (getImg(3) != null) pw.Expanded(child: pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(3)!, fit: pw.BoxFit.contain))),
+                    if (getImg(4) != null) pw.Expanded(child: pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(4)!, fit: pw.BoxFit.contain))),
+                    if (getImg(5) != null) pw.Expanded(child: pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(5)!, fit: pw.BoxFit.contain))),
+                    if (getImg(3) == null && getImg(4) == null && getImg(5) == null) 
+                      pw.Center(child: pw.Text('Zoning Certificate Not Available', style: pw.TextStyle(font: ttf)))
+                  ]
                 )
-              ]
-            );
-          }
-        )
-      );
-    }
+              )
+            ]
+          );
+        }
+      )
+    );
 
     // PAGE 7: FIXED - Smart Industrial Townships under DMIC
     if (fixedPage7Img != null) {
