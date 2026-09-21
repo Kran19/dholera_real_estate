@@ -31,11 +31,11 @@ class PropertyPdfBuilder {
     try {
       final ByteData data7 = await rootBundle.load('assets/images/Images-02.jpg.jpeg');
       fixedPage7Img = pw.MemoryImage(data7.buffer.asUint8List());
+      masterPlanImg = fixedPage7Img; // Used in page 3
     } catch (_) {}
     try {
       final ByteData data8 = await rootBundle.load('assets/images/Images-03.jpg.jpeg');
       fixedPage8Img = pw.MemoryImage(data8.buffer.asUint8List());
-      masterPlanImg = fixedPage8Img; // Used in page 3
     } catch (_) {}
 
     final List<pw.ImageProvider> propertyImages = [];
@@ -150,9 +150,7 @@ class PropertyPdfBuilder {
               ),
               pw.Expanded(
                 flex: 5,
-                child: getImg(0) != null 
-                  ? pw.Image(getImg(0)!, fit: pw.BoxFit.contain)
-                  : pw.Center(child: pw.Text('Village Map Not Available', style: pw.TextStyle(font: ttf)))
+                child: pw.Container()
               )
             ]
           );
@@ -209,7 +207,7 @@ class PropertyPdfBuilder {
                     pw.Expanded(
                       child: pw.Padding(
                         padding: const pw.EdgeInsets.all(20),
-                        child: getImg(1) != null ? pw.Image(getImg(1)!, fit: pw.BoxFit.contain) : pw.Center(child: pw.Text('DP Location Not Available', style: pw.TextStyle(font: ttf))),
+                        child: getImg(0) != null ? pw.Image(getImg(0)!, fit: pw.BoxFit.contain) : pw.Center(child: pw.Text('DP Location Not Available', style: pw.TextStyle(font: ttf))),
                       )
                     )
                   ]
@@ -257,7 +255,7 @@ class PropertyPdfBuilder {
                     ),
                     pw.Expanded(
                       flex: 6,
-                      child: getImg(2) != null ? pw.Image(getImg(2)!, fit: pw.BoxFit.contain) : pw.Center(child: pw.Text('Map Not Available', style: pw.TextStyle(font: ttf)))
+                      child: getImg(1) != null ? pw.Image(getImg(1)!, fit: pw.BoxFit.contain) : pw.Center(child: pw.Text('Map Not Available', style: pw.TextStyle(font: ttf)))
                     )
                   ]
                 )
@@ -292,7 +290,7 @@ class PropertyPdfBuilder {
               pw.Expanded(
                 child: pw.Padding(
                   padding: const pw.EdgeInsets.only(top: 40, left: 40),
-                  child: getImg(3) != null ? pw.Image(getImg(3)!, fit: pw.BoxFit.contain) : pw.Center(child: pw.Text('NA Order Not Available', style: pw.TextStyle(font: ttf))),
+                  child: getImg(2) != null ? pw.Image(getImg(2)!, fit: pw.BoxFit.contain) : pw.Center(child: pw.Text('NA Order Not Available', style: pw.TextStyle(font: ttf))),
                 )
               )
             ]
@@ -323,10 +321,10 @@ class PropertyPdfBuilder {
                   mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: pw.CrossAxisAlignment.center,
                   children: [
+                    if (getImg(3) != null) pw.Expanded(child: pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(3)!, fit: pw.BoxFit.contain))),
                     if (getImg(4) != null) pw.Expanded(child: pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(4)!, fit: pw.BoxFit.contain))),
                     if (getImg(5) != null) pw.Expanded(child: pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(5)!, fit: pw.BoxFit.contain))),
-                    if (getImg(6) != null) pw.Expanded(child: pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(6)!, fit: pw.BoxFit.contain))),
-                    if (getImg(4) == null && getImg(5) == null && getImg(6) == null) 
+                    if (getImg(3) == null && getImg(4) == null && getImg(5) == null) 
                       pw.Center(child: pw.Text('Zoning Certificate Not Available', style: pw.TextStyle(font: ttf)))
                   ]
                 )
