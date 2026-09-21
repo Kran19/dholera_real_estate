@@ -28,13 +28,17 @@ class PropertyPdfBuilder {
     pw.ImageProvider? fixedPage7Img;
     pw.ImageProvider? fixedPage8Img;
     try {
-      final ByteData data7 = await rootBundle.load('assets/images/Images-02.jpg.jpeg');
+      final ByteData data7 = await rootBundle.load('assets/images/page7_dmic.jpg');
       fixedPage7Img = pw.MemoryImage(data7.buffer.asUint8List());
-    } catch (_) {}
+    } catch (_) {
+      print('Warning: page7_dmic.jpg not found in assets/images/');
+    }
     try {
-      final ByteData data8 = await rootBundle.load('assets/images/Images-03.jpg.jpeg');
+      final ByteData data8 = await rootBundle.load('assets/images/page8_masterplan.jpg');
       fixedPage8Img = pw.MemoryImage(data8.buffer.asUint8List());
-    } catch (_) {}
+    } catch (_) {
+      print('Warning: page8_masterplan.jpg not found in assets/images/');
+    }
 
     final List<pw.ImageProvider> propertyImages = [];
     if (property.primaryImage != null && property.primaryImage!.isNotEmpty) {
@@ -375,6 +379,7 @@ class PropertyPdfBuilder {
     );
   }
 }
+
 
 
 
