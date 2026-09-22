@@ -328,26 +328,24 @@ class PropertyPdfBuilder {
               ),
               pw.SizedBox(height: 30),
               pw.Expanded(
-                child: Builder(
-                  builder: (context) {
-                    List<pw.Widget> zoningImages = [];
-                    if (getImg(3) != null) zoningImages.add(pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(3)!, fit: pw.BoxFit.contain)));
-                    if (getImg(4) != null) zoningImages.add(pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(4)!, fit: pw.BoxFit.contain)));
-                    if (getImg(5) != null) zoningImages.add(pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(5)!, fit: pw.BoxFit.contain)));
-                    
-                    if (zoningImages.isEmpty) {
-                      return pw.Center(child: pw.Text('Zoning Certificate Not Available', style: pw.TextStyle(font: ttf)));
-                    } else if (zoningImages.length == 1) {
-                      return pw.Center(child: zoningImages.first);
-                    } else {
-                      return pw.Row(
-                        mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: pw.CrossAxisAlignment.center,
-                        children: zoningImages.map((img) => pw.Expanded(child: pw.Center(child: img))).toList(),
-                      );
-                    }
-                  },
-                )
+                child: (() {
+                  List<pw.Widget> zoningImages = [];
+                  if (getImg(3) != null) zoningImages.add(pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(3)!, fit: pw.BoxFit.contain)));
+                  if (getImg(4) != null) zoningImages.add(pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(4)!, fit: pw.BoxFit.contain)));
+                  if (getImg(5) != null) zoningImages.add(pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(5)!, fit: pw.BoxFit.contain)));
+                  
+                  if (zoningImages.isEmpty) {
+                    return pw.Center(child: pw.Text('Zoning Certificate Not Available', style: pw.TextStyle(font: ttf)));
+                  } else if (zoningImages.length == 1) {
+                    return pw.Center(child: zoningImages.first);
+                  } else {
+                    return pw.Row(
+                      mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: pw.CrossAxisAlignment.center,
+                      children: zoningImages.map((img) => pw.Expanded(child: pw.Center(child: img))).toList(),
+                    );
+                  }
+                })(),
               )
             ]
           );
