@@ -10,9 +10,9 @@ require_once __DIR__ . '/../../bootstrap.php';
 handleCorsPreflight();
 
 sendJsonResponse(true, "App version configuration retrieved.", [
-    "latest_version"       => "1.5.2",
+    "latest_version"       => "1.5.3",
     "min_required_version" => "1.0.0",
     "apk_download_url"     => "https://emperorsmartsolutions.com/dholerarealestate/php/download_apk.php",
-    "update_message"       => "v1.5.2 is live! Accurate plot specs (FP, Survey, Zone) in PDF brochures.",
+    "update_message"       => "v1.5.3 is live! Dynamic Pachi NA Order & Zoning Cert image layout engine.",
     "force_update"         => false
 ]);

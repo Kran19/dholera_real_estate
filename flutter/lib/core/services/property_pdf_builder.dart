@@ -76,6 +76,36 @@ class PropertyPdfBuilder {
       margin: const pw.EdgeInsets.all(40),
     );
 
+    // DYNAMIC IMAGE ALLOCATION ENGINE FOR PROPOSAL SLIDES
+    final bool isPachi = villageName.contains('PACHI');
+    
+    pw.ImageProvider? page2Img = getImg(0) ?? fixedPage7Img;
+    pw.ImageProvider? page3Img = getImg(1) ?? getImg(0);
+    pw.ImageProvider? page4Img;
+    pw.ImageProvider? page5Img;
+    pw.ImageProvider? page6Img;
+
+    if (propertyImages.length >= 5) {
+      // 5+ images: Full mapping (Primary, DP Map, Open Plot Map, NA Order, Zoning Cert)
+      page4Img = getImg(2);
+      page5Img = getImg(3);
+      page6Img = getImg(4);
+    } else if (propertyImages.length == 4 || isPachi) {
+      // 4 images (Pachi standard): Primary (0), DP Map (1), NA Order (2), Zoning Cert (3)
+      page4Img = getImg(1) ?? getImg(0);
+      page5Img = getImg(2);
+      page6Img = getImg(3);
+    } else if (propertyImages.length == 3) {
+      // 3 images: Primary (0), DP Map (1), NA Order (2)
+      page4Img = getImg(1) ?? getImg(0);
+      page5Img = getImg(2);
+      page6Img = null;
+    } else {
+      page4Img = getImg(1) ?? getImg(0);
+      page5Img = null;
+      page6Img = null;
+    }
+
     // PAGE 1: COVER
     pdf.addPage(
       pw.Page(
@@ -119,7 +149,6 @@ class PropertyPdfBuilder {
       pw.Page(
         pageTheme: landscapeTheme,
         build: (pw.Context context) {
-          final pw.ImageProvider? page2Img = getImg(0) ?? fixedPage7Img;
           return pw.Row(
             children: [
               pw.Expanded(
@@ -170,7 +199,6 @@ class PropertyPdfBuilder {
           margin: const pw.EdgeInsets.symmetric(vertical: 40),
         ),
         build: (pw.Context context) {
-          final pw.ImageProvider? page3Img = getImg(1) ?? getImg(0);
           final String dpHeaderTitle = '$zoneStr ZONE – DP';
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -232,7 +260,6 @@ class PropertyPdfBuilder {
       pw.Page(
         pageTheme: landscapeTheme,
         build: (pw.Context context) {
-          final pw.ImageProvider? page4Img = getImg(2) ?? getImg(1);
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.center,
             children: [
@@ -297,7 +324,6 @@ class PropertyPdfBuilder {
           margin: const pw.EdgeInsets.only(top: 0, bottom: 40, right: 40, left: 0),
         ),
         build: (pw.Context context) {
-          final pw.ImageProvider? page5Img = getImg(3) ?? getImg(2);
           return pw.Row(
             crossAxisAlignment: pw.CrossAxisAlignment.stretch,
             children: [
@@ -330,7 +356,6 @@ class PropertyPdfBuilder {
       pw.Page(
         pageTheme: landscapeTheme,
         build: (pw.Context context) {
-          final pw.ImageProvider? page6Img = getImg(4) ?? getImg(3);
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.center,
             children: [

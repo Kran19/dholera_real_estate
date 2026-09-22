@@ -22,7 +22,7 @@ class ApiConfig {
   }
 
   // App Version (Current installed version)
-  static const String currentAppVersion = '1.5.2';
+  static const String currentAppVersion = '1.5.3';
 
   // Endpoint URLs
   static const String versionConfig = '/api/config/version.php';
