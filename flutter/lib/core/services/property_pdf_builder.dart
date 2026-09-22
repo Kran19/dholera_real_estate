@@ -38,25 +38,29 @@ class PropertyPdfBuilder {
       fixedPage8Img = pw.MemoryImage(data8.buffer.asUint8List());
     } catch (_) {}
 
-    final List<pw.ImageProvider> propertyImages = [];
-    if (property.primaryImage != null && property.primaryImage!.isNotEmpty) {
-       try {
-        final res = await http.get(Uri.parse(property.primaryImage!)).timeout(const Duration(seconds: 8));
-        if (res.statusCode == 200) propertyImages.add(pw.MemoryImage(res.bodyBytes));
-      } catch (_) {}
-    }
+    final List<pw.ImageProvider?> propertyImages = List.filled(5, null);
     
     for (var img in property.images) {
-      if (img.imageUrl.isNotEmpty && property.primaryImage != img.imageUrl) {
+      if (img.imageUrl.isNotEmpty && img.sortOrder >= 1 && img.sortOrder <= 5) {
         try {
           final res = await http.get(Uri.parse(img.imageUrl)).timeout(const Duration(seconds: 8));
-          if (res.statusCode == 200) propertyImages.add(pw.MemoryImage(res.bodyBytes));
+          if (res.statusCode == 200) {
+            propertyImages[img.sortOrder - 1] = pw.MemoryImage(res.bodyBytes);
+          }
         } catch (_) {}
       }
     }
+
+    // Fallback for older properties where primaryImage was the DP map
+    if (propertyImages[0] == null && property.primaryImage != null && property.primaryImage!.isNotEmpty) {
+       try {
+        final res = await http.get(Uri.parse(property.primaryImage!)).timeout(const Duration(seconds: 8));
+        if (res.statusCode == 200) propertyImages[0] = pw.MemoryImage(res.bodyBytes);
+      } catch (_) {}
+    }
     
     pw.ImageProvider? getImg(int index) {
-      if (index < propertyImages.length) return propertyImages[index];
+      if (index >= 0 && index < propertyImages.length) return propertyImages[index];
       return null;
     }
 
