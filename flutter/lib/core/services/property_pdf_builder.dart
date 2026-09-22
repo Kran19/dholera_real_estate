@@ -159,7 +159,8 @@ class PropertyPdfBuilder {
     );
 
     // PAGE 3: DP LOCATION
-    pdf.addPage(
+    if (getImg(0) != null) {
+      pdf.addPage(
       pw.Page(
         pageTheme: pw.PageTheme(
           pageFormat: PdfPageFormat.a4.landscape,
@@ -218,9 +219,11 @@ class PropertyPdfBuilder {
         }
       )
     );
+    }
 
     // PAGE 4: OPEN PLOT LOCATION
-    pdf.addPage(
+    if (getImg(1) != null) {
+      pdf.addPage(
       pw.Page(
         pageTheme: landscapeTheme,
         build: (pw.Context context) {
@@ -265,9 +268,11 @@ class PropertyPdfBuilder {
         }
       )
     );
+    }
 
     // PAGE 5: NA ORDER
-    pdf.addPage(
+    if (getImg(2) != null) {
+      pdf.addPage(
       pw.Page(
         pageTheme: pw.PageTheme(
           pageFormat: PdfPageFormat.a4.landscape,
@@ -298,9 +303,11 @@ class PropertyPdfBuilder {
         }
       )
     );
+    }
 
     // PAGE 6: ZONING CERTIFICATE
-    pdf.addPage(
+    if (getImg(3) != null || getImg(4) != null || getImg(5) != null) {
+      pdf.addPage(
       pw.Page(
         pageTheme: landscapeTheme,
         build: (pw.Context context) {
@@ -317,16 +324,25 @@ class PropertyPdfBuilder {
               ),
               pw.SizedBox(height: 30),
               pw.Expanded(
-                child: pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: pw.CrossAxisAlignment.center,
-                  children: [
-                    if (getImg(3) != null) pw.Expanded(child: pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(3)!, fit: pw.BoxFit.contain))),
-                    if (getImg(4) != null) pw.Expanded(child: pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(4)!, fit: pw.BoxFit.contain))),
-                    if (getImg(5) != null) pw.Expanded(child: pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(5)!, fit: pw.BoxFit.contain))),
-                    if (getImg(3) == null && getImg(4) == null && getImg(5) == null) 
-                      pw.Center(child: pw.Text('Zoning Certificate Not Available', style: pw.TextStyle(font: ttf)))
-                  ]
+                child: Builder(
+                  builder: (context) {
+                    List<pw.Widget> zoningImages = [];
+                    if (getImg(3) != null) zoningImages.add(pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(3)!, fit: pw.BoxFit.contain)));
+                    if (getImg(4) != null) zoningImages.add(pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(4)!, fit: pw.BoxFit.contain)));
+                    if (getImg(5) != null) zoningImages.add(pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(5)!, fit: pw.BoxFit.contain)));
+                    
+                    if (zoningImages.isEmpty) {
+                      return pw.Center(child: pw.Text('Zoning Certificate Not Available', style: pw.TextStyle(font: ttf)));
+                    } else if (zoningImages.length == 1) {
+                      return pw.Center(child: zoningImages.first);
+                    } else {
+                      return pw.Row(
+                        mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: pw.CrossAxisAlignment.center,
+                        children: zoningImages.map((img) => pw.Expanded(child: pw.Center(child: img))).toList(),
+                      );
+                    }
+                  },
                 )
               )
             ]
@@ -334,6 +350,7 @@ class PropertyPdfBuilder {
         }
       )
     );
+    }
 
     // PAGE 7: FIXED - Smart Industrial Townships under DMIC
     if (fixedPage7Img != null) {
