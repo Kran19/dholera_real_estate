@@ -132,8 +132,6 @@ try {
                     $seqIds[] = $newImageIds[$newImgIndex];
                     $newImgIndex++;
                 }
-            } else if ($seqItem === 'empty') {
-                $seqIds[] = 'empty';
             }
         }
 
@@ -141,13 +139,11 @@ try {
             $updateSortStmt = $db->prepare("UPDATE property_images SET sort_order = :sort WHERE id = :id AND property_id = :pid");
             $currentSort = 1;
             foreach ($seqIds as $imgId) {
-                if ($imgId !== 'empty') {
-                    $updateSortStmt->execute([
-                        ':sort' => $currentSort,
-                        ':id'   => $imgId,
-                        ':pid'  => $propertyId
-                    ]);
-                }
+                $updateSortStmt->execute([
+                    ':sort' => $currentSort,
+                    ':id'   => $imgId,
+                    ':pid'  => $propertyId
+                ]);
                 $currentSort++;
             }
         }

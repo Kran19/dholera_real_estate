@@ -41,7 +41,7 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
   final List<String> _areaUnitOptions = ['Sq Yard', 'Bigha'];
 
   final ImagePicker _picker = ImagePicker();
-  final List<dynamic> _slots = List.filled(5, null); // 0: DP Map, 1: Open Plot, 2: NA Order, 3: Zoning1, 4: Zoning2
+  final List<dynamic> _allImages = []; // Stores both PropertyImageModel and AppPickedImage
   final List<int> _deleteImageIds = [];
 
   bool _isSubmitting = false;
@@ -63,11 +63,7 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
 
     if (isEdit) {
       _selectedAreaUnit = widget.property!.areaUnit;
-      for (var img in widget.property!.images) {
-        if (img.sortOrder >= 1 && img.sortOrder <= 5) {
-          _slots[img.sortOrder - 1] = img;
-        }
-      }
+      _allImages.addAll(widget.property!.images);
     }
   }
 
@@ -85,32 +81,36 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
     super.dispose();
   }
 
-  Future<void> _pickImage(int index) async {
-    final XFile? picked = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 85);
-    if (picked != null && mounted) {
-      final bytes = await picked.readAsBytes();
-      setState(() {
-        final existing = _slots[index];
-        if (existing is PropertyImageModel) {
-          _deleteImageIds.add(existing.id);
-        }
-        _slots[index] = AppPickedImage(
-          xfile: picked,
-          bytes: bytes,
-          name: picked.name,
-        );
-      });
+  Future<void> _pickImages() async {
+    final int currentTotal = _allImages.length;
+    if (currentTotal >= 5) {
+      if (mounted) UiHelpers.showSnackBar(context, 'Maximum limit of 5 photos reached.', isError: true);
+      return;
     }
-  }
 
-  void _removeImage(int index) {
-    setState(() {
-      final existing = _slots[index];
-      if (existing is PropertyImageModel) {
-        _deleteImageIds.add(existing.id);
+    final List<XFile> picked = await _picker.pickMultiImage(
+      imageQuality: 85,
+    );
+
+    if (picked.isNotEmpty && mounted) {
+      final int availableSlots = 5 - currentTotal;
+      final List<XFile> toAdd = picked.take(availableSlots).toList();
+
+      if (picked.length > availableSlots) {
+        UiHelpers.showSnackBar(context, 'Only $availableSlots photo(s) added to stay within the 5-photo limit.');
       }
-      _slots[index] = null;
-    });
+
+      for (var xFile in toAdd) {
+        final bytes = await xFile.readAsBytes();
+        _allImages.add(AppPickedImage(
+          xfile: xFile,
+          bytes: bytes,
+          name: xFile.name,
+        ));
+      }
+
+      if (mounted) setState(() {});
+    }
   }
 
   Future<void> _handleSubmit() async {
@@ -131,11 +131,8 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
     bool success;
     final List<AppPickedImage> newImagesToSend = [];
     final List<String> sequence = [];
-    for (int i = 0; i < 5; i++) {
-      final item = _slots[i];
-      if (item == null) {
-        sequence.add('empty');
-      } else if (item is PropertyImageModel) {
+    for (var item in _allImages) {
+      if (item is PropertyImageModel) {
         sequence.add('existing_${item.id}');
       } else if (item is AppPickedImage) {
         sequence.add('new_${newImagesToSend.length}');
@@ -199,78 +196,10 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
     }
   }
 
-  final List<String> _slotTitles = [
-    'DP Location Map',
-    'Open Plot Map',
-    'NA Order',
-    'Zoning Certificate (1)',
-    'Zoning Certificate (2)',
-  ];
-
-  Widget _buildImageSlot(int index) {
-    final item = _slots[index];
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(_slotTitles[index], style: AppStyles.bodySmall.copyWith(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8.0),
-        Container(
-          height: 140.0,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: const Color(0xFFF8F9FC),
-            borderRadius: BorderRadius.circular(12.0),
-            border: Border.all(color: AppColors.border, style: BorderStyle.solid),
-          ),
-          child: item == null
-              ? Center(
-                  child: InkWell(
-                    onTap: () => _pickImage(index),
-                    child: const Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.add_a_photo, color: AppColors.primary, size: 36),
-                        SizedBox(height: 4),
-                        Text('Tap to upload', style: TextStyle(color: AppColors.primary, fontSize: 12)),
-                      ],
-                    ),
-                  ),
-                )
-              : Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12.0),
-                      child: item is PropertyImageModel
-                          ? CachedNetworkImage(imageUrl: item.imageUrl, fit: BoxFit.cover)
-                          : Image.memory((item as AppPickedImage).bytes, fit: BoxFit.cover),
-                    ),
-                    Positioned(
-                      top: 8,
-                      right: 8,
-                      child: GestureDetector(
-                        onTap: () => _removeImage(index),
-                        child: Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: const BoxDecoration(
-                            color: Colors.red,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(Icons.close, size: 16, color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-        ),
-        const SizedBox(height: 16.0),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final isSuperAdmin = Provider.of<AuthProvider>(context, listen: false).isSuperAdmin;
+    final int totalPhotos = _allImages.length;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -290,7 +219,7 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Photo Picker Card Section
-              Text('Property Documents', style: AppStyles.heading3),
+              Text('Property Photographs (Max 5)', style: AppStyles.heading3),
               const SizedBox(height: 8.0),
               Container(
                 width: double.infinity,
@@ -302,7 +231,149 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: List.generate(5, (index) => _buildImageSlot(index)),
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('$totalPhotos of 5 Selected', style: AppStyles.bodySmall),
+                        if (totalPhotos < 5)
+                          ElevatedButton.icon(
+                            onPressed: _pickImages,
+                            icon: const Icon(Icons.add_a_photo, size: 18, color: Colors.white),
+                            label: const Text('Add Photos', style: TextStyle(color: Colors.white)),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                            ),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 12.0),
+
+                    if (totalPhotos == 0)
+                      Container(
+                        height: 100.0,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF8F9FC),
+                          borderRadius: BorderRadius.circular(12.0),
+                          border: Border.all(color: AppColors.border, style: BorderStyle.solid),
+                        ),
+                        child: const Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.camera_alt_outlined, color: AppColors.textLight, size: 36),
+                              SizedBox(height: 4),
+                              Text('No photos selected yet.', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                            ],
+                          ),
+                        ),
+                      )
+                    else
+                      SizedBox(
+                        height: 100.0,
+                        child: ReorderableListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: _allImages.length,
+                          onReorderItem: (oldIndex, newIndex) {
+                            setState(() {
+                              if (oldIndex < newIndex) {
+                                newIndex -= 1;
+                              }
+                              final item = _allImages.removeAt(oldIndex);
+                              _allImages.insert(newIndex, item);
+                            });
+                          },
+                          itemBuilder: (context, index) {
+                            final item = _allImages[index];
+                            if (item is PropertyImageModel) {
+                              return Stack(
+                                key: ValueKey('existing_${item.id}'),
+                                children: [
+                                  Container(
+                                    width: 100.0,
+                                    margin: const EdgeInsets.only(right: 10.0),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      border: Border.all(color: AppColors.border),
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      child: CachedNetworkImage(
+                                        imageUrl: item.imageUrl,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 4,
+                                    right: 14,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _deleteImageIds.add(item.id);
+                                          _allImages.removeAt(index);
+                                        });
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: const BoxDecoration(
+                                          color: Colors.red,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const Icon(Icons.close, color: Colors.white, size: 14),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            } else if (item is AppPickedImage) {
+                              return Stack(
+                                key: ValueKey('new_${item.name}_$index'),
+                                children: [
+                                  Container(
+                                    width: 100.0,
+                                    margin: const EdgeInsets.only(right: 10.0),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      border: Border.all(color: AppColors.primaryAccent, width: 2),
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      child: Image.memory(
+                                        item.bytes,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 4,
+                                    right: 14,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _allImages.removeAt(index);
+                                        });
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: const BoxDecoration(
+                                          color: Colors.red,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const Icon(Icons.close, color: Colors.white, size: 14),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }
+                            return SizedBox(key: ValueKey('empty_$index'));
+                          },
+                        ),
+                      ),
+                  ],
                 ),
               ),
               const SizedBox(height: 24.0),

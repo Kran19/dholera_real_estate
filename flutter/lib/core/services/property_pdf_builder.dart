@@ -38,29 +38,25 @@ class PropertyPdfBuilder {
       fixedPage8Img = pw.MemoryImage(data8.buffer.asUint8List());
     } catch (_) {}
 
-    final List<pw.ImageProvider?> propertyImages = List.filled(5, null);
-    
-    for (var img in property.images) {
-      if (img.imageUrl.isNotEmpty && img.sortOrder >= 1 && img.sortOrder <= 5) {
-        try {
-          final res = await http.get(Uri.parse(img.imageUrl)).timeout(const Duration(seconds: 8));
-          if (res.statusCode == 200) {
-            propertyImages[img.sortOrder - 1] = pw.MemoryImage(res.bodyBytes);
-          }
-        } catch (_) {}
-      }
-    }
-
-    // Fallback for older properties where primaryImage was the DP map
-    if (propertyImages[0] == null && property.primaryImage != null && property.primaryImage!.isNotEmpty) {
+    final List<pw.ImageProvider> propertyImages = [];
+    if (property.primaryImage != null && property.primaryImage!.isNotEmpty) {
        try {
         final res = await http.get(Uri.parse(property.primaryImage!)).timeout(const Duration(seconds: 8));
-        if (res.statusCode == 200) propertyImages[0] = pw.MemoryImage(res.bodyBytes);
+        if (res.statusCode == 200) propertyImages.add(pw.MemoryImage(res.bodyBytes));
       } catch (_) {}
     }
     
+    for (var img in property.images) {
+      if (img.imageUrl.isNotEmpty && property.primaryImage != img.imageUrl) {
+        try {
+          final res = await http.get(Uri.parse(img.imageUrl)).timeout(const Duration(seconds: 8));
+          if (res.statusCode == 200) propertyImages.add(pw.MemoryImage(res.bodyBytes));
+        } catch (_) {}
+      }
+    }
+    
     pw.ImageProvider? getImg(int index) {
-      if (index >= 0 && index < propertyImages.length) return propertyImages[index];
+      if (index < propertyImages.length) return propertyImages[index];
       return null;
     }
 
@@ -163,8 +159,7 @@ class PropertyPdfBuilder {
     );
 
     // PAGE 3: DP LOCATION
-    if (getImg(0) != null) {
-      pdf.addPage(
+    pdf.addPage(
       pw.Page(
         pageTheme: pw.PageTheme(
           pageFormat: PdfPageFormat.a4.landscape,
@@ -223,11 +218,9 @@ class PropertyPdfBuilder {
         }
       )
     );
-    }
 
     // PAGE 4: OPEN PLOT LOCATION
-    if (getImg(1) != null) {
-      pdf.addPage(
+    pdf.addPage(
       pw.Page(
         pageTheme: landscapeTheme,
         build: (pw.Context context) {
@@ -272,11 +265,9 @@ class PropertyPdfBuilder {
         }
       )
     );
-    }
 
     // PAGE 5: NA ORDER
-    if (getImg(2) != null) {
-      pdf.addPage(
+    pdf.addPage(
       pw.Page(
         pageTheme: pw.PageTheme(
           pageFormat: PdfPageFormat.a4.landscape,
@@ -307,11 +298,9 @@ class PropertyPdfBuilder {
         }
       )
     );
-    }
 
     // PAGE 6: ZONING CERTIFICATE
-    if (getImg(3) != null || getImg(4) != null || getImg(5) != null) {
-      pdf.addPage(
+    pdf.addPage(
       pw.Page(
         pageTheme: landscapeTheme,
         build: (pw.Context context) {
@@ -328,31 +317,23 @@ class PropertyPdfBuilder {
               ),
               pw.SizedBox(height: 30),
               pw.Expanded(
-                child: (() {
-                  List<pw.Widget> zoningImages = [];
-                  if (getImg(3) != null) zoningImages.add(pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(3)!, fit: pw.BoxFit.contain)));
-                  if (getImg(4) != null) zoningImages.add(pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(4)!, fit: pw.BoxFit.contain)));
-                  if (getImg(5) != null) zoningImages.add(pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(5)!, fit: pw.BoxFit.contain)));
-                  
-                  if (zoningImages.isEmpty) {
-                    return pw.Center(child: pw.Text('Zoning Certificate Not Available', style: pw.TextStyle(font: ttf)));
-                  } else if (zoningImages.length == 1) {
-                    return pw.Center(child: zoningImages.first);
-                  } else {
-                    return pw.Row(
-                      mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: pw.CrossAxisAlignment.center,
-                      children: zoningImages.map((img) => pw.Expanded(child: pw.Center(child: img))).toList(),
-                    );
-                  }
-                })(),
+                child: pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: pw.CrossAxisAlignment.center,
+                  children: [
+                    if (getImg(3) != null) pw.Expanded(child: pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(3)!, fit: pw.BoxFit.contain))),
+                    if (getImg(4) != null) pw.Expanded(child: pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(4)!, fit: pw.BoxFit.contain))),
+                    if (getImg(5) != null) pw.Expanded(child: pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(5)!, fit: pw.BoxFit.contain))),
+                    if (getImg(3) == null && getImg(4) == null && getImg(5) == null) 
+                      pw.Center(child: pw.Text('Zoning Certificate Not Available', style: pw.TextStyle(font: ttf)))
+                  ]
+                )
               )
             ]
           );
         }
       )
     );
-    }
 
     // PAGE 7: FIXED - Smart Industrial Townships under DMIC
     if (fixedPage7Img != null) {
