@@ -84,6 +84,7 @@ class PropertyPdfBuilder {
           margin: pw.EdgeInsets.zero,
         ),
         build: (pw.Context context) {
+          final String proposalType = zoneStr.contains('PROPOSAL') ? zoneStr : '$zoneStr PROPOSAL';
           return pw.Container(
             width: double.infinity,
             height: double.infinity,
@@ -99,7 +100,7 @@ class PropertyPdfBuilder {
                     decoration: const pw.BoxDecoration(
                       border: pw.Border(bottom: pw.BorderSide(color: PdfColors.white, width: 2))
                     ),
-                    child: pw.Text('INDUSTRIAL PROPOSAL', style: pw.TextStyle(font: ttfBold, fontSize: 40, color: PdfColors.white, letterSpacing: 2)),
+                    child: pw.Text(proposalType, style: pw.TextStyle(font: ttfBold, fontSize: 40, color: PdfColors.white, letterSpacing: 2)),
                   ),
                   pw.SizedBox(height: 15),
                   pw.Text('VILLAGE - $villageName', style: pw.TextStyle(font: ttfBold, fontSize: 24, color: PdfColors.white)),
@@ -127,15 +128,15 @@ class PropertyPdfBuilder {
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   mainAxisAlignment: pw.MainAxisAlignment.center,
                   children: [
-                    pw.Text('VILLAGE - $villageName', style: pw.TextStyle(font: ttfBold, fontSize: 32, color: PdfColors.black)),
-                    pw.SizedBox(height: 40),
+                    pw.Text('VILLAGE - $villageName', style: pw.TextStyle(font: ttfBold, fontSize: 30, color: PdfColors.black)),
+                    pw.SizedBox(height: 25),
                     
-                    _buildInfoRow('NEW SURVEY No. – $surveyNo', ttf),
-                    if (fpStr != '-') _buildInfoRow('OLD SURVEY No. - $fpStr', ttf),
-                    _buildInfoRow('TP $tpStr', ttf),
-                    _buildInfoRow('TP ROAD - $roadStr', ttf),
-                    _buildInfoRow('AREA IN SQ. YARD – $areaStr', ttf),
-                    _buildInfoRow('AREA IN METER – $sqMetersStr', ttf),
+                    if (surveyNo.isNotEmpty) _buildInfoRow('SURVEY / BLOCK No. – $surveyNo', ttf),
+                    if (fpStr != '-') _buildInfoRow('FINAL PLOT (FP) No. - $fpStr', ttf),
+                    if (tpStr != '-') _buildInfoRow('TOWN PLANNING (TP) - $tpStr', ttf),
+                    if (roadStr != '-') _buildInfoRow('ROAD - $roadStr', ttf),
+                    _buildInfoRow('AREA IN SQ. YARD – $areaStr SQ. YD', ttf),
+                    _buildInfoRow('AREA IN METER – $sqMetersStr SQ. MTR', ttf),
                     _buildInfoRow('READY NA', ttf),
                     _buildInfoRow('ZONING - $zoneStr', ttf),
                     pw.SizedBox(height: 10),
@@ -170,6 +171,7 @@ class PropertyPdfBuilder {
         ),
         build: (pw.Context context) {
           final pw.ImageProvider? page3Img = getImg(1) ?? getImg(0);
+          final String dpHeaderTitle = '$zoneStr ZONE – DP';
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
@@ -179,16 +181,16 @@ class PropertyPdfBuilder {
                 child: pw.Row(
                   children: [
                     pw.Container(
-                      width: 400,
+                      width: 420,
                       color: PdfColors.black,
-                      padding: const pw.EdgeInsets.only(left: 60, top: 15, bottom: 15),
+                      padding: const pw.EdgeInsets.only(left: 40, top: 15, bottom: 15),
                       alignment: pw.Alignment.centerLeft,
                       child: pw.Column(
                         crossAxisAlignment: pw.CrossAxisAlignment.start,
                         mainAxisAlignment: pw.MainAxisAlignment.center,
                         children: [
-                          pw.Text('INDUSTRIAL ZONE – DP', style: pw.TextStyle(font: ttfBold, fontSize: 28, color: PdfColors.white)),
-                          pw.Text('LOCATION', style: pw.TextStyle(font: ttfBold, fontSize: 28, color: PdfColors.white)),
+                          pw.Text(dpHeaderTitle, style: pw.TextStyle(font: ttfBold, fontSize: 26, color: PdfColors.white)),
+                          pw.Text('LOCATION', style: pw.TextStyle(font: ttfBold, fontSize: 26, color: PdfColors.white)),
                         ]
                       )
                     ),
@@ -235,14 +237,14 @@ class PropertyPdfBuilder {
             crossAxisAlignment: pw.CrossAxisAlignment.center,
             children: [
               pw.Container(
-                padding: const pw.EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                padding: const pw.EdgeInsets.symmetric(horizontal: 50, vertical: 12),
                 decoration: pw.BoxDecoration(
                   color: PdfColor.fromHex('#5E5CA7'),
                   borderRadius: pw.BorderRadius.circular(10),
                 ),
                 child: pw.Text('OPEN PLOT LOCATION', style: pw.TextStyle(font: ttfBold, fontSize: 28, color: PdfColors.white)),
               ),
-              pw.SizedBox(height: 40),
+              pw.SizedBox(height: 25),
               pw.Expanded(
                 child: pw.Row(
                   children: [
@@ -252,11 +254,23 @@ class PropertyPdfBuilder {
                         mainAxisAlignment: pw.MainAxisAlignment.center,
                         crossAxisAlignment: pw.CrossAxisAlignment.start,
                         children: [
+                          if (surveyNo.isNotEmpty) ...[
+                            _buildBadge('SURVEY No. : $surveyNo', ttfBold),
+                            pw.SizedBox(height: 12),
+                          ],
+                          if (fpStr != '-') ...[
+                            _buildBadge('FINAL PLOT (FP) : $fpStr', ttfBold),
+                            pw.SizedBox(height: 12),
+                          ],
+                          if (tpStr != '-') ...[
+                            _buildBadge('TP No. : $tpStr', ttfBold),
+                            pw.SizedBox(height: 12),
+                          ],
                           _buildBadge('AREA IN SQYD : $areaStr', ttfBold),
-                          pw.SizedBox(height: 25),
+                          pw.SizedBox(height: 12),
                           _buildBadge('AREA IN METERS : $sqMetersStr', ttfBold),
-                          pw.SizedBox(height: 25),
-                          _buildBadge('TP ROAD : $roadStr', ttfBold),
+                          pw.SizedBox(height: 12),
+                          _buildBadge('ROAD : $roadStr', ttfBold),
                         ]
                       )
                     ),
@@ -414,13 +428,13 @@ class PropertyPdfBuilder {
 
   static pw.Widget _buildBadge(String text, pw.Font ttfBold) {
     return pw.Container(
-      width: 300,
-      padding: const pw.EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      width: 280,
+      padding: const pw.EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: pw.BoxDecoration(
         color: PdfColor.fromHex('#5E5CA7'),
-        borderRadius: pw.BorderRadius.circular(10),
+        borderRadius: pw.BorderRadius.circular(8),
       ),
-      child: pw.Text(text, style: pw.TextStyle(font: ttfBold, fontSize: 16, color: PdfColors.white)),
+      child: pw.Text(text, style: pw.TextStyle(font: ttfBold, fontSize: 13, color: PdfColors.white)),
     );
   }
 
