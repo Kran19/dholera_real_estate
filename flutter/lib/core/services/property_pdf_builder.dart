@@ -3,7 +3,6 @@ import 'package:flutter/services.dart' show rootBundle, ByteData;
 import 'package:http/http.dart' as http;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:intl/intl.dart';
 import '../../models/property_model.dart';
 
 class PropertyPdfBuilder {
@@ -18,9 +17,7 @@ class PropertyPdfBuilder {
       
       final ByteData boldData = await rootBundle.load('assets/fonts/NotoSans-Bold.ttf');
       boldFont = pw.Font.ttf(boldData);
-    } catch (e) {
-      print('Warning: NotoSans fonts could not be loaded.');
-    }
+    } catch (_) {}
     
     final ttf = regularFont ?? pw.Font.helvetica();
     final ttfBold = boldFont ?? pw.Font.helveticaBold();
@@ -31,7 +28,7 @@ class PropertyPdfBuilder {
     try {
       final ByteData data7 = await rootBundle.load('assets/images/Images-02.jpg.jpeg');
       fixedPage7Img = pw.MemoryImage(data7.buffer.asUint8List());
-      masterPlanImg = fixedPage7Img; // Used in page 3
+      masterPlanImg = fixedPage7Img;
     } catch (_) {}
     try {
       final ByteData data8 = await rootBundle.load('assets/images/Images-03.jpg.jpeg');
@@ -90,7 +87,7 @@ class PropertyPdfBuilder {
           return pw.Container(
             width: double.infinity,
             height: double.infinity,
-            color: PdfColor.fromHex('#041E42'), // Dark blue
+            color: PdfColor.fromHex('#041E42'),
             child: pw.Center(
               child: pw.Column(
                 mainAxisAlignment: pw.MainAxisAlignment.center,
@@ -116,11 +113,12 @@ class PropertyPdfBuilder {
       )
     );
 
-    // PAGE 2: PROPERTY INFORMATION
+    // PAGE 2: PROPERTY INFORMATION & ACTIVATION MAP
     pdf.addPage(
       pw.Page(
         pageTheme: landscapeTheme,
         build: (pw.Context context) {
+          final pw.ImageProvider? page2Img = getImg(0) ?? fixedPage7Img;
           return pw.Row(
             children: [
               pw.Expanded(
@@ -150,7 +148,12 @@ class PropertyPdfBuilder {
               ),
               pw.Expanded(
                 flex: 5,
-                child: pw.Container()
+                child: pw.Padding(
+                  padding: const pw.EdgeInsets.all(10),
+                  child: page2Img != null
+                      ? pw.Image(page2Img, fit: pw.BoxFit.contain)
+                      : pw.Container(),
+                )
               )
             ]
           );
@@ -166,6 +169,7 @@ class PropertyPdfBuilder {
           margin: const pw.EdgeInsets.symmetric(vertical: 40),
         ),
         build: (pw.Context context) {
+          final pw.ImageProvider? page3Img = getImg(1) ?? getImg(0);
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
@@ -201,13 +205,15 @@ class PropertyPdfBuilder {
                     pw.Expanded(
                       child: pw.Padding(
                         padding: const pw.EdgeInsets.all(20),
-                        child: masterPlanImg != null ? pw.Image(masterPlanImg!, fit: pw.BoxFit.contain) : pw.Container(),
+                        child: masterPlanImg != null ? pw.Image(masterPlanImg, fit: pw.BoxFit.contain) : pw.Container(),
                       )
                     ),
                     pw.Expanded(
                       child: pw.Padding(
                         padding: const pw.EdgeInsets.all(20),
-                        child: getImg(0) != null ? pw.Image(getImg(0)!, fit: pw.BoxFit.contain) : pw.Center(child: pw.Text('DP Location Not Available', style: pw.TextStyle(font: ttf))),
+                        child: page3Img != null
+                            ? pw.Image(page3Img, fit: pw.BoxFit.contain)
+                            : pw.Center(child: pw.Text('DP Location Not Available', style: pw.TextStyle(font: ttf))),
                       )
                     )
                   ]
@@ -224,6 +230,7 @@ class PropertyPdfBuilder {
       pw.Page(
         pageTheme: landscapeTheme,
         build: (pw.Context context) {
+          final pw.ImageProvider? page4Img = getImg(2) ?? getImg(1);
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.center,
             children: [
@@ -255,7 +262,9 @@ class PropertyPdfBuilder {
                     ),
                     pw.Expanded(
                       flex: 6,
-                      child: getImg(1) != null ? pw.Image(getImg(1)!, fit: pw.BoxFit.contain) : pw.Center(child: pw.Text('Map Not Available', style: pw.TextStyle(font: ttf)))
+                      child: page4Img != null
+                          ? pw.Image(page4Img, fit: pw.BoxFit.contain)
+                          : pw.Center(child: pw.Text('Map Not Available', style: pw.TextStyle(font: ttf)))
                     )
                   ]
                 )
@@ -274,6 +283,7 @@ class PropertyPdfBuilder {
           margin: const pw.EdgeInsets.only(top: 0, bottom: 40, right: 40, left: 0),
         ),
         build: (pw.Context context) {
+          final pw.ImageProvider? page5Img = getImg(3) ?? getImg(2);
           return pw.Row(
             crossAxisAlignment: pw.CrossAxisAlignment.stretch,
             children: [
@@ -290,7 +300,9 @@ class PropertyPdfBuilder {
               pw.Expanded(
                 child: pw.Padding(
                   padding: const pw.EdgeInsets.only(top: 40, left: 40),
-                  child: getImg(2) != null ? pw.Image(getImg(2)!, fit: pw.BoxFit.contain) : pw.Center(child: pw.Text('NA Order Not Available', style: pw.TextStyle(font: ttf))),
+                  child: page5Img != null
+                      ? pw.Image(page5Img, fit: pw.BoxFit.contain)
+                      : pw.Center(child: pw.Text('NA Order Not Available', style: pw.TextStyle(font: ttf))),
                 )
               )
             ]
@@ -304,6 +316,7 @@ class PropertyPdfBuilder {
       pw.Page(
         pageTheme: landscapeTheme,
         build: (pw.Context context) {
+          final pw.ImageProvider? page6Img = getImg(4) ?? getImg(3);
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.center,
             children: [
@@ -317,16 +330,10 @@ class PropertyPdfBuilder {
               ),
               pw.SizedBox(height: 30),
               pw.Expanded(
-                child: pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: pw.CrossAxisAlignment.center,
-                  children: [
-                    if (getImg(3) != null) pw.Expanded(child: pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(3)!, fit: pw.BoxFit.contain))),
-                    if (getImg(4) != null) pw.Expanded(child: pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(4)!, fit: pw.BoxFit.contain))),
-                    if (getImg(5) != null) pw.Expanded(child: pw.Padding(padding: const pw.EdgeInsets.all(10), child: pw.Image(getImg(5)!, fit: pw.BoxFit.contain))),
-                    if (getImg(3) == null && getImg(4) == null && getImg(5) == null) 
-                      pw.Center(child: pw.Text('Zoning Certificate Not Available', style: pw.TextStyle(font: ttf)))
-                  ]
+                child: pw.Center(
+                  child: page6Img != null
+                      ? pw.Image(page6Img, fit: pw.BoxFit.contain)
+                      : pw.Text('Zoning Certificate Not Available', style: pw.TextStyle(font: ttf)),
                 )
               )
             ]
@@ -367,6 +374,39 @@ class PropertyPdfBuilder {
           },
         ),
       );
+    }
+
+    // PAGE 9+: ADDITIONAL PROPERTY SITE PHOTOS (for images beyond 5th image)
+    if (propertyImages.length > 5) {
+      for (int i = 5; i < propertyImages.length; i++) {
+        final currentImg = propertyImages[i];
+        pdf.addPage(
+          pw.Page(
+            pageTheme: landscapeTheme,
+            build: (pw.Context context) {
+              return pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.center,
+                children: [
+                  pw.Container(
+                    padding: const pw.EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                    decoration: pw.BoxDecoration(
+                      color: PdfColor.fromHex('#041E42'),
+                      borderRadius: pw.BorderRadius.circular(10),
+                    ),
+                    child: pw.Text('SITE PHOTO ${i - 4}', style: pw.TextStyle(font: ttfBold, fontSize: 24, color: PdfColors.white)),
+                  ),
+                  pw.SizedBox(height: 30),
+                  pw.Expanded(
+                    child: pw.Center(
+                      child: pw.Image(currentImg, fit: pw.BoxFit.contain),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      }
     }
 
     return pdf.save();
