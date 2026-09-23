@@ -9479,8 +9479,8 @@ k=f==null?"":f
 e=J.i(m,"update_message")
 j=e==null?"A new version of Dholera Real Estate is available!":e
 i=J.e(J.i(m,"force_update"),!0)
-A.b84().$1("[UpdateChecker] Server: "+A.n(l)+", Installed: 1.5.6")
-if(A.bjJ(l,"1.5.6")){if(a.e==null){s=1
+A.b84().$1("[UpdateChecker] Server: "+A.n(l)+", Installed: 1.5.7")
+if(A.bjJ(l,"1.5.7")){if(a.e==null){s=1
 break}A.bjK(k,a,i,l,j)}else if(a.e!=null)a.ao(t.d).f.jC(B.aXY)
 p=2
 s=6
@@ -58372,9 +58372,9 @@ f=g?m:k.a
 f=n.Ds("Account ID","#"+(f==null?0:f),B.Z3)
 s=g?m:k.b
 s=n.Ds("Username",s==null?"-":s,B.lr)
-r=n.Ds("Installed App Version","v1.5.6",B.YH)
+r=n.Ds("Installed App Version","v1.5.7",B.YH)
 g=g?m:k.d.toUpperCase()
-return A.n1(j,B.cT,A.wX(A.cm(A.b([h,B.dh,A.bE(m,A.cm(A.b([f,B.er,s,B.er,r,B.er,n.Ds("Account Status",g==null?"ACTIVE":g,B.Z2)],o),B.U,B.Q,B.R),B.N,m,m,new A.bH(B.D,m,q,i,m,m,B.ae),m,m,m,B.cI,m,m,m),B.fy,new A.bq(1/0,50,A.b2z(B.Zu,B.b36,new A.aur(a),A.b2B(m,m,m,m,m,m,m,m,m,B.ad,m,m,m,m,new A.cj(A.aW(12),B.S),B.Rm,m,m,m,m)),m),B.bs,new A.bq(1/0,52,A.jr(B.yc,B.b2w,new A.aus(a,l),A.hv(m,m,B.cw,m,m,m,m,m,m,m,m,m,m,m,new A.cj(A.aW(12),B.S),m,m,m,m,m)),m),B.OO,A.W1("assets/images/logo.png",B.kt,40),B.d4,A.av("DHOLERA REAL ESTATE v1.5.6",m,m,m,$.k7(),m,m)],o),B.U,B.Q,B.R),B.pZ,m,B.ax),m)},
+return A.n1(j,B.cT,A.wX(A.cm(A.b([h,B.dh,A.bE(m,A.cm(A.b([f,B.er,s,B.er,r,B.er,n.Ds("Account Status",g==null?"ACTIVE":g,B.Z2)],o),B.U,B.Q,B.R),B.N,m,m,new A.bH(B.D,m,q,i,m,m,B.ae),m,m,m,B.cI,m,m,m),B.fy,new A.bq(1/0,50,A.b2z(B.Zu,B.b36,new A.aur(a),A.b2B(m,m,m,m,m,m,m,m,m,B.ad,m,m,m,m,new A.cj(A.aW(12),B.S),B.Rm,m,m,m,m)),m),B.bs,new A.bq(1/0,52,A.jr(B.yc,B.b2w,new A.aus(a,l),A.hv(m,m,B.cw,m,m,m,m,m,m,m,m,m,m,m,new A.cj(A.aW(12),B.S),m,m,m,m,m)),m),B.OO,A.W1("assets/images/logo.png",B.kt,40),B.d4,A.av("DHOLERA REAL ESTATE v1.5.7",m,m,m,$.k7(),m,m)],o),B.U,B.Q,B.R),B.pZ,m,B.ax),m)},
 Ds(a,b,c){var s=null
 return A.bZ(A.b([A.fg(c,B.aN,s,20),B.eD,A.av(a,s,s,s,$.k6().bp(B.aN),s,s),B.o2,A.av(b,s,s,s,$.aZc().Gj(B.aH),s,s)],t.p),B.U,B.Q,B.R,0)}}
 A.aur.prototype={
@@ -137433,7 +137433,7 @@ B.aXV=new A.na(5,"timeout")
 B.aXW=new A.Bx(null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.b2L=new A.c5("Could not launch PDF export page.",null,null,null,null,null,null,null,null)
 B.aXX=new A.n8(B.b2L,null,null,null,null,null,null,null,null,null,null,null,null,B.du,!1,null,null,null,B.aa,null)
-B.b2P=new A.c5("You are using the latest version (v1.5.6).",null,null,null,null,null,null,null,null)
+B.b2P=new A.c5("You are using the latest version (v1.5.7).",null,null,null,null,null,null,null,null)
 B.aXY=new A.n8(B.b2P,B.ad,null,null,null,null,null,null,null,null,null,null,null,B.du,!1,null,null,null,B.aa,null)
 B.b39=new A.c5("Could not fetch version data from server.",null,null,null,null,null,null,null,null)
 B.aXZ=new A.n8(B.b39,null,null,null,null,null,null,null,null,null,null,null,null,B.du,!1,null,null,null,B.aa,null)
