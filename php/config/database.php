@@ -46,7 +46,7 @@ $isLiveServer = file_exists(__DIR__ . '/../.env')
 
 if ($isLiveServer) {
     $dbHost = getenv('DB_HOST') ?: ($_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? 'localhost');
-    $dbName = getenv('DB_NAME') ?: ($_ENV['DB_NAME'] ?? $_SERVER['DB_NAME'] ?? 'u362391755_dhorelareal');
+    $dbName = getenv('DB_NAME') ?: ($_ENV['DB_NAME'] ?? $_SERVER['DB_NAME'] ?? 'u362391755_dholerareal');
     $dbUser = getenv('DB_USER') ?: ($_ENV['DB_USER'] ?? $_SERVER['DB_USER'] ?? 'u362391755_dholerareal');
     $dbPass = getenv('DB_PASS') !== false && getenv('DB_PASS') !== '' 
         ? getenv('DB_PASS') 
