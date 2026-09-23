@@ -30,14 +30,22 @@ try {
     if ($search !== '') {
         $searchTerm = '%' . $search . '%';
         if ($currentUser['role'] === 'super_admin') {
-            $where[] = "(p.village_name LIKE :search1 OR p.survey_no LIKE :search2 OR p.reference LIKE :search3)";
+            $where[] = "(p.village_name LIKE :search1 OR p.survey_no LIKE :search2 OR p.tp LIKE :search3 OR p.fp LIKE :search4 OR p.zone LIKE :search5 OR p.road LIKE :search6 OR p.reference LIKE :search7)";
             $params[':search1'] = $searchTerm;
             $params[':search2'] = $searchTerm;
             $params[':search3'] = $searchTerm;
+            $params[':search4'] = $searchTerm;
+            $params[':search5'] = $searchTerm;
+            $params[':search6'] = $searchTerm;
+            $params[':search7'] = $searchTerm;
         } else {
-            $where[] = "(p.village_name LIKE :search1 OR p.survey_no LIKE :search2)";
+            $where[] = "(p.village_name LIKE :search1 OR p.survey_no LIKE :search2 OR p.tp LIKE :search3 OR p.fp LIKE :search4 OR p.zone LIKE :search5 OR p.road LIKE :search6)";
             $params[':search1'] = $searchTerm;
             $params[':search2'] = $searchTerm;
+            $params[':search3'] = $searchTerm;
+            $params[':search4'] = $searchTerm;
+            $params[':search5'] = $searchTerm;
+            $params[':search6'] = $searchTerm;
         }
     }
 

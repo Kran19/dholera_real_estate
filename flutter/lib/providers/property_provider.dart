@@ -78,7 +78,7 @@ class PropertyProvider with ChangeNotifier {
     try {
       final res = await _propertyService.fetchProperties(
         page: _currentPage,
-        limit: 10, // 10 items per page pagination
+        limit: 50, // Fetch up to 50 items per batch to ensure full inventory displays immediately
         search: _searchQuery,
         villageName: _villageFilter,
         zone: _zoneFilter,

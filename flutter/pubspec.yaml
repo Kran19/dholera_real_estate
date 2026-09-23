@@ -1,7 +1,7 @@
 name: dholera_real_estate
 description: "Dholera Real Estate — Property Listing and Management Mobile Application"
 publish_to: 'none'
-version: 1.5.4+38
+version: 1.5.5+39
 
 environment:
   sdk: '>=3.2.0 <4.0.0'

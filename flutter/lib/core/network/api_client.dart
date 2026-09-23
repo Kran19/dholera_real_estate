@@ -36,6 +36,12 @@ class ApiClient {
       Uri uri = Uri.parse('${ApiConfig.baseUrl}$endpoint');
       final Map<String, String> finalParams = queryParams != null ? Map<String, String>.from(queryParams) : {};
       finalParams['_t'] = DateTime.now().millisecondsSinceEpoch.toString();
+      
+      final token = await SecureStorageService.getToken();
+      if (token != null && token.isNotEmpty && !finalParams.containsKey('token')) {
+        finalParams['token'] = token;
+      }
+      
       uri = uri.replace(queryParameters: finalParams);
 
       final headers = await _getHeaders();
