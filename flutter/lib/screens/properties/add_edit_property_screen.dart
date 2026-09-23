@@ -81,6 +81,41 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
     super.dispose();
   }
 
+  String _getSectionLabel(int index, int totalCount) {
+    final bool isPachi = _villageController.text.trim().toUpperCase().contains('PACHI');
+    if (totalCount >= 5) {
+      switch (index) {
+        case 0: return '1. Overview';
+        case 1: return '2. DP Map';
+        case 2: return '3. Open Plot';
+        case 3: return '4. NA Order';
+        case 4: return '5. Zoning Cert';
+        default: return '${index + 1}. Extra';
+      }
+    } else if (totalCount == 4 || isPachi) {
+      switch (index) {
+        case 0: return '1. Overview';
+        case 1: return '2. DP Map';
+        case 2: return '3. NA Order';
+        case 3: return '4. Zoning Cert';
+        default: return '${index + 1}. Extra';
+      }
+    } else if (totalCount == 3) {
+      switch (index) {
+        case 0: return '1. Overview';
+        case 1: return '2. DP Map';
+        case 2: return '3. NA Order';
+        default: return '${index + 1}. Extra';
+      }
+    } else {
+      switch (index) {
+        case 0: return '1. Overview';
+        case 1: return '2. DP Map';
+        default: return '${index + 1}. Extra';
+      }
+    }
+  }
+
   Future<void> _pickImages() async {
     final int currentTotal = _allImages.length;
     if (currentTotal >= 5) {
@@ -250,6 +285,35 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
                     ),
                     const SizedBox(height: 12.0),
 
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFEBF3FE),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: const Color(0xFFBCE0FD)),
+                      ),
+                      child: const Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.info_outline, size: 18, color: AppColors.primary),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'PDF Section Mapping Rules:\n'
+                              '• Photo 1 -> Overview Map (PDF Page 2)\n'
+                              '• Photo 2 -> DP Location Map (PDF Page 3)\n'
+                              '• Photo 3 -> Open Plot Map (5 photos) / NA Order (4 photos)\n'
+                              '• Photo 4 -> NA Order (5 photos) / Zoning Cert (4 photos)\n'
+                              '• Photo 5 -> Zoning Certificate (5 photos)\n'
+                              '💡 Drag & drop photo thumbnails below to arrange them into their exact PDF sections.',
+                              style: TextStyle(fontSize: 11, color: AppColors.primary, height: 1.35),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12.0),
+
                     if (totalPhotos == 0)
                       Container(
                         height: 100.0,
@@ -272,7 +336,7 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
                       )
                     else
                       SizedBox(
-                        height: 100.0,
+                        height: 120.0,
                         child: ReorderableListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: _allImages.length,
@@ -287,12 +351,13 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
                           },
                           itemBuilder: (context, index) {
                             final item = _allImages[index];
+                            final sectionLabel = _getSectionLabel(index, totalPhotos);
                             if (item is PropertyImageModel) {
                               return Stack(
                                 key: ValueKey('existing_${item.id}'),
                                 children: [
                                   Container(
-                                    width: 100.0,
+                                    width: 105.0,
                                     margin: const EdgeInsets.only(right: 10.0),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10.0),
@@ -303,6 +368,29 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
                                       child: CachedNetworkImage(
                                         imageUrl: item.imageUrl,
                                         fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 4,
+                                    left: 4,
+                                    right: 14,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.primary.withValues(alpha: 0.92),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Text(
+                                        sectionLabel,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                   ),
@@ -333,7 +421,7 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
                                 key: ValueKey('new_${item.name}_$index'),
                                 children: [
                                   Container(
-                                    width: 100.0,
+                                    width: 105.0,
                                     margin: const EdgeInsets.only(right: 10.0),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10.0),
@@ -344,6 +432,29 @@ class _AddEditPropertyScreenState extends State<AddEditPropertyScreen> {
                                       child: Image.memory(
                                         item.bytes,
                                         fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 4,
+                                    left: 4,
+                                    right: 14,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.primary.withValues(alpha: 0.92),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Text(
+                                        sectionLabel,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                   ),
