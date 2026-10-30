@@ -29,7 +29,7 @@ try {
 
     echo "[3/4] Seeding default User accounts...\n";
     
-    // Seed Super Admin
+    // Seed Super Admin (admin)
     $adminUsername = 'admin';
     $adminPassword = 'Admin@123';
     $adminHash = password_hash($adminPassword, PASSWORD_DEFAULT);
@@ -46,6 +46,25 @@ try {
     } else {
         $adminId = $existingAdmin['id'];
         echo " -> Super Admin account 'admin' already exists.\n";
+    }
+
+    // Seed Super Admin (parmit)
+    $parmitUsername = 'parmit';
+    $parmitPassword = '123456';
+    $parmitHash = password_hash($parmitPassword, PASSWORD_DEFAULT);
+
+    $stmtParmit = $db->prepare("SELECT id FROM users WHERE username = :username");
+    $stmtParmit->execute([':username' => $parmitUsername]);
+    $existingParmit = $stmtParmit->fetch();
+
+    if (!$existingParmit) {
+        $insertParmit = $db->prepare("INSERT INTO users (username, password_hash, role, status) VALUES (:username, :hash, 'super_admin', 'active')");
+        $insertParmit->execute([':username' => $parmitUsername, ':hash' => $parmitHash]);
+        echo " -> Created Super Admin account: username='parmit', passcode='123456'\n";
+    } else {
+        $upParmit = $db->prepare("UPDATE users SET password_hash = :hash, role = 'super_admin', status = 'active' WHERE id = :id");
+        $upParmit->execute([':hash' => $parmitHash, ':id' => $existingParmit['id']]);
+        echo " -> Updated Super Admin account: username='parmit', passcode='123456'\n";
     }
 
     // Seed Normal User
