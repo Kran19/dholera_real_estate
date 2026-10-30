@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 Format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.6.0] - 2026-10-30
+
+### Changed & Fixed
+- **In-App Update Engine (`update_checker.dart`)**:
+  * Prevents infinite update prompt loops when an update is non-forced and dismissed.
+  * Remembers user decision (`_dismissedVersion`) for the active session.
+  * Suppresses automatic update popups in debug mode (`kDebugMode`) to avoid blocking local testing.
+  * Single prompt per session constraint (`_hasPromptedThisSession`).
+- **Production Build Synchronization**:
+  * Synchronized Flutter compiled version (`currentAppVersion` in `api_config.dart`) to `1.6.0`.
+  * Synchronized server version endpoint (`latest_version` in `version.php`) to `1.6.0`.
+  * Rebuilt release APK (`php/app-release.apk`) and Android App Bundle (`app-release.aab`).
+  * Rebuilt Flutter Web bundle in `php/app/`.
+
+---
+
 ## [1.4.6] - 2026-09-08
 
 ### Security & Access Control
