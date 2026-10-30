@@ -10,10 +10,15 @@ import '../constants/app_styles.dart';
 /// DHOLERA REAL ESTATE
 class UpdateChecker {
   static final ApiClient _apiClient = ApiClient();
+  static bool _hasPromptedThisSession = false;
+  static String? _dismissedVersion;
 
   /// Checks for available updates from Hostinger server
   static Future<void> checkForUpdates(BuildContext context, {bool showNoUpdateToast = false}) async {
     if (kIsWeb && !showNoUpdateToast) return; // Skip auto popup on Web; Web app is served live from Hostinger
+    if (kDebugMode && !showNoUpdateToast) return; // Skip auto popup in debug mode so development is not blocked
+    if (!showNoUpdateToast && _hasPromptedThisSession) return; // Prompt at most once per session for automatic checks
+
     try {
       final response = await _apiClient.get(ApiConfig.versionConfig);
       final data = response['data'];
@@ -34,7 +39,13 @@ class UpdateChecker {
       debugPrint('[UpdateChecker] Server: $latestVersion, Installed: ${ApiConfig.currentAppVersion}');
 
       if (_isVersionGreater(latestVersion, ApiConfig.currentAppVersion)) {
+        // If non-forced update was already dismissed for this version, skip automatic popup
+        if (!showNoUpdateToast && !forceUpdate && _dismissedVersion == latestVersion) {
+          return;
+        }
+
         if (!context.mounted) return;
+        _hasPromptedThisSession = true;
         _showUpdateDialog(
           context: context,
           latestVersion: latestVersion,
@@ -149,7 +160,11 @@ class UpdateChecker {
             actions: [
               if (!forceUpdate)
                 TextButton(
-                  onPressed: () => Navigator.of(dialogCtx, rootNavigator: true).pop(),
+                  onPressed: () {
+                    _hasPromptedThisSession = true;
+                    _dismissedVersion = latestVersion;
+                    Navigator.of(dialogCtx, rootNavigator: true).pop();
+                  },
                   child: const Text('Later', style: TextStyle(color: AppColors.textSecondary)),
                 ),
               ElevatedButton.icon(
